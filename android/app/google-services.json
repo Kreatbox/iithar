@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "669523429077",
+    "project_id": "iithar-project",
+    "storage_bucket": "iithar-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669523429077:android:1dba989a8a71ae3775445c",
+        "android_client_info": {
+          "package_name": "com.example.iithar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKB_hgfIxv7rHN8lvDymRid5_V-AeC6Rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
