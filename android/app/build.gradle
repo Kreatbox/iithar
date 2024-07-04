@@ -7,6 +7,7 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -28,6 +29,7 @@ if (flutterVersionName == null) {
 android {
     namespace "com.example.iithar"
     compileSdkVersion flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -53,6 +55,8 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        minSdk = 27
+        targetSdk = 34
     }
 
     buildTypes {
