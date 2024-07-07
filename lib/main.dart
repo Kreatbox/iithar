@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'تطبيق التبرع بالدم',
+                  locale: Locale('ar', 'SY'),
       initialRoute: '/',
-            locale: Locale('ar', 'SY'),
       routes: {
         '/': (context) => HomePage(),
         '/signup': (context) => SignupScreen(),
