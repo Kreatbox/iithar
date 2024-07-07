@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserDataScreen extends StatelessWidget {
   final User user;
 
-  const UserDataScreen({required this.user});
+  const UserDataScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class UserDataScreen extends StatelessWidget {
         future: FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -25,7 +25,7 @@ class UserDataScreen extends StatelessWidget {
           }
 
           if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(child: Text('لا توجد بيانات'));
+            return const Center(child: Text('لا توجد بيانات'));
           }
 
           // Access user data from Firestore
@@ -69,7 +69,7 @@ class UserDataScreen extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(value),
         ],
@@ -77,5 +77,3 @@ class UserDataScreen extends StatelessWidget {
     );
   }
 }
-
-

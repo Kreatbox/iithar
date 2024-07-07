@@ -28,7 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(labelText: 'البريد الإلكتروني'),
+                decoration:
+                    const InputDecoration(labelText: 'البريد الإلكتروني'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'يرجى إدخال بريدك الإلكتروني';

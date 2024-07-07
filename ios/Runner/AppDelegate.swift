@@ -1,6 +1,5 @@
 import UIKit
 import Flutter
-GMSServices.provideAPIKey("YOUR_API_KEY_HERE")
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
