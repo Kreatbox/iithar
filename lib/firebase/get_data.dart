@@ -2,7 +2,7 @@
 import 'package:iithar/models/donation_request.dart';
 
 Future<List<DonationRequest>> getDonationRequests() async {
-  await Future.delayed(Duration(milliseconds: 500));
+  await Future.delayed(const Duration(milliseconds: 500));
   return [
     DonationRequest(
       name: 'مستشفى الأسد',

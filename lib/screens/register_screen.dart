@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 
 
 class  registerscreen extends StatelessWidget{
+  const registerscreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('تطبيق التبرع بالدم'),
+        title: const Text('تطبيق التبرع بالدم'),
       ),
       body: Center(
         child: Column(
@@ -17,30 +19,30 @@ class  registerscreen extends StatelessWidget{
               onPressed: () {
                 Navigator.pushNamed(context, '/login');
               },
-              child: Text('تسجيل الدخول'),
+              child: const Text('تسجيل الدخول'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/signup');
               },
-              child: Text('إنشاء حساب'),
+              child: const Text('إنشاء حساب'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             FirebaseAuth.instance.currentUser != null
                 ? ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/userdata');
               },
-              child: Text('عرض بياناتي'),
+              child: const Text('عرض بياناتي'),
             )
                 : Container(), // Display button only if user is logged in
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/map');
               },
-              child: Text('خريطة البنوك الدموية'),
+              child: const Text('خريطة البنوك الدموية'),
             ),
           ],
         ),

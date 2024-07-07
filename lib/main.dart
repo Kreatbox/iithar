@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:iithar/screens/map_screen.dart';
 import 'package:iithar/screens/onboarding_screen.dart';
-import 'package:iithar/screens/register_screen.dart';
-import 'firebase_options.dart';
+import 'firebase/firebase_options.dart';
 import 'screens/signup_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/userdata_screen.dart'; // Import userdata screen
-import 'screens/map_screen.dart'; // Import map screen
+import 'screens/userdata_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
@@ -16,7 +15,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
     
   );
-  runApp(MyApp());
+  runApp(const MyApp());
   
 }
 
@@ -27,25 +26,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'تطبيق التبرع بالدم',
-                  locale: Locale('ar', 'SY'),
+                  locale: const Locale('ar', 'SY'),
       initialRoute: '/',
       routes: {
-        '/': (context) => Onboarding(),
-       // '/': (context) => HomePage(),
-        '/signup': (context) => SignupScreen(),
-        '/login': (context) => LoginScreen(),
+        '/': (context) => const Onboarding(),
+        '/signup': (context) => const SignupScreen(),
+        '/login': (context) => const LoginScreen(),
         '/userdata': (context) => UserDataScreen(user: FirebaseAuth.instance.currentUser!), // Pass current user to UserDataScreen
         '/map': (context) => MapScreen(),
-        '/onboarding': (context) => Onboarding(),// Route to map screen
+        '/onboarding': (context) => const Onboarding(),// Route to map screen
         
       },
     );
   }
 }
-
-class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Onboarding();
-  }
+    return const Onboarding();
 }

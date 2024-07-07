@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 
 class Intro2Screen extends StatelessWidget{
+  const Intro2Screen({super.key});
+
   @override
   Widget build(BuildContext){
     return Container(
@@ -14,7 +16,7 @@ class Intro2Screen extends StatelessWidget{
             alignment: Alignment.center,
             width:350,
             height:350,
-          ),Text('العثور على متبرع بسهولة',
+          ),const Text('العثور على متبرع بسهولة',
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontFamily: 'HSI',

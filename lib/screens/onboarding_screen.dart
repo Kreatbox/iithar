@@ -16,7 +16,7 @@ class Onboarding extends StatefulWidget {
 class _Onboardingscreenstate extends State<Onboarding>{
 
   // controller to keep track of which page we are on
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
 
   //track of it is the last page or not
   bool onlastpage= false;
@@ -35,13 +35,13 @@ class _Onboardingscreenstate extends State<Onboarding>{
                 onpreviouspage = (index == 0);
               });
             },
-            children: [
+            children: const [
               Intro1Screen(),
               Intro2Screen()
             ],
           ),
           Container(
-            alignment: Alignment(0,0.93) ,
+            alignment: const Alignment(0,0.93) ,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -50,10 +50,10 @@ class _Onboardingscreenstate extends State<Onboarding>{
                     ? GestureDetector(
                   onTap:(){
                     _controller.nextPage(
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       curve: Curves.easeIn,);
                   },
-                  child: Text('           ',
+                  child: const Text('           ',
                     style: TextStyle(
                         fontFamily: 'HSI',
                         fontSize: 30,
@@ -65,10 +65,10 @@ class _Onboardingscreenstate extends State<Onboarding>{
                     :GestureDetector(
                   onTap:(){
                     _controller.previousPage(
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       curve: Curves.easeIn,);
                   },
-                  child: Text('السابق',
+                  child: const Text('السابق',
                     style: TextStyle(
                         fontFamily: 'HSI',
                         fontSize: 30,
@@ -80,7 +80,7 @@ class _Onboardingscreenstate extends State<Onboarding>{
                 SmoothPageIndicator(controller: _controller,
                   count: 2,
                   effect:
-                  WormEffect(dotColor: Color(0xFFE0E0E0) ,
+                  const WormEffect(dotColor: Color(0xFFE0E0E0) ,
                       activeDotColor: Color(0xFFAE0E03)
                   ),
                 ),
@@ -89,13 +89,13 @@ class _Onboardingscreenstate extends State<Onboarding>{
                     ? GestureDetector(
                   onTap: (){
                     Navigator.push(context,MaterialPageRoute(builder: (context){
-                      return registerscreen();
+                      return const registerscreen();
                     }));
                     _controller.nextPage(
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       curve: Curves.easeIn,);
                   },
-                  child: Text('   تم  ',
+                  child: const Text('   تم  ',
                     style: TextStyle(
                         fontFamily: 'HSI',
                         fontSize: 30,
@@ -106,10 +106,10 @@ class _Onboardingscreenstate extends State<Onboarding>{
                     :GestureDetector(
                   onTap: (){
                     _controller.nextPage(
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       curve: Curves.easeIn,);
                   },
-                  child: Text('التالي',
+                  child: const Text('التالي',
                     style: TextStyle(
                         fontFamily: 'HSI',
                         fontSize: 30,

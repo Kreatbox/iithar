@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 
 class Intro1Screen extends StatelessWidget{
+  const Intro1Screen({super.key});
+
   @override
 Widget build(BuildContext){
     return Container(
@@ -13,7 +15,7 @@ Widget build(BuildContext){
           Image.asset('assets/Images/girl.png',alignment: Alignment.center,
             width:320,
             height: 350,
-          ),Text('تبرعك يمكن أن ينقذ حياة',textAlign: TextAlign.center,
+          ),const Text('تبرعك يمكن أن ينقذ حياة',textAlign: TextAlign.center,
             style: TextStyle(
                 fontFamily: 'HSI',
                 fontSize: 40,

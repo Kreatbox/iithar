@@ -3,22 +3,22 @@ import 'package:iithar/components/donation_request_listview.dart';
 import 'package:iithar/screens/awareness_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-   HomeScreen({super.key});
+   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       children: [
         Card(
           color: Colors.red.shade50,
           child: Padding(
-            padding: EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
                 Image.asset('assets/icons/icon10.png', height: 90),
-                SizedBox(height: 8.0),
-                Text(
+                const SizedBox(height: 8.0),
+                const Text(
                   'تبرعك بالدم، حياة لشخص آخر',
                   style: TextStyle(fontSize: 18.0,  fontFamily: 'HSI',fontWeight: FontWeight.bold),
                 ),
@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         GridView.count(
           shrinkWrap: true,
           crossAxisCount: 2,
@@ -37,7 +37,7 @@ class HomeScreen extends StatelessWidget {
             _buildGridItem('assets/icons/icon8.png', 'بنوك الدم', () {}),
             _buildGridItem('assets/icons/icon4.png', 'توعية', () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return AwarenessScreen();
+                return const AwarenessScreen();
               }));
             }),
             _buildGridItem('assets/icons/icon6.png', 'حجز موعد للتبرع', () {}),
@@ -49,16 +49,16 @@ class HomeScreen extends StatelessWidget {
           children: [
             TextButton(
               onPressed: () {},
-              child: Text(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.white,
+                minimumSize: const Size(5, 5),
+              ),
+              child: const Text(
                 'عرض المزيد',
                 textAlign: TextAlign.left,
               ),
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.white,
-                minimumSize: Size(5, 5),
-              ),
             ),
-            Text(
+            const Text(
               'طلبات التبرع',
               textAlign: TextAlign.right,
               style: TextStyle(
@@ -68,14 +68,13 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 4.0),
-        DonationRequestsListView(),
+        const SizedBox(height: 4.0),
+        const DonationRequestsListView(),
       ],
     );
   }
 
-  Widget _buildGridItem(String assetPath, String title, Function() onTap,
-      {double size = 40}) {
+  Widget _buildGridItem(String assetPath, String title, Function() onTap) {
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -84,8 +83,8 @@ class HomeScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(assetPath, height: 44),
-              SizedBox(height: 5.0), //  المسافة بين الصورة والنص
-              Text(title, style: TextStyle(fontSize: 14)),
+              const SizedBox(height: 5.0), //  المسافة بين الصورة والنص
+              Text(title, style: const TextStyle(fontSize: 14)),
             ],
           ),
         ),
