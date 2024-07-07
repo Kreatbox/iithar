@@ -3,7 +3,7 @@ import 'package:iithar/components/donation_request_listview.dart';
 import 'package:iithar/screens/awareness_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-   const HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,10 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 8.0),
                 const Text(
                   'تبرعك بالدم، حياة لشخص آخر',
-                  style: TextStyle(fontSize: 18.0,  fontFamily: 'HSI',fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      fontFamily: 'HSI',
+                      fontWeight: FontWeight.bold),
                 ),
               ],
             ),

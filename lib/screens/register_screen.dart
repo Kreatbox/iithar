@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
-class  registerscreen extends StatelessWidget{
+class registerscreen extends StatelessWidget {
   const registerscreen({super.key});
 
   @override
@@ -31,11 +30,11 @@ class  registerscreen extends StatelessWidget{
             const SizedBox(height: 20),
             FirebaseAuth.instance.currentUser != null
                 ? ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/userdata');
-              },
-              child: const Text('عرض بياناتي'),
-            )
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/userdata');
+                    },
+                    child: const Text('عرض بياناتي'),
+                  )
                 : Container(), // Display button only if user is logged in
             const SizedBox(height: 20),
             ElevatedButton(
@@ -49,6 +48,4 @@ class  registerscreen extends StatelessWidget{
       ),
     );
   }
-
-
 }

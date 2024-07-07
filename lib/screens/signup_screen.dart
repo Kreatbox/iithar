@@ -50,13 +50,25 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Column(
             children: <Widget>[
               // Input fields
-              _buildTextField(_firstNameController, 'الاسم الأول', 'يرجى إدخال اسمك الأول'),
-              _buildTextField(_lastNameController, 'اسم العائلة', 'يرجى إدخال اسم عائلتك'),
-              _buildTextField(_emailController, 'البريد الإلكتروني', 'يرجى إدخال بريدك الإلكتروني', isEmail: true),
-              _buildTextField(_passwordController, 'كلمة المرور', 'يرجى إدخال كلمة المرور', isPassword: true),
-              _buildTextField(_phoneNumberController, 'رقم الهاتف', 'يرجى إدخال رقم هاتفك', isPhone: true),
-              _buildTextField(_ssidController, 'الرقم القومي', 'يرجى إدخال رقمك القومي', isNumber: true),
-              _buildTextField(_birthDateController, 'تاريخ الميلاد', 'يرجى إدخال تاريخ ميلادك', isDate: true),
+              _buildTextField(
+                  _firstNameController, 'الاسم الأول', 'يرجى إدخال اسمك الأول'),
+              _buildTextField(
+                  _lastNameController, 'اسم العائلة', 'يرجى إدخال اسم عائلتك'),
+              _buildTextField(_emailController, 'البريد الإلكتروني',
+                  'يرجى إدخال بريدك الإلكتروني',
+                  isEmail: true),
+              _buildTextField(
+                  _passwordController, 'كلمة المرور', 'يرجى إدخال كلمة المرور',
+                  isPassword: true),
+              _buildTextField(
+                  _phoneNumberController, 'رقم الهاتف', 'يرجى إدخال رقم هاتفك',
+                  isPhone: true),
+              _buildTextField(
+                  _ssidController, 'الرقم القومي', 'يرجى إدخال رقمك القومي',
+                  isNumber: true),
+              _buildTextField(_birthDateController, 'تاريخ الميلاد',
+                  'يرجى إدخال تاريخ ميلادك',
+                  isDate: true),
               _buildDropdownField(),
 
               const SizedBox(height: 20),
@@ -65,13 +77,17 @@ class _SignupScreenState extends State<SignupScreen> {
                   if (_formKey.currentState!.validate()) {
                     // Create a new account
                     try {
-                      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+                      UserCredential userCredential =
+                          await _auth.createUserWithEmailAndPassword(
                         email: _emailController.text,
                         password: _passwordController.text,
                       );
 
                       // Save user data in Firestore
-                      await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(userCredential.user!.uid)
+                          .set({
                         'firstName': _firstNameController.text,
                         'lastName': _lastNameController.text,
                         'email': _emailController.text,
@@ -103,8 +119,13 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String labelText, String errorText,
-      {bool isEmail = false, bool isPassword = false, bool isPhone = false, bool isNumber = false, bool isDate = false}) {
+  Widget _buildTextField(
+      TextEditingController controller, String labelText, String errorText,
+      {bool isEmail = false,
+      bool isPassword = false,
+      bool isPhone = false,
+      bool isNumber = false,
+      bool isDate = false}) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -112,7 +133,15 @@ class _SignupScreenState extends State<SignupScreen> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
       obscureText: isPassword,
-      keyboardType: isEmail ? TextInputType.emailAddress : isPhone ? TextInputType.phone : isNumber ? TextInputType.number : isDate ? TextInputType.datetime : TextInputType.text,
+      keyboardType: isEmail
+          ? TextInputType.emailAddress
+          : isPhone
+              ? TextInputType.phone
+              : isNumber
+                  ? TextInputType.number
+                  : isDate
+                      ? TextInputType.datetime
+                      : TextInputType.text,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return errorText;
@@ -129,7 +158,8 @@ class _SignupScreenState extends State<SignupScreen> {
         labelText: 'فصيلة الدم',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
-      items: <String>['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((String value) {
+      items: <String>['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+          .map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iithar/models/donation_request.dart';
 
-
 class DonateNowScreen extends StatelessWidget {
   final DonationRequest donationRequest;
-   const DonateNowScreen({super.key, required this.donationRequest});
+  const DonateNowScreen({super.key, required this.donationRequest});
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,6 @@ import 'package:iithar/screens/home_screen.dart';
 import 'package:iithar/screens/my_account_screen.dart';
 import 'package:iithar/screens/notification_screen.dart';
 
-
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 

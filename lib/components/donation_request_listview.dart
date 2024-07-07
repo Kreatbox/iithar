@@ -3,7 +3,7 @@ import 'package:iithar/firebase/get_data.dart';
 import 'package:iithar/screens/donate_now_screen.dart';
 
 class DonationRequestsListView extends StatefulWidget {
-   const DonationRequestsListView({super.key});
+  const DonationRequestsListView({super.key});
 
   @override
   State<DonationRequestsListView> createState() =>

@@ -11,12 +11,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    
     options: DefaultFirebaseOptions.currentPlatform,
-    
   );
   runApp(const MyApp());
-  
 }
 
 class MyApp extends StatelessWidget {
@@ -26,21 +23,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'تطبيق التبرع بالدم',
-                  locale: const Locale('ar', 'SY'),
+      locale: const Locale('ar', 'SY'),
       initialRoute: '/',
       routes: {
         '/': (context) => const Onboarding(),
         '/signup': (context) => const SignupScreen(),
         '/login': (context) => const LoginScreen(),
-        '/userdata': (context) => UserDataScreen(user: FirebaseAuth.instance.currentUser!), // Pass current user to UserDataScreen
+        '/userdata': (context) => UserDataScreen(
+            user: FirebaseAuth
+                .instance.currentUser!), // Pass current user to UserDataScreen
         '/map': (context) => MapScreen(),
-        '/onboarding': (context) => const Onboarding(),// Route to map screen
-        
+        '/onboarding': (context) => const Onboarding(), // Route to map screen
       },
     );
   }
 }
-  @override
-  Widget build(BuildContext context) {
-    return const Onboarding();
+
+@override
+Widget build(BuildContext context) {
+  return const Onboarding();
 }

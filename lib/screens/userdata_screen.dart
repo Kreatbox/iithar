@@ -77,5 +77,3 @@ class UserDataScreen extends StatelessWidget {
     );
   }
 }
-
-
