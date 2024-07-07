@@ -10,9 +10,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    
     options: DefaultFirebaseOptions.currentPlatform,
+    
   );
   runApp(MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -23,12 +26,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'تطبيق التبرع بالدم',
       initialRoute: '/',
+            locale: Locale('ar', 'SY'),
       routes: {
         '/': (context) => HomePage(),
         '/signup': (context) => SignupScreen(),
         '/login': (context) => LoginScreen(),
         '/userdata': (context) => UserDataScreen(user: FirebaseAuth.instance.currentUser!), // Pass current user to UserDataScreen
         '/map': (context) => MapScreen(), // Route to map screen
+        
       },
     );
   }
