@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:iithar/screens/onboarding_screen.dart';
+import 'package:iithar/screens/register_screen.dart';
 import 'firebase_options.dart';
 import 'screens/signup_screen.dart';
 import 'screens/login_screen.dart';
@@ -25,14 +27,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'تطبيق التبرع بالدم',
+                  locale: Locale('ar', 'SY'),
       initialRoute: '/',
-            locale: Locale('ar', 'SY'),
       routes: {
-        '/': (context) => HomePage(),
+        '/': (context) => Onboarding(),
+       // '/': (context) => HomePage(),
         '/signup': (context) => SignupScreen(),
         '/login': (context) => LoginScreen(),
         '/userdata': (context) => UserDataScreen(user: FirebaseAuth.instance.currentUser!), // Pass current user to UserDataScreen
-        '/map': (context) => MapScreen(), // Route to map screen
+        '/map': (context) => MapScreen(),
+        '/onboarding': (context) => Onboarding(),// Route to map screen
         
       },
     );
@@ -42,46 +46,6 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('تطبيق التبرع بالدم'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/login');
-              },
-              child: Text('تسجيل الدخول'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/signup');
-              },
-              child: Text('إنشاء حساب'),
-            ),
-            SizedBox(height: 20),
-            FirebaseAuth.instance.currentUser != null
-                ? ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/userdata');
-              },
-              child: Text('عرض بياناتي'),
-            )
-                : Container(), // Display button only if user is logged in
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/map');
-              },
-              child: Text('خريطة البنوك الدموية'),
-            ),
-          ],
-        ),
-      ),
-    );
+    return Onboarding();
   }
 }

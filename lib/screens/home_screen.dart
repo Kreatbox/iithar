@@ -16,11 +16,11 @@ class HomeScreen extends StatelessWidget {
             padding: EdgeInsets.all(15.0),
             child: Column(
               children: [
-                Image.asset('web/icons/icon10.png', height: 90),
+                Image.asset('assets/icons/icon10.png', height: 90),
                 SizedBox(height: 8.0),
                 Text(
                   'تبرعك بالدم، حياة لشخص آخر',
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18.0,  fontFamily: 'HSI',fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -34,14 +34,14 @@ class HomeScreen extends StatelessWidget {
           crossAxisSpacing: 1.0,
           childAspectRatio: 1.7, //نسبة العرض للارتفاع للعناصر
           children: [
-            _buildGridItem('web/icons/icon8.png', 'بنوك الدم', () {}),
-            _buildGridItem('web/icons/icon4.png', 'توعية', () {
+            _buildGridItem('assets/icons/icon8.png', 'بنوك الدم', () {}),
+            _buildGridItem('assets/icons/icon4.png', 'توعية', () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return AwarenessScreen();
               }));
             }),
-            _buildGridItem('web/icons/icon6.png', 'حجز موعد للتبرع', () {}),
-            _buildGridItem('web/icons/icon3.png', 'طوارئ', () {}),
+            _buildGridItem('assets/icons/icon6.png', 'حجز موعد للتبرع', () {}),
+            _buildGridItem('assets/icons/icon3.png', 'طوارئ', () {}),
           ],
         ),
         Row(
