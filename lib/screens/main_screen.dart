@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iithar/screens/awareness_screen.dart';
 import 'package:iithar/screens/home_screen.dart';
 import 'package:iithar/screens/my_account_screen.dart';
 import 'package:iithar/screens/notification_screen.dart';
@@ -16,7 +15,6 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> pages = [
     const HomeScreen(),
-    const AwarenessScreen(),
     const MyAccountScreen(),
   ];
 

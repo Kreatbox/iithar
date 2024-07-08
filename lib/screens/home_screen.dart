@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:iithar/components/donation_request_listview.dart';
-import 'package:iithar/screens/awareness_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -38,11 +37,6 @@ class HomeScreen extends StatelessWidget {
           childAspectRatio: 1.7, //نسبة العرض للارتفاع للعناصر
           children: [
             _buildGridItem('assets/icons/icon8.png', 'بنوك الدم', () {}),
-            _buildGridItem('assets/icons/icon4.png', 'توعية', () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const AwarenessScreen();
-              }));
-            }),
             _buildGridItem('assets/icons/icon6.png', 'حجز موعد للتبرع', () {}),
             _buildGridItem('assets/icons/icon3.png', 'طوارئ', () {}),
           ],
