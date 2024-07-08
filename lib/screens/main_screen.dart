@@ -57,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
-              'web/icons/icon1.png',
+              'assets/icons/icon1.png',
               width: 24,
               height: 24,
             ),
@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'web/icons/icon3.png',
+              'assets/icons/icon3.png',
               width: 24,
               height: 24,
             ),
@@ -73,7 +73,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'web/icons/icon2.png',
+              'assets/icons/icon2.png',
               width: 24,
               height: 24,
             ),
