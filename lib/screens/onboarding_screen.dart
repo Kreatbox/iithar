@@ -32,7 +32,7 @@ class _Onboardingscreenstate extends State<Onboarding> {
                 onpreviouspage = (index == 0);
               });
             },
-            children:  [Intro1Screen(), Intro2Screen()],
+            children: [Intro1Screen(), Intro2Screen()],
           ),
           Container(
             alignment: const Alignment(0, 0.93),
@@ -85,7 +85,7 @@ class _Onboardingscreenstate extends State<Onboarding> {
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                            return registerscreen();
+                            return RegisterScreen();
                           }));
                           _controller.nextPage(
                             duration: const Duration(milliseconds: 500),
