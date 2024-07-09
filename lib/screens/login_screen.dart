@@ -1,5 +1,10 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+
+import '../navigation_menu.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -50,7 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () async {
+                onPressed: ()  async {
+
                   if (_formKey.currentState!.validate()) {
                     try {
                       // Sign in with email and password
@@ -58,9 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         email: _emailController.text,
                         password: _passwordController.text,
                       );
-
-                      // Navigate to user data page
-                      Navigator.pushReplacementNamed(context, '/userdata');
+                      // Navigate to home page using navgation widget
+                      Navigator.pushReplacementNamed(context, '/nav');
                     } catch (e) {
                       // Show error message to the user
                       ScaffoldMessenger.of(context).showSnackBar(

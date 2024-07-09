@@ -39,6 +39,7 @@ dependencies:
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
   location: ^7.0.0
+  get:  ^4.6.5
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +71,10 @@ flutter:
     - assets/icons/icon8.png
     - assets/icons/icon6.png
     - assets/icons/icon3.png
+    - assets/icons/icon1.png
+    - assets/icons/icon2.png
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

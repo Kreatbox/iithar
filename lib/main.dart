@@ -1,6 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:iithar/navigation_menu.dart';
+import 'package:iithar/screens/donation_form.dart';
 import 'package:iithar/screens/notification_screen.dart';
+import 'package:iithar/screens/publish_reguest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iithar/screens/home_screen.dart';
 import 'package:iithar/screens/map_screen.dart';
@@ -49,8 +53,7 @@ class MyApp extends StatelessWidget {
           } else if (user == null) {
             return const RegisterScreen();
           } else {
-            //here use HomeScreen instead of RegisterScreen when you finish the homescreen page
-            return const HomeScreen(); //RegisterScreen();
+            return const NavigationMenu(); // RegisterScreen();
           }
         }
       },
@@ -69,10 +72,14 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
-        '/notifications': (context)=> NotificationsScreen(),
-        '/userdata': (context) => UserDataScreen(
-            user: FirebaseAuth
-                .instance.currentUser!), // Pass current user to UserDataScreen
+        '/notifications': (context) => NotificationsScreen(),
+        '/form': (context) => DonationForm(),
+        '/publishrequest':(context )=> PublishReguest(),
+        '/nav': (context)=>  NavigationMenu(),
+        '/userdata': (context) =>
+            UserDataScreen(
+                user: FirebaseAuth.instance.currentUser!),
+        // Pass current user to UserDataScreen
         '/map': (context) => MapScreen(),
         '/onboarding': (context) => const Onboarding(),
       },

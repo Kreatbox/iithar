@@ -2,6 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
+import '../navigation_menu.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -96,9 +100,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         'birthDate': _birthDateController.text,
                         'bloodType': _selectedBloodType,
                       });
-
-                      // Navigate to the home screen
-                      Navigator.pushReplacementNamed(context, '/home');
+                      // Navigate to the donation form screen
+                      Navigator.pushReplacementNamed(context, '/form');
                     } catch (e) {
                       if (kDebugMode) {
                         print('فشل إنشاء الحساب: ${e.toString()}');

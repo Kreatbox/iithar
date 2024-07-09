@@ -48,7 +48,7 @@ class UserDataScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
-                      Navigator.pushReplacementNamed(context, '/');
+                      Navigator.pushReplacementNamed(context, '/register');
                     },
                     child: const Text('تسجيل الخروج'),
                   ),
