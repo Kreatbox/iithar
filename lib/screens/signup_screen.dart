@@ -98,7 +98,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       });
 
                       // Navigate to the home screen
-                      Navigator.pushReplacementNamed(context, '/');
+                      Navigator.pushReplacementNamed(context, '/home');
                     } catch (e) {
                       if (kDebugMode) {
                         print('فشل إنشاء الحساب: ${e.toString()}');

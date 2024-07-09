@@ -6,7 +6,34 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+          IconButton(
+          icon: Icon(Icons.notifications,color:Color(0xFFAE0E03) ,),
+        onPressed: () {
+          Navigator.pushNamed(context, '/notifications');
+          // Handle the notification icon press
+          print('Notification icon pressed');
+        },
+      ), Expanded(
+      child: Align(alignment:
+      Alignment.centerRight,
+        child:
+        Text('مرحبا أحمد',
+            textAlign: TextAlign.right,
+            style: TextStyle(
+                fontFamily: 'HSI', fontSize: 40, color: Color(0xFFAE0E03))),
+      ),
+    ),
+    ],),),
+
+      body: ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
         Card(
@@ -68,6 +95,7 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(height: 4.0),
         const DonationRequestsListView(),
       ],
+    ),
     );
   }
 
@@ -87,5 +115,6 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+
   }
 }

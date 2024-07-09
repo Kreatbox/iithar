@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:iithar/screens/notification_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iithar/screens/home_screen.dart';
 import 'package:iithar/screens/map_screen.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
+        '/notifications': (context)=> NotificationsScreen(),
         '/userdata': (context) => UserDataScreen(
             user: FirebaseAuth
                 .instance.currentUser!), // Pass current user to UserDataScreen
