@@ -1,10 +1,5 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
-
-import '../navigation_menu.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -55,8 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: ()  async {
-
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     try {
                       // Sign in with email and password

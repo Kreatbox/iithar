@@ -14,7 +14,8 @@ class UserDataScreen extends StatelessWidget {
         title: const Text('بيانات المستخدم'),
       ),
       body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
+        future:
+            FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -31,6 +32,10 @@ class UserDataScreen extends StatelessWidget {
           // Access user data from Firestore
           var userData = snapshot.data!.data() as Map<String, dynamic>;
 
+          bool hasFormAnswer = userData.containsKey('formAnswer');
+          String formAnswer = hasFormAnswer ? userData['formAnswer'] : '';
+          bool isEligibleForDonation = formAnswer == '000000000';
+
           return Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
@@ -44,6 +49,22 @@ class UserDataScreen extends StatelessWidget {
                   _buildInfoRow('الرقم القومي', userData['ssid']),
                   _buildInfoRow('تاريخ الميلاد', userData['birthDate']),
                   _buildInfoRow('فصيلة الدم', userData['bloodType']),
+                  _buildInfoRow(
+                      'قابل للتبرع', isEligibleForDonation ? 'نعم' : 'لا'),
+                  const SizedBox(height: 20),
+                  if (!hasFormAnswer) ...[
+                    const Text(
+                      'لم تقم بملء استبيان التبرع بعد. يرجى ملء الاستبيان لإكمال بياناتك.',
+                      style: TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/form');
+                      },
+                      child: const Text('ملء استبيان التبرع'),
+                    ),
+                  ],
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {

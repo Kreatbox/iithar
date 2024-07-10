@@ -15,9 +15,15 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   LatLng? _currentLocation;
   final List<LatLng> _bloodBankLocations = [
-    const LatLng(51.5, -0.09),
-    const LatLng(51.515, -0.1),
-    const LatLng(51.52, -0.12),
+    const LatLng(33.5138, 36.2765), // Damascus
+    const LatLng(34.8021, 38.9968), // Palmyra
+    const LatLng(36.2021, 37.1343), // Aleppo
+    const LatLng(35.3328, 40.1372), // Deir ez-Zor
+    const LatLng(35.9297, 36.6342), // Hama
+    const LatLng(35.2509, 33.5369), // Latakia
+    const LatLng(34.5641, 36.0789), // Homs
+    const LatLng(32.5329, 36.6342), // Daraa
+    const LatLng(36.5006, 37.5244), // Idlib
   ];
 
   @override
@@ -99,8 +105,9 @@ class _MapScreenState extends State<MapScreen> {
       body: FlutterMap(
         options: MapOptions(
           // Initialize the map center and zoom level
-          initialCenter: _currentLocation ?? const LatLng(51.5, -0.09),
-          initialZoom: 13.0,
+          initialCenter:
+              _currentLocation ?? const LatLng(34.8021, 38.9968), // Syria
+          initialZoom: 6.0,
         ),
         children: [
           TileLayer(

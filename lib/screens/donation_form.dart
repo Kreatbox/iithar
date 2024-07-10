@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:iithar/screens/notification_screen.dart';
 
-void main() {
-  runApp(DonationForm());
-}
-
 class DonationForm extends StatefulWidget {
+  const DonationForm({super.key});
+
   @override
   _DonationFormState createState() => _DonationFormState();
 }
@@ -24,6 +24,9 @@ class _DonationFormState extends State<DonationForm> {
   bool? agreedToBloodTests;
   bool acceptedTerms = false;
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,8 +34,8 @@ class _DonationFormState extends State<DonationForm> {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         title: Row(
           children: [
-            Text('استبيان التبرع بالدم'),
-            Spacer(),
+            const Text('استبيان التبرع بالدم'),
+            const Spacer(),
             IconButton(
               icon: const Icon(Icons.notifications),
               onPressed: () {
@@ -50,7 +53,6 @@ class _DonationFormState extends State<DonationForm> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              // Question 1
               buildQuestion(
                 'هل وزنك أقل من 50 كغ؟',
                 (value) {
@@ -58,10 +60,9 @@ class _DonationFormState extends State<DonationForm> {
                     weightUnder50 = value;
                   });
                 },
+                weightUnder50,
               ),
-              SizedBox(height: 10),
-
-              // Question 2
+              const SizedBox(height: 10),
               buildQuestion(
                 'هل تتناول أي أدوية بانتظام؟',
                 (value) {
@@ -69,10 +70,9 @@ class _DonationFormState extends State<DonationForm> {
                     heartOrLungProblems = value;
                   });
                 },
+                heartOrLungProblems,
               ),
-              SizedBox(height: 10),
-
-              // Question 3
+              const SizedBox(height: 10),
               buildQuestion(
                 'هل تعاني من أي حالات طبية مزمنة (مثل السكري، ارتفاع ضغط الدم، أمراض القلب)؟',
                 (value) {
@@ -80,10 +80,9 @@ class _DonationFormState extends State<DonationForm> {
                     hadColdInLast28Days = value;
                   });
                 },
+                hadColdInLast28Days,
               ),
-              SizedBox(height: 10),
-
-              // Question 4
+              const SizedBox(height: 10),
               buildQuestion(
                 'هل تم تشخيصك بأي من الأمراض المعدية (مثل التهاب الكبد، فيروس نقص المناعة البشرية/الإيدز)؟',
                 (value) {
@@ -91,10 +90,9 @@ class _DonationFormState extends State<DonationForm> {
                     hadCancer = value;
                   });
                 },
+                hadCancer,
               ),
-              SizedBox(height: 10),
-
-              // Question 5
+              const SizedBox(height: 10),
               buildQuestion(
                 'هل حصلت على وشم أو ثقب جسد خلال الأشهر الـ12 الماضية؟',
                 (value) {
@@ -102,10 +100,9 @@ class _DonationFormState extends State<DonationForm> {
                     hasDiabetes = value;
                   });
                 },
+                hasDiabetes,
               ),
-              SizedBox(height: 10),
-
-              // Question 6
+              const SizedBox(height: 10),
               buildQuestion(
                 'هل أجريت أي عمليات جراحية خلال الأشهر الـ12 الماضية؟',
                 (value) {
@@ -113,10 +110,9 @@ class _DonationFormState extends State<DonationForm> {
                     hadSurgeryInLast3Months = value;
                   });
                 },
+                hadSurgeryInLast3Months,
               ),
-              SizedBox(height: 10),
-
-              // Question 7
+              const SizedBox(height: 10),
               buildQuestion(
                 'هل تلقيت أي لقاحات خلال الأسابيع الأربعة الماضية؟',
                 (value) {
@@ -124,10 +120,9 @@ class _DonationFormState extends State<DonationForm> {
                     hadVaccineInLast3Months = value;
                   });
                 },
+                hadVaccineInLast3Months,
               ),
-              SizedBox(height: 10),
-
-              // Question 8
+              const SizedBox(height: 10),
               buildQuestion(
                 'هل تم نقل دم لك أو تلقيت مشتقات دم خلال الأشهر الـ12 الماضية؟',
                 (value) {
@@ -135,10 +130,9 @@ class _DonationFormState extends State<DonationForm> {
                     hadBloodTransfusionInLast12Months = value;
                   });
                 },
+                hadBloodTransfusionInLast12Months,
               ),
-              SizedBox(height: 10),
-
-              // Question 9
+              const SizedBox(height: 10),
               buildQuestion(
                 'هل توافق على إجراء اختبارات الدم اللازمة لضمان سلامة الدم المتبرع به؟',
                 (value) {
@@ -146,42 +140,52 @@ class _DonationFormState extends State<DonationForm> {
                     agreedToBloodTests = value;
                   });
                 },
+                agreedToBloodTests,
               ),
-              SizedBox(height: 10),
-
-              // Terms and Conditions
+              const SizedBox(height: 10),
               CheckboxListTile(
-                title: Text('أنت موافق على الأحكام والشروط'),
+                title: const Text('أنت موافق على الأحكام والشروط'),
                 value: acceptedTerms,
                 onChanged: (newValue) {
                   setState(() {
-                   acceptedTerms = newValue?? false;
+                    acceptedTerms = newValue ?? false;
                   });
                 },
                 controlAffinity: ListTileControlAffinity.leading,
               ),
-              SizedBox(height: 20),
-
-              // Submit Button
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFAE0E03),
+                  backgroundColor: const Color(0xFFAE0E03),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate() && acceptedTerms) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('الاستبيان مكتمل!')),
-                    );
+                    // Create form answers string
+                    String formAnswers = _getFormAnswersString();
+                    try {
+                      // Save form answers to Firestore
+                      await _saveFormAnswers(formAnswers);
 
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('الاستبيان مكتمل!')),
+                      );
+                      Navigator.pushReplacementNamed(context, '/nav');
+                    } catch (e) {
+                      if (kDebugMode) {
+                        print('فشل حفظ الإجابات: ${e.toString()}');
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('فشل حفظ الإجابات')),
+                      );
+                    }
                   } else if (!acceptedTerms) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('يجب الموافقة على الأحكام والشروط')),
+                      const SnackBar(
+                          content: Text('يجب الموافقة على الأحكام والشروط')),
                     );
                   }
-                  // Navigate to home page using navgation widget
-                  Navigator.pushReplacementNamed(context, '/nav');
                 },
-                child: Text('كن متبرعاً'),
+                child: const Text('كن متبرعاً'),
               ),
             ],
           ),
@@ -190,36 +194,37 @@ class _DonationFormState extends State<DonationForm> {
     );
   }
 
-  Widget buildQuestion(String question, Function(bool?) onChanged) {
+  Widget buildQuestion(
+      String question, Function(bool?) onChanged, bool? groupValue) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(5),
       ),
-      padding: EdgeInsets.all(8),
-      margin: EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             question,
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
           ),
           Row(
             children: <Widget>[
               Expanded(
                 child: RadioListTile<bool>(
-                  title: Text('نعم'),
+                  title: const Text('نعم'),
                   value: true,
-                  groupValue: null,
+                  groupValue: groupValue,
                   onChanged: onChanged,
                 ),
               ),
               Expanded(
                 child: RadioListTile<bool>(
-                  title: Text('لا'),
+                  title: const Text('لا'),
                   value: false,
-                  groupValue: null,
+                  groupValue: groupValue,
                   onChanged: onChanged,
                 ),
               ),
@@ -228,5 +233,33 @@ class _DonationFormState extends State<DonationForm> {
         ],
       ),
     );
+  }
+
+  String _getFormAnswersString() {
+    List<bool?> answers = [
+      weightUnder50,
+      heartOrLungProblems,
+      hadColdInLast28Days,
+      hadCancer,
+      hasDiabetes,
+      hadSurgeryInLast3Months,
+      hadVaccineInLast3Months,
+      hadBloodTransfusionInLast12Months,
+      agreedToBloodTests,
+    ];
+
+    return answers.map((answer) => answer == true ? '1' : '0').join('');
+  }
+
+  Future<void> _saveFormAnswers(String formAnswers) async {
+    User? user = _auth.currentUser;
+
+    if (user != null) {
+      await _firestore.collection('users').doc(user.uid).update({
+        'formAnswer': formAnswers,
+      });
+    } else {
+      throw Exception('لم يتم العثور على المستخدم الحالي');
+    }
   }
 }
