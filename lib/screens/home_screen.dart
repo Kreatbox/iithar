@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iithar/components/donation_request_listview.dart';
+import 'package:iithar/screens/appointment_booking.dart';
+import 'package:iithar/screens/blood_banks.dart';
+import 'package:iithar/screens/donation_requests.dart';
+import 'package:iithar/screens/publish_reguest.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -76,9 +80,22 @@ class HomeScreen extends StatelessWidget {
           crossAxisSpacing: 1.0,
           childAspectRatio: 1, //نسبة العرض للارتفاع للعناصر
           children: [
-            _buildGridItem('assets/icons/icon8.png', 'بنوك الدم', () {}),
-            _buildGridItem('assets/icons/icon6.png', 'حجز موعد للتبرع', () {}),
-            _buildGridItem('assets/icons/icon3.png', 'طوارئ', () {}),
+            _buildGridItem('assets/icons/icon8.png', 'بنوك الدم', (){
+                 Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return BloodBanksScreen();
+              }));
+            }),
+            _buildGridItem('assets/icons/icon6.png', 'حجز موعد للتبرع', () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return AppointmentBookingScreen();
+              }));
+            }),
+
+            _buildGridItem('assets/icons/icon3.png', 'طوارئ', () {
+             Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return DonationRequestScreen();
+              }));
+            }),
           ],
         ), Container(height: 12,),
         Row(
