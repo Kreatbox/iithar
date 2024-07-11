@@ -82,6 +82,7 @@ class MyApp extends StatelessWidget {
         // Pass current user to UserDataScreen
         '/map': (context) => MapScreen(),
         '/onboarding': (context) => const Onboarding(),
+
       },
     );
   }
