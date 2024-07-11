@@ -15,7 +15,8 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
           IconButton(
-          icon: Icon(Icons.notifications,color:Color(0xFFAE0E03) ,),
+          icon: Image.asset(
+              'assets/icons/icons8-notification-64.png', height: 30,),
         onPressed: () {
           Navigator.pushNamed(context, '/notifications');
           // Handle the notification icon press
@@ -25,10 +26,10 @@ class HomeScreen extends StatelessWidget {
       child: Align(alignment:
       Alignment.centerRight,
         child:
-        Text('مرحبا أحمد',
+        Text('مرحبا ',
             textAlign: TextAlign.right,
             style: TextStyle(
-                fontFamily: 'HSI', fontSize: 40, color: Color(0xFFAE0E03))),
+                fontFamily: 'HSI', fontSize: 40, color: Colors.black)),
       ),
     ),
     ],),),
@@ -40,36 +41,49 @@ class HomeScreen extends StatelessWidget {
           color: Colors.red.shade50,
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Column(
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Image.asset('assets/icons/icon10.png', height: 90),
+                Image.asset('assets/icons/icon10.png', height: 75),
                 const SizedBox(height: 8.0),
-                const Text(
-                  'تبرعك بالدم، حياة لشخص آخر',
+                Column(children: [Text(
+                  'تبرعك بالـدم، حيـاة',
                   style: TextStyle(
-                      fontSize: 18.0,
-                      fontFamily: 'HSI',
-                      fontWeight: FontWeight.bold),
+                    fontSize: 30.0,
+                    fontFamily: 'HSI',
+                  ) ,
+                ), Text(
+                  ' لشـخص آخـر',
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontFamily: 'HSI',
+                  ) ,
+                ),]
                 ),
+
+
+
               ],
             ),
+
           ),
         ),
-        const SizedBox(height: 10.0),
+        const SizedBox(height: 5.0),
         GridView.count(
+
           shrinkWrap: true,
-          crossAxisCount: 2,
+          crossAxisCount: 3,
           mainAxisSpacing: 1.0,
           crossAxisSpacing: 1.0,
-          childAspectRatio: 1.7, //نسبة العرض للارتفاع للعناصر
+          childAspectRatio: 1, //نسبة العرض للارتفاع للعناصر
           children: [
             _buildGridItem('assets/icons/icon8.png', 'بنوك الدم', () {}),
             _buildGridItem('assets/icons/icon6.png', 'حجز موعد للتبرع', () {}),
             _buildGridItem('assets/icons/icon3.png', 'طوارئ', () {}),
           ],
-        ),
+        ), Container(height: 12,),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
           children: [
             TextButton(
               onPressed: () {},
@@ -79,6 +93,9 @@ class HomeScreen extends StatelessWidget {
               ),
               child: const Text(
                 'عرض المزيد',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'BAHIJ'),
                 textAlign: TextAlign.left,
               ),
             ),
@@ -86,8 +103,8 @@ class HomeScreen extends StatelessWidget {
               'طلبات التبرع',
               textAlign: TextAlign.right,
               style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+                fontSize: 40,
+                fontFamily: 'HSI',
               ),
             ),
           ],
@@ -109,7 +126,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               Image.asset(assetPath, height: 44),
               const SizedBox(height: 5.0), //  المسافة بين الصورة والنص
-              Text(title, style: const TextStyle(fontSize: 14)),
+              Text(title, style: const TextStyle(fontSize: 14,fontFamily:'BAHIJ')),
             ],
           ),
         ),

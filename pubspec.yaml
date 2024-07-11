@@ -73,6 +73,7 @@ flutter:
     - assets/icons/icon3.png
     - assets/icons/icon1.png
     - assets/icons/icon2.png
+    - assets/icons/icons8-notification-64.png
 
 
 
@@ -91,6 +92,9 @@ flutter:
     - family: HSI
       fonts:
         - asset: assets/fonts/HSI.ttf
+    - family: BAHIJ
+      fonts:
+        - asset:  assets/fonts/Bahij.ttf
 
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf

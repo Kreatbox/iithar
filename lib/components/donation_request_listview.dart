@@ -45,6 +45,7 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                         child: const Text(
                           'تبرع الآن',
                           style: TextStyle(
+                            fontFamily: 'BAHIJ',
                             color: Color(0xFFAE0E03),
                           ),
                         ),
@@ -54,9 +55,9 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(donationRequest.name),
-                              Text('الزمرة: ${donationRequest.bloodType}'),
-                              Text('الموقع: ${donationRequest.location}'),
+                              Text(donationRequest.name,style: TextStyle(fontFamily: 'BAHIJ'),),
+                              Text('الزمرة: ${donationRequest.bloodType}',style: TextStyle(fontFamily: 'BAHIJ'),),
+                              Text('الموقع: ${donationRequest.location}',style: TextStyle(fontFamily: 'BAHIJ'),),
                             ],
                           ),
                           const SizedBox(
