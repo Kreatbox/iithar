@@ -1,4 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:iithar/components/donation_request_listview.dart';
 import 'package:iithar/screens/appointment_booking.dart';
 import 'package:iithar/screens/blood_banks.dart';
@@ -39,38 +43,48 @@ class HomeScreen extends StatelessWidget {
     ],),),
 
       body: ListView(
-      padding: const EdgeInsets.all(16.0),
-      children: [
-        Card(
-          color: Colors.red.shade50,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Image.asset('assets/icons/icon10.png', height: 75),
-                const SizedBox(height: 8.0),
-                Column(children: [Text(
-                  'تبرعك بالـدم، حيـاة',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontFamily: 'HSI',
-                  ) ,
-                ), Text(
-                  ' لشـخص آخـر',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontFamily: 'HSI',
-                  ) ,
-                ),]
-                ),
+      padding: const EdgeInsets.all(15.0),
+      children: [ Column(children: [
+        Container(
+            height: 125,
+            width: 400,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 5.0,right: 5.0,top: 1.0,bottom: 1.0),
+              child:Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow( color:Color.fromRGBO(112, 112,112, 100),
+                    blurRadius: 5,
+                  ),
 
+                ],),
+             child:  Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Image.asset('assets/icons/icon10.png', height: 75),
+                  const SizedBox(height: 8.0),
+                  Column( mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Text(
+                    'تبرعك بالـدم، حيـاة',
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      fontFamily: 'HSI',
+                    ) ,
+                  ), Text(
+                    ' لشـخص آخـر',
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      fontFamily: 'HSI',
+                    ) ,
+                  ),],
+                  ),
 
-
-              ],
-            ),
-
-          ),
-        ),
+                ],
+              ),
+    ),
+            ),),
+        Container(height: 12,),
         const SizedBox(height: 5.0),
         GridView.count(
 
@@ -97,10 +111,10 @@ class HomeScreen extends StatelessWidget {
               }));
             }),
           ],
-        ), Container(height: 12,),
+        ),
+        Container(height: 12,),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
           children: [
             TextButton(
               onPressed: () {
@@ -129,29 +143,46 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 4.0),
+        const SizedBox(height: 10.0),
         const DonationRequestsListView(),
-      ],
-    ),
+      ],),])
     );
+
   }
 
   Widget _buildGridItem(String assetPath, String title, Function() onTap) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(assetPath, height: 44),
-              const SizedBox(height: 5.0), //  المسافة بين الصورة والنص
-              Text(title, style: const TextStyle(fontSize: 14,fontFamily:'BAHIJ')),
-            ],
+    return ListView(
+        padding: const EdgeInsets.all(5.0),
+        children:  [
+    Container(
+        height: 100,
+        child:
+         Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow( color:Color.fromRGBO(112, 112,112, 100),
+                  blurRadius: 5,
+                ),
+
+              ],),
+        child: InkWell(
+          onTap: onTap,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [Container(width: 200,),
+                Image.asset(assetPath, height: 45),
+                const SizedBox(height: 5.0), //  المسافة بين الصورة والنص
+                Text(title, style: const TextStyle(fontSize: 14,fontFamily:'BAHIJ')),
+              ],
+            ),
           ),
         ),
       ),
-    );
+    ),
+    ]);
 
   }
 }

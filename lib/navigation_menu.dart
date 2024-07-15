@@ -10,57 +10,81 @@ class NavigationMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Create and use NavigationController using GetX
-    final controller = Get.put(Navigationcontroller());
+    final controller = Get.put(NavigationController());
 
-    return Scaffold(
-      // Use Obx to watch changes in selectedIndex to dynamically update the NavigationBar
-      bottomNavigationBar: Obx(
-        () => NavigationBar(
-          height: 55,
-          elevation: 0,
-          // Set selectedIndex to match the value of selectedIndex in NavigationController
-          selectedIndex: controller.selectedIndex.value,
-          // Update selectedIndex when changing the destination in the NavigationBar
-          onDestinationSelected: (index) =>
-              controller.selectedIndex.value = index,
+    return Scaffold(backgroundColor: Colors.white,
+      bottomNavigationBar: Container(height: 50,
 
-          destinations: [
-            NavigationDestination(
-              icon: Image.asset(
-                'assets/icons/icon1.png',
-                height: 30,
-              ),
-              label: 'الرئيسية',
-            ),
-            NavigationDestination(
-                icon: Image.asset(
-                  'assets/icons/icon3.png',
-                  height: 30,
-                ),
-                label: 'نشر '),
-            NavigationDestination(
-                icon: Image.asset(
-                  'assets/icons/icon2.png',
-                  height: 30,
-                ),
-                label: 'الحساب'),
+
+
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(112, 112, 112,100).withOpacity(0.2),
+              blurRadius: 15,
+              //offset: Offset(0,20),
+            )
           ],
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30), // Add rounded corners
+          child: Obx(
+                () => NavigationBar(
+
+              selectedIndex: controller.selectedIndex.value,
+              onDestinationSelected: (index) => controller.selectedIndex.value = index,
+              destinations: [
+                NavigationDestination(
+                  icon: Image.asset(
+                    'assets/icons/icon1.png',
+                    height: 20,
+                  ),
+                  label: 'الرئيسية',
+                ),
+                NavigationDestination(
+                  icon: Image.asset(
+                    'assets/icons/icon3.png',
+                    height: 20,
+                  ),
+                  label: 'نشر',
+                ),
+                NavigationDestination(
+                  icon: Image.asset(
+                    'assets/icons/icon2.png',
+                    height: 20,
+                  ),
+                  label: 'الحساب',
+                ),
+              ],
+              indicatorColor: Colors.black12, // لون المؤشر المحدد
+              backgroundColor: Colors.white,
+                   height: 20, surfaceTintColor: Colors.white,shadowColor: Colors.cyan,
+                  // ارتفاع شريط التنقل
+            ),
+          ),
         ),
       ),
-      // Use Obx to watch changes in selectedIndex to dynamically update the body content
       body: Obx(() => controller.screens[controller.selectedIndex.value]),
     );
   }
 }
 
-class Navigationcontroller extends GetxController {
-  // Variable selectedIndex to keep track of the current active screen index
+class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
-  // List of different screens to navigate between based on selectedIndex
+
   final screens = [
     const HomeScreen(),
     const PublishReguest(),
     UserDataScreen(user: FirebaseAuth.instance.currentUser!)
   ];
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: NavigationMenu(),
+  ));
 }
