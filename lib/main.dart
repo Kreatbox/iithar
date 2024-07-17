@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/notifications': (context) => NotificationsScreen(),
         '/form': (context) => DonationForm(),
-        '/publishrequest':(context )=> PublishReguest(),
+        '/publishrequest':(context )=> PublishRequest(),
         '/nav': (context)=>  NavigationMenu(),
         '/userdata': (context) =>
             UserDataScreen(

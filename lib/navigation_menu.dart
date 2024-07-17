@@ -78,7 +78,7 @@ class NavigationController extends GetxController {
 
   final screens = [
     const HomeScreen(),
-    const PublishReguest(),
+    const PublishRequest(),
     UserDataScreen(user: FirebaseAuth.instance.currentUser!)
   ];
 }
