@@ -79,51 +79,77 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       backgroundColor: Colors.white,
 
       appBar: AppBar(
-        title: Text('احجز موعد تبرع'),
-          backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        title: Expanded(
+          child: Align(alignment:
+          Alignment.centerRight,
+            child:
+            Text('حجز موعد تبرع بالدم ',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    fontFamily: 'HSI', fontSize: 30, color: Colors.black)),
+          ),
+        ),
       ),
       body:
       Stack(children: [
         Image.asset(
-        'assets/Images/Vector.png',
+        'assets/Images/Ve.png',
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
       ),
 
-        Padding(padding: const EdgeInsets.all(30.0),
+        Padding(padding: const EdgeInsets.all(20.0),
          child :Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
-            DropdownButtonFormField(
+            SizedBox(height: 20),
+            DropdownButtonFormField<String>(
               alignment: AlignmentDirectional.topEnd,
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(20),
               dropdownColor: Colors.white,
               decoration: InputDecoration(
                 labelText: 'اختر مركز',
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
               ),
               value: _selectedCenter,
               onChanged: (value) {
                 setState(() {
-                  _selectedCenter = value as String?;
+                  _selectedCenter = value;
                 });
               },
               items: _centers.map((center) {
-                return DropdownMenuItem(
+                return DropdownMenuItem<String>(
                   alignment: AlignmentDirectional.topEnd,
                   value: center,
-                  child: Text(center),
+                  child: Text(
+                    center,
+                    textAlign: TextAlign.right,
+                  ),
                 );
               }).toList(),
             ),
             SizedBox(height: 16),
-            TextField(
+            Directionality(textDirection:  TextDirection.rtl,
+           child: TextField(
+              textAlign: TextAlign.right,
+              //textDirection: TextDirection.ltr,
               readOnly: true,
               decoration: InputDecoration(
+                floatingLabelAlignment: FloatingLabelAlignment.start,
                 labelText: 'اختر تاريخ',
-                border: OutlineInputBorder(),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                  border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15) ,)
               ),
               onTap: () => _selectDate(context),
               controller: TextEditingController(
@@ -131,14 +157,17 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     ? ''
                     : '${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day}',
               ),
-            ),
+            ),),
             SizedBox(height: 16),
-            TextField(
+        Directionality(textDirection:  TextDirection.rtl,
+       child: TextField(
+              textAlign: TextAlign.end,
               readOnly: true,
               decoration: InputDecoration(
                 labelText: 'اختر وقت',
-                border: OutlineInputBorder(),
-
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15) ,)
               ),
               onTap: () => _selectTime(context),
               controller: TextEditingController(
@@ -146,7 +175,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     ? ''
                     : _selectedTime!.format(context),
               ),
-            ),
+       ),),
             SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(

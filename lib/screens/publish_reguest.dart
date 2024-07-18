@@ -19,15 +19,24 @@ class _PublishRequestState extends State<PublishRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('انشر طلب بحاجة دم'),
-      ),
+      backgroundColor: Colors.white,
+      appBar: AppBar ( backgroundColor: Colors.white,
+        title: Expanded(
+          child: Align(alignment:
+          Alignment.centerRight,
+            child:
+            Text('نشر طلب بحاجة إلى دم ',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    fontFamily: 'HSI', fontSize: 40, color: Colors.black)),
+          ),
+        ),),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildRequestField(Icons.person, 'اسم المريض'),
+              _buildRequestField(Icons.person, 'اسم المريض',),
               _buildBloodTypeDialog(),
               _buildCityDialog(),
               _buildBloodBankDialog(),
@@ -40,14 +49,19 @@ class _PublishRequestState extends State<PublishRequest> {
               _buildRequestField(Icons.note, 'أضف ملاحظة'),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
-                child: Text('نشر'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFAE0E03),
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  textStyle: TextStyle(fontSize: 20),
-                ),
-              ),
+                  style: ElevatedButton.styleFrom(fixedSize: Size(175, 45),
+                      backgroundColor: const Color(0xFFAE0E03),
+                      padding: const EdgeInsets.only(
+                          right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                      alignment: Alignment.center),
+                  onPressed: (){},
+                  child: Text(
+                    'نشر الطلب ',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: 'HSI', fontSize: 25, color: Colors.white),
+                  )),
+
             ],
           ),
         ),
@@ -63,13 +77,18 @@ class _PublishRequestState extends State<PublishRequest> {
           _showCityDialog();
         },
         child: AbsorbPointer(
-          child: TextField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.location_on, color: Color(0xFFAE0E03)),
-              labelText: _selectedCity ?? 'المدينة',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.location_on, color: Color(0xFFAE0E03)),
+                labelText: _selectedCity ?? 'المدينة',
+                contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15)
+                ),
               ),
+              textAlign: TextAlign.right,
             ),
           ),
         ),
@@ -81,8 +100,8 @@ class _PublishRequestState extends State<PublishRequest> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text('اختر المدينة'),
+        return SimpleDialog(backgroundColor: Colors.white,
+          title: Text('اختر المدينة',textAlign: TextAlign.right ,),
           children: <Widget>[
             SimpleDialogOption(
               onPressed: () {
@@ -134,15 +153,20 @@ class _PublishRequestState extends State<PublishRequest> {
           _showBloodBankDialog();
         },
         child: AbsorbPointer(
+        child: Directionality(
+        textDirection: TextDirection.rtl,
           child: TextField(
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.local_hospital, color: Color(0xFFAE0E03)),
               labelText: _selectedBloodBank ?? 'موقع التبرع',
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(15),
               ),
             ),
+            textAlign: TextAlign.right,
           ),
+        ),
         ),
       ),
     );
@@ -196,6 +220,8 @@ class _PublishRequestState extends State<PublishRequest> {
           _showUrgencyDialog();
         },
         child: AbsorbPointer(
+         child: Directionality(
+          textDirection: TextDirection.rtl,
           child: TextField(
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.priority_high, color: Color(0xFFAE0E03)),
@@ -204,7 +230,9 @@ class _PublishRequestState extends State<PublishRequest> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
+            textAlign: TextAlign.right,
           ),
+         ),
         ),
       ),
     );
@@ -258,15 +286,20 @@ class _PublishRequestState extends State<PublishRequest> {
           _showBloodTypeDialog();
         },
         child: AbsorbPointer(
-          child: TextField(
+         child: Directionality(
+            textDirection: TextDirection.rtl,
+           child: TextField(
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.bloodtype, color: Color(0xFFAE0E03)),
               labelText: _selectedBloodType ?? 'زمرة الدم المطلوبة',
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(15)
               ),
             ),
-          ),
+            textAlign: TextAlign.right,
+           ),
+         ),
         ),
       ),
     );
@@ -365,15 +398,20 @@ class _PublishRequestState extends State<PublishRequest> {
           _showMedicalConditionDialog();
         },
         child: AbsorbPointer(
+           child: Directionality(
+            textDirection: TextDirection.rtl,
           child: TextField(
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.medical_services, color: Color(0xFFAE0E03)),
               labelText: _selectedMedicalCondition ?? 'الحالة الطبية',
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(15)
               ),
             ),
+            textAlign: TextAlign.right,
           ),
+           ),
         ),
       ),
     );
@@ -431,15 +469,17 @@ class _PublishRequestState extends State<PublishRequest> {
   Widget _buildOtherMedicalConditionField() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
+      child: TextField(textDirection: TextDirection.rtl,
         controller: _otherConditionController,
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.edit, color: Color(0xFFAE0E03)),
           labelText: 'أدخل الحالة الأخرى',
+          contentPadding: const EdgeInsets.symmetric(vertical: 16),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(15),
           ),
         ),
+        textAlign: TextAlign.right,
       ),
     );
   }
@@ -447,37 +487,48 @@ class _PublishRequestState extends State<PublishRequest> {
   Widget _buildRequestField(IconData icon, String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Color(0xFFAE0E03)),
-          labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: TextField(
+          decoration: InputDecoration(
+            prefixIcon: Icon(icon, color: Color(0xFFAE0E03)),
+            labelText: label,
+            contentPadding: const EdgeInsets.symmetric(vertical: 16),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
           ),
+          textAlign: TextAlign.right, // محاذاة النص داخل الحقل إلى اليمين
         ),
       ),
     );
   }
 
+
   Widget _buildDateTimeField(IconData icon, String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: Directionality(
+    textDirection: TextDirection.rtl,
       child: TextField(
+        textDirection: TextDirection.rtl,
         readOnly: true,
         controller: _dateTimeController,
         onTap: () {
           _selectDateTime(context);
         },
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Color(0xFFAE0E03)),
+          prefixIcon: Icon(icon, color: Color(0xFFAE0E03),textDirection: TextDirection.rtl,),
           labelText: label,
+          contentPadding: const EdgeInsets.symmetric(vertical: 16),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(15)
           ),
         ),
         keyboardType: TextInputType.datetime,
+        textAlign: TextAlign.right,
       ),
-    );
+    ),);
   }
 
   Future<void> _selectDateTime(BuildContext context) async {
@@ -485,7 +536,9 @@ class _PublishRequestState extends State<PublishRequest> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: DateTime(DateTime.now().year + 1),
+      lastDate: DateTime(DateTime
+          .now()
+          .year + 1),
     );
     if (picked != null) {
       final TimeOfDay? timePicked = await showTimePicker(
@@ -495,7 +548,8 @@ class _PublishRequestState extends State<PublishRequest> {
       if (timePicked != null) {
         setState(() {
           _dateTimeController.text =
-              '${picked.year}-${picked.month}-${picked.day} ${timePicked.hour}:${timePicked.minute}';
+          '${picked.year}-${picked.month}-${picked.day} ${timePicked
+              .hour}:${timePicked.minute}';
         });
       }
     }
