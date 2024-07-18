@@ -20,48 +20,48 @@ class _PublishRequestState extends State<PublishRequest> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar ( backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Expanded(
-          child: Align(alignment:
-          Alignment.centerRight,
-            child:
-            Text('نشر طلب بحاجة إلى دم ',
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text('نشر طلب بحاجة إلى دم ',
                 textAlign: TextAlign.right,
                 style: TextStyle(
                     fontFamily: 'HSI', fontSize: 40, color: Colors.black)),
           ),
-        ),),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildRequestField(Icons.person, 'اسم المريض',),
+              _buildRequestField(Icons.person, 'اسم المريض'),
               _buildBloodTypeDialog(),
               _buildCityDialog(),
               _buildBloodBankDialog(),
               _buildMedicalConditionDialog(),
-              if (_selectedMedicalCondition == 'أخرى')
-                _buildOtherMedicalConditionField(),
               _buildRequestField(Icons.phone, 'رقم الهاتف'),
-              _buildDateTimeField(Icons.access_time, 'وقت التبرع الممكن'),
-              _buildUrgencyDialog(),
+              _buildDateTimeField(Icons.access_time, 'تاريخ ووقت التبرع الممكن'),
               _buildRequestField(Icons.note, 'أضف ملاحظة'),
               SizedBox(height: 20),
               ElevatedButton(
-                  style: ElevatedButton.styleFrom(fixedSize: Size(175, 45),
-                      backgroundColor: const Color(0xFFAE0E03),
-                      padding: const EdgeInsets.only(
-                          right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
-                      alignment: Alignment.center),
-                  onPressed: (){},
-                  child: Text(
-                    'نشر الطلب ',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'HSI', fontSize: 25, color: Colors.white),
-                  )),
-
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(175, 45),
+                  backgroundColor: const Color(0xFFAE0E03),
+                  padding: const EdgeInsets.only(
+                      right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                  alignment: Alignment.center,
+                ),
+                onPressed: () {},
+                child: Text(
+                  'نشر الطلب ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: 'HSI', fontSize: 25, color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
@@ -85,8 +85,7 @@ class _PublishRequestState extends State<PublishRequest> {
                 labelText: _selectedCity ?? 'المدينة',
                 contentPadding: const EdgeInsets.symmetric(vertical: 16),
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15)
-                ),
+                    borderRadius: BorderRadius.circular(15)),
               ),
               textAlign: TextAlign.right,
             ),
@@ -100,8 +99,12 @@ class _PublishRequestState extends State<PublishRequest> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return SimpleDialog(backgroundColor: Colors.white,
-          title: Text('اختر المدينة',textAlign: TextAlign.right ,),
+        return SimpleDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'اختر المدينة',
+            textAlign: TextAlign.right,
+          ),
           children: <Widget>[
             SimpleDialogOption(
               onPressed: () {
@@ -153,20 +156,20 @@ class _PublishRequestState extends State<PublishRequest> {
           _showBloodBankDialog();
         },
         child: AbsorbPointer(
-        child: Directionality(
-        textDirection: TextDirection.rtl,
-          child: TextField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.local_hospital, color: Color(0xFFAE0E03)),
-              labelText: _selectedBloodBank ?? 'موقع التبرع',
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.local_hospital, color: Color(0xFFAE0E03)),
+                labelText: _selectedBloodBank ?? 'موقع التبرع',
+                contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
               ),
+              textAlign: TextAlign.right,
             ),
-            textAlign: TextAlign.right,
           ),
-        ),
         ),
       ),
     );
@@ -177,7 +180,7 @@ class _PublishRequestState extends State<PublishRequest> {
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text('اختر موقع التبرع',),
+          title: Text('اختر موقع التبرع'),
           children: <Widget>[
             SimpleDialogOption(
               onPressed: () {
@@ -212,71 +215,8 @@ class _PublishRequestState extends State<PublishRequest> {
     );
   }
 
-  Widget _buildUrgencyDialog() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: GestureDetector(
-        onTap: () {
-          _showUrgencyDialog();
-        },
-        child: AbsorbPointer(
-         child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: TextField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.priority_high, color: Color(0xFFAE0E03)),
-              labelText: _selectedUrgency ?? 'أهمية التبرع',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            textAlign: TextAlign.right,
-          ),
-         ),
-        ),
-      ),
-    );
-  }
 
-  void _showUrgencyDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text('اختر أهمية التبرع'),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedUrgency = 'مستعجل';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('مستعجل'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedUrgency = 'طارئ';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('طارئ'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedUrgency = 'قليل الأهمية';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('قليل الأهمية'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+ 
 
   Widget _buildBloodTypeDialog() {
     return Padding(
@@ -286,20 +226,19 @@ class _PublishRequestState extends State<PublishRequest> {
           _showBloodTypeDialog();
         },
         child: AbsorbPointer(
-         child: Directionality(
+          child: Directionality(
             textDirection: TextDirection.rtl,
-           child: TextField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.bloodtype, color: Color(0xFFAE0E03)),
-              labelText: _selectedBloodType ?? 'زمرة الدم المطلوبة',
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15)
+            child: TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.bloodtype, color: Color(0xFFAE0E03)),
+                labelText: _selectedBloodType ?? 'زمرة الدم المطلوبة',
+                contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15)),
               ),
+              textAlign: TextAlign.right,
             ),
-            textAlign: TextAlign.right,
-           ),
-         ),
+          ),
         ),
       ),
     );
@@ -351,24 +290,6 @@ class _PublishRequestState extends State<PublishRequest> {
             SimpleDialogOption(
               onPressed: () {
                 setState(() {
-                  _selectedBloodType = 'AB+';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('AB+'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedBloodType = 'AB-';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('AB-'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
                   _selectedBloodType = 'O+';
                 });
                 Navigator.pop(context);
@@ -384,6 +305,24 @@ class _PublishRequestState extends State<PublishRequest> {
               },
               child: const Text('O-'),
             ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  _selectedBloodType = 'AB+';
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('AB+'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  _selectedBloodType = 'AB-';
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('AB-'),
+            ),
           ],
         );
       },
@@ -398,20 +337,19 @@ class _PublishRequestState extends State<PublishRequest> {
           _showMedicalConditionDialog();
         },
         child: AbsorbPointer(
-           child: Directionality(
+          child: Directionality(
             textDirection: TextDirection.rtl,
-          child: TextField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.medical_services, color: Color(0xFFAE0E03)),
-              labelText: _selectedMedicalCondition ?? 'الحالة الطبية',
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15)
+            child: TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.medical_services, color: Color(0xFFAE0E03)),
+                labelText: _selectedMedicalCondition ?? 'الحالة الطبية',
+                contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15)),
               ),
+              textAlign: TextAlign.right,
             ),
-            textAlign: TextAlign.right,
           ),
-           ),
         ),
       ),
     );
@@ -424,15 +362,6 @@ class _PublishRequestState extends State<PublishRequest> {
         return SimpleDialog(
           title: Text('اختر الحالة الطبية'),
           children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedMedicalCondition = 'جراحة';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('جراحة'),
-            ),
             SimpleDialogOption(
               onPressed: () {
                 setState(() {
@@ -454,33 +383,52 @@ class _PublishRequestState extends State<PublishRequest> {
             SimpleDialogOption(
               onPressed: () {
                 setState(() {
+                  _selectedMedicalCondition = 'عملية جراحية';
+                });
+                Navigator.pop(context);
+              },
+              child: const Text( 'عملية جراحية'),
+            ),
+             SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  _selectedMedicalCondition = 'ولادة';
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('ولادة'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
                   _selectedMedicalCondition = 'أخرى';
                 });
                 Navigator.pop(context);
               },
-              child: const Text('أخرى'),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('أخرى'),
+                  if (_selectedMedicalCondition == 'أخرى') 
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: TextField(
+                        controller: _otherConditionController,
+                        decoration: InputDecoration(
+                          hintText: 'يرجى التوضيح',
+                          contentPadding: const EdgeInsets.all(8.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildOtherMedicalConditionField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(textDirection: TextDirection.rtl,
-        controller: _otherConditionController,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.edit, color: Color(0xFFAE0E03)),
-          labelText: 'أدخل الحالة الأخرى',
-          contentPadding: const EdgeInsets.symmetric(vertical: 16),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        textAlign: TextAlign.right,
-      ),
     );
   }
 
@@ -498,58 +446,64 @@ class _PublishRequestState extends State<PublishRequest> {
               borderRadius: BorderRadius.circular(15),
             ),
           ),
-          textAlign: TextAlign.right, // محاذاة النص داخل الحقل إلى اليمين
+          textAlign: TextAlign.right,
         ),
       ),
     );
   }
-
 
   Widget _buildDateTimeField(IconData icon, String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: Directionality(
-    textDirection: TextDirection.rtl,
-      child: TextField(
-        textDirection: TextDirection.rtl,
-        readOnly: true,
-        controller: _dateTimeController,
+      child: GestureDetector(
         onTap: () {
-          _selectDateTime(context);
+          _selectDateTime();
         },
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Color(0xFFAE0E03),textDirection: TextDirection.rtl,),
-          labelText: label,
-          contentPadding: const EdgeInsets.symmetric(vertical: 16),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15)
+        child: AbsorbPointer(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: TextField(
+              controller: _dateTimeController,
+              decoration: InputDecoration(
+                prefixIcon: Icon(icon, color: Color(0xFFAE0E03)),
+                labelText: label,
+                contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15)),
+              ),
+              textAlign: TextAlign.right,
+            ),
           ),
         ),
-        keyboardType: TextInputType.datetime,
-        textAlign: TextAlign.right,
       ),
-    ),);
+    );
   }
 
-  Future<void> _selectDateTime(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+  Future<void> _selectDateTime() async {
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(DateTime
-          .now()
-          .year + 1),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
     );
-    if (picked != null) {
-      final TimeOfDay? timePicked = await showTimePicker(
+
+    if (pickedDate != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.now(),
       );
-      if (timePicked != null) {
+
+      if (pickedTime != null) {
+        final DateTime pickedDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+
         setState(() {
-          _dateTimeController.text =
-          '${picked.year}-${picked.month}-${picked.day} ${timePicked
-              .hour}:${timePicked.minute}';
+          _dateTimeController.text = pickedDateTime.toString();
         });
       }
     }
