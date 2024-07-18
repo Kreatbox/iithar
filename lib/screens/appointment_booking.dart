@@ -9,6 +9,7 @@ class AppointmentBookingScreen extends StatefulWidget {
 
 class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   String? _selectedCenter;
+  String? _selectedDonationType;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
 
@@ -18,6 +19,11 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     'بنك الدم - حلب',
     'بنك الدم - حماة',
     'بنك الدم - طرطوس',
+  ];
+
+  final List<String> _donationTypes = [
+    'الدم الكامل',
+    'الصفائح الدموية',
   ];
 
   Future<void> _selectDate(BuildContext context) async {
@@ -67,6 +73,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   void _resetSelections() {
     setState(() {
       _selectedCenter = null;
+      _selectedDonationType = null;
       _selectedDate = null;
       _selectedTime = null;
     });
@@ -88,6 +95,34 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   onTap: () {
                     setState(() {
                       _selectedCenter = center;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDonationTypeDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('اختر نوع التبرع'),
+          content: Container(
+            width: double.maxFinite,
+            child: ListView(
+              shrinkWrap: true,
+              children: _donationTypes.map((type) {
+                return ListTile(
+                  title: Text(type, textAlign: TextAlign.right),
+                  onTap: () {
+                    setState(() {
+                      _selectedDonationType = type;
                     });
                     Navigator.of(context).pop();
                   },
@@ -138,6 +173,28 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     child: TextField(
                       decoration: InputDecoration(
                         labelText: _selectedCenter ?? 'اختر مركز',
+                        labelStyle: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                GestureDetector(
+                  onTap: _showDonationTypeDialog,
+                  child: AbsorbPointer(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: _selectedDonationType ?? 'اختر نوع التبرع',
                         labelStyle: TextStyle(
                           fontSize: 16,
                           color: Colors.black,
@@ -207,6 +264,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   ),
                   onPressed: () {
                     if (_selectedCenter != null &&
+                        _selectedDonationType != null &&
                         _selectedDate != null &&
                         _selectedTime != null) {
                       showDialog(
@@ -215,7 +273,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                           return AlertDialog(
                             title: Text('تأكيد الحجز'),
                             content: Text(
-                                'تم حجز موعدك في $_selectedCenter في تاريخ ${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day} في وقت ${_selectedTime!.format(context)}'),
+                                'تم حجز موعدك في $_selectedCenter للتبرع بـ $_selectedDonationType في تاريخ ${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day} في وقت ${_selectedTime!.format(context)}'),
                             actions: [
                               ElevatedButton(
                                 onPressed: () {
