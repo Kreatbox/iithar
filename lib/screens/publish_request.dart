@@ -214,10 +214,6 @@ class _PublishRequestState extends State<PublishRequest> {
       },
     );
   }
-
-
- 
-
   Widget _buildBloodTypeDialog() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

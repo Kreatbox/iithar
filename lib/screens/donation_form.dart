@@ -40,7 +40,7 @@ class _DonationFormState extends State<DonationForm> {
               icon: const Icon(Icons.notifications),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const NotificationsScreen();
+                  return  NotificationsScreen();
                 }));
               },
             ),

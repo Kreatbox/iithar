@@ -97,7 +97,6 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       },
     );
   }
-
   void _showDonationTypeDialog() {
     showDialog(
       context: context,
@@ -276,7 +275,6 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-            
           ],
         ),
       ),
