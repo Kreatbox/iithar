@@ -32,6 +32,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
             primaryColor: Color(0xFFAE0E03), // لون النص والرمز للعنوان
             colorScheme: ColorScheme.light(primary: Color(0xFFAE0E03)), // لون الأيقونات
             buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary), // لون النص للأزرار
+
           ),
           child: child!,
         );
@@ -75,15 +76,30 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
         title: Text('احجز موعد تبرع'),
+          backgroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body:
+      Stack(children: [
+        Image.asset(
+        'assets/Images/Vector.png',
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      ),
+
+        Padding(padding: const EdgeInsets.all(30.0),
+         child :Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
             DropdownButtonFormField(
+              alignment: AlignmentDirectional.topEnd,
+              borderRadius: BorderRadius.circular(30),
+              dropdownColor: Colors.white,
               decoration: InputDecoration(
                 labelText: 'اختر مركز',
                 border: OutlineInputBorder(),
@@ -96,6 +112,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
               },
               items: _centers.map((center) {
                 return DropdownMenuItem(
+                  alignment: AlignmentDirectional.topEnd,
                   value: center,
                   child: Text(center),
                 );
@@ -121,6 +138,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
               decoration: InputDecoration(
                 labelText: 'اختر وقت',
                 border: OutlineInputBorder(),
+
               ),
               onTap: () => _selectTime(context),
               controller: TextEditingController(
@@ -129,11 +147,15 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     : _selectedTime!.format(context),
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFAE0E03),
-              ),
+                  fixedSize: Size(175, 45),
+                  backgroundColor: const Color(0xFFAE0E03),
+                  padding: const EdgeInsets.only(
+                      right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                  alignment: Alignment.center),
+
               onPressed: () {
                 if (_selectedCenter != null && _selectedDate != null && _selectedTime != null) {
                   showDialog(
@@ -161,18 +183,33 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   );
                 }
               },
-              child: Text('احجز موعد'),
-            ),
-            SizedBox(height: 16),
+                child: Text(
+                  'احجز موعد',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: 'HSI', fontSize: 25, color: Colors.white),
+                )),
+        const SizedBox(height: 20),
+
+
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor:Color(0xFFAE0E03),
-              ),
+                style: ElevatedButton.styleFrom(fixedSize: Size(175, 45),
+                    backgroundColor: const Color(0xFFAE0E03),
+                    padding: const EdgeInsets.only(
+                        right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                    alignment: Alignment.center),
               onPressed: _resetSelections,
-              child: Text('مسح البيانات المختارة'),
-            ),
+                child: Text(
+                  'مسح البيانات ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: 'HSI', fontSize: 25, color: Colors.white),
+                )),
+        const SizedBox(height: 20),
+
           ],
-        ),
+         ), ),
+            ]
       ),
     );
   }

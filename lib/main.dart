@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:iithar/navigation_menu.dart';
+import 'package:iithar/screens/appointment_booking.dart';
 import 'package:iithar/screens/donation_form.dart';
 import 'package:iithar/screens/notification_screen.dart';
 import 'package:iithar/screens/publish_reguest.dart';
@@ -82,6 +83,7 @@ class MyApp extends StatelessWidget {
         // Pass current user to UserDataScreen
         '/map': (context) => MapScreen(),
         '/onboarding': (context) => const Onboarding(),
+        '/appointment' : (context) => AppointmentBookingScreen()
 
       },
     );
