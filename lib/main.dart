@@ -5,7 +5,7 @@ import 'package:iithar/navigation_menu.dart';
 import 'package:iithar/screens/appointment_booking.dart';
 import 'package:iithar/screens/donation_form.dart';
 import 'package:iithar/screens/notification_screen.dart';
-import 'package:iithar/screens/publish_reguest.dart';
+import 'package:iithar/screens/publish_request.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iithar/screens/home_screen.dart';
 import 'package:iithar/screens/map_screen.dart';

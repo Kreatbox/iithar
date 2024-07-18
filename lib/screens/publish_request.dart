@@ -37,7 +37,7 @@ class _PublishRequestState extends State<PublishRequest> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildRequestField(Icons.person, 'اسم المريض'),
+              _buildRequestField(Icons.person, 'الاسم كاملاً '),
               _buildBloodTypeDialog(),
               _buildCityDialog(),
               _buildBloodBankDialog(),

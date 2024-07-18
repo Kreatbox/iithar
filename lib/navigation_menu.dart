@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iithar/screens/home_screen.dart';
-import 'package:iithar/screens/publish_reguest.dart';
+import 'package:iithar/screens/publish_request.dart';
 import 'package:iithar/screens/userdata_screen.dart';
 
 class NavigationMenu extends StatelessWidget {

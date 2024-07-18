@@ -35,9 +35,9 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: Color(0xFFAE0E03),
-            colorScheme: ColorScheme.light(primary: Color(0xFFAE0E03)),
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            primaryColor: Color(0xFFAE0E03), 
+            colorScheme: ColorScheme.light(primary: Color(0xFFAE0E03)), 
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary), 
           ),
           child: child!,
         );
@@ -56,9 +56,9 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: Color(0xFFAE0E03),
-            colorScheme: ColorScheme.light(primary: Color(0xFFAE0E03)),
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            primaryColor: Color(0xFFAE0E03), 
+            colorScheme: ColorScheme.light(primary: Color(0xFFAE0E03)), 
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary), 
           ),
           child: child!,
         );
@@ -68,15 +68,6 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       setState(() {
         _selectedTime = picked;
       });
-  }
-
-  void _resetSelections() {
-    setState(() {
-      _selectedCenter = null;
-      _selectedDonationType = null;
-      _selectedDate = null;
-      _selectedTime = null;
-    });
   }
 
   void _showCenterDialog() {
@@ -135,7 +126,16 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     );
   }
 
-  @override
+  void _resetSelections() {
+    setState(() {
+      _selectedCenter = null;
+      _selectedDonationType = null;
+      _selectedDate = null;
+      _selectedTime = null;
+    });
+  }
+
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -172,128 +172,86 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   child: AbsorbPointer(
                     child: TextField(
                       decoration: InputDecoration(
-                        labelText: _selectedCenter ?? 'اختر مركز',
-                        labelStyle: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
+
+                    labelText: _selectedCenter ?? 'اختر مركز',
+                    border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 16),
-                GestureDetector(
-                  onTap: _showDonationTypeDialog,
-                  child: AbsorbPointer(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: _selectedDonationType ?? 'اختر نوع التبرع',
-                        labelStyle: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
+              ),
+            ),
+            SizedBox(height: 16),
+            GestureDetector(
+              onTap: _showDonationTypeDialog,
+              child: AbsorbPointer(
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: _selectedDonationType ?? 'اختر نوع التبرع',
+                    border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 16),
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: TextField(
-                    textAlign: TextAlign.right,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      floatingLabelAlignment: FloatingLabelAlignment.start,
-                      labelText: 'اختر تاريخ',
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    onTap: () => _selectDate(context),
-                    controller: TextEditingController(
-                      text: _selectedDate == null
-                          ? ''
-                          : '${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day}',
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: TextField(
-                    textAlign: TextAlign.end,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      labelText: 'اختر وقت',
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    onTap: () => _selectTime(context),
-                    controller: TextEditingController(
-                      text: _selectedTime == null
-                          ? ''
-                          : _selectedTime!.format(context),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 40),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(175, 45),
-                    backgroundColor: const Color(0xFFAE0E03),
-                    padding: const EdgeInsets.only(
-                        right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
-                    alignment: Alignment.center,
-                  ),
-                  onPressed: () {
-                    if (_selectedCenter != null &&
-                        _selectedDonationType != null &&
-                        _selectedDate != null &&
-                        _selectedTime != null) {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('تأكيد الحجز'),
-                            content: Text(
-                                'تم حجز موعدك في $_selectedCenter للتبرع بـ $_selectedDonationType في تاريخ ${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day} في وقت ${_selectedTime!.format(context)}'),
-                            actions: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('تأكيد'),
-                              ),
-                            ],
-                          );
-                        },
+              ),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              readOnly: true,
+              decoration: InputDecoration(
+                labelText: 'اختر تاريخ',
+                border: OutlineInputBorder(),
+              ),
+              onTap: () => _selectDate(context),
+              controller: TextEditingController(
+                text: _selectedDate == null
+                    ? ''
+                    : '${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day}',
+              ),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              readOnly: true,
+              decoration: InputDecoration(
+                labelText: 'اختر وقت',
+                border: OutlineInputBorder(),
+              ),
+              onTap: () => _selectTime(context),
+              controller: TextEditingController(
+                text: _selectedTime == null
+                    ? ''
+                    : _selectedTime!.format(context),
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFAE0E03),
+              ),
+              onPressed: () {
+                if (_selectedCenter != null && _selectedDonationType != null && _selectedDate != null && _selectedTime != null) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('تأكيد الحجز'),
+                        content: Text('تم حجز موعدك في $_selectedCenter للتبرع بـ $_selectedDonationType في تاريخ ${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day} في وقت ${_selectedTime!.format(context)}'),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('تأكيد'),
+                          ),
+                        ],
                       );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('لم يتم استكمال الحجز'),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(
+                    },
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('لم يتم استكمال الحجز'),
+                    ),
+                  );
+                }
+              },
+            child: Text(
                     'احجز موعد',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -311,17 +269,19 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   onPressed: _resetSelections,
                   child: Text(
                     'مسح البيانات',
+
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: 'HSI', fontSize: 25, color: Colors.white),
                   ),
                 ),
                 const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ],
+            
+          ],
+        ),
       ),
+        ],
+    ),
     );
   }
 }
