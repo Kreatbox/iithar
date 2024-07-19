@@ -11,7 +11,6 @@ class _PublishRequestState extends State<PublishRequest> {
   String? _selectedBloodType;
   String? _selectedCity;
   String? _selectedBloodBank;
-  String? _selectedUrgency;
   String? _selectedMedicalCondition;
   TextEditingController _otherConditionController = TextEditingController();
   TextEditingController _dateTimeController = TextEditingController();
