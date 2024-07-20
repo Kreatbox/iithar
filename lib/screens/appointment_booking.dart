@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class AppointmentBookingScreen extends StatefulWidget {
   const AppointmentBookingScreen({super.key});
@@ -32,14 +33,8 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     'الصفائح الدموية',
   ];
 
-  final List<String> _dates = [
-    '7 مايو',
-    '8 مايو',
-    '9 مايو',
-    '10 مايو',
-    '11 مايو',
-    '12 مايو',
-  ];
+   List<String> _dates = [];
+
 
   final List<String> _timeSlots = [
     '11:30 ص',
@@ -49,7 +44,19 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     '01:30 م',
     '02:00 م',
   ];
-
+  @override
+  void initState() {
+    super.initState();
+    _generateDates();
+  }
+   void _generateDates() {
+    final DateFormat formatter = DateFormat('d MMMM', 'ar');
+    final DateTime today = DateTime.now();
+    _dates = List.generate(7, (index) {
+      final DateTime date = today.add(Duration(days: index));
+      return formatter.format(date);
+    });
+  }
   void _resetSelections() {
     setState(() {
       _selectedCenter = null;
