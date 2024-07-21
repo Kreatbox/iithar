@@ -193,7 +193,6 @@ class _DonationFormState extends State<DonationForm> {
       ),
     );
   }
-
   Widget buildQuestion(
       String question, Function(bool?) onChanged, bool? groupValue) {
     return Container(

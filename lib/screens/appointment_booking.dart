@@ -38,6 +38,11 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   List<String> _dates = [];
 
   final List<String> _timeSlots = [
+    '09:00 ص',
+    '09:30 ص',
+    '10:00 ص',
+    '10:30 ص',
+    '11:00 ص',
     '11:30 ص',
     '12:00 م',
     '12:30 م',
