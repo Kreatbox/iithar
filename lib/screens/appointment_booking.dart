@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' ;
+
 import 'package:intl/date_symbol_data_local.dart';
 
 class AppointmentBookingScreen extends StatefulWidget {
@@ -108,6 +109,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
 
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -135,7 +137,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const SizedBox(height: 20),
                 GestureDetector(
@@ -143,8 +145,8 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('اختر مركز'),
+                        return AlertDialog(actionsAlignment: MainAxisAlignment.start,
+                          title: const Text('اختر مركز',textAlign: TextAlign.right,),
                           content: SizedBox(
                             width: double.maxFinite,
                             child: ListView(
@@ -171,15 +173,20 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     child: TextField(
                       decoration: InputDecoration(
                         labelText: _selectedCenter ?? 'اختر مركز',
-                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
                       ),
+                      textAlign: TextAlign.right,
+                       // تحديد اتجاه النص
                     ),
-                  ),
+                  )
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 25),
                 const Text(
-                  'اختر نوع التبرع',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  'اختر نوع التبرع',textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 22, fontFamily: 'HSI'),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -198,7 +205,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                           color: _selectedDonationType == type
                               ? const Color(0xFFAE0E03)
                               : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                         child: Text(
                           type,
@@ -206,16 +213,19 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                             color: _selectedDonationType == type
                                 ? Colors.white
                                 : Colors.black,
+                                  fontFamily: 'HSI'
+
                           ),
                         ),
                       ),
                     );
                   }).toList(),
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  'اختر تاريخ',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                const SizedBox(height: 25),
+                const
+                  Text(
+                  'اختر تاريخ',textAlign: TextAlign.right,
+                    style: TextStyle(fontSize: 22, fontFamily: 'HSI'),
                 ),
                 const SizedBox(height: 8),
                 SingleChildScrollView(
@@ -235,7 +245,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                             color: _selectedDate == date
                                 ? const Color(0xFFAE0E03)
                                 : Colors.grey[200],
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
                             date,
@@ -243,6 +253,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                               color: _selectedDate == date
                                   ? Colors.white
                                   : Colors.black,
+                                    fontFamily: 'HSI'
                             ),
                           ),
                         ),
@@ -250,10 +261,10 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     }).toList(),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 25),
                 const Text(
-                  'اختر وقت',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  'اختر وقت',textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 25, fontFamily: 'HSI'),
                 ),
                 const SizedBox(height: 8),
                 SingleChildScrollView(
@@ -273,7 +284,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                             color: _selectedTimeSlot == slot
                                 ? const Color(0xFFAE0E03)
                                 : Colors.grey[200],
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
                             slot,
@@ -281,6 +292,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                               color: _selectedTimeSlot == slot
                                   ? Colors.white
                                   : Colors.black,
+                                    fontFamily: 'HSI'
                             ),
                           ),
                         ),
@@ -288,10 +300,25 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     }).toList(),
                   ),
                 ),
-                const SizedBox(height: 16),
+
+              ],
+            ),),
+
+              Column(
+
+                 mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 280),
+                Container(
+                  alignment: Alignment.center,
+                  child:
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(fixedSize: Size(175, 45),
                     backgroundColor: const Color(0xFFAE0E03),
+                      padding: const EdgeInsets.only(
+                          right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                      alignment: Alignment.center,
+
                   ),
                   onPressed: _isButtonDisabled
                       ? null
@@ -362,8 +389,11 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     style: TextStyle(
                         fontFamily: 'HSI', fontSize: 25, color: Colors.white),
                   ),
-                ),
+                ),),
                 const SizedBox(height: 20),
+                  Container(
+                      alignment: Alignment.center,
+                      child:
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       fixedSize: const Size(175, 45),
@@ -379,12 +409,12 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                         fontFamily: 'HSI', fontSize: 25, color: Colors.white),
                   ),
                 ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
+                ),
+                  const SizedBox(height: 20),]),
+
         ],
       ),
     );
   }
 }
+
