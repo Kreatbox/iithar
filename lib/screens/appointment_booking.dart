@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class AppointmentBookingScreen extends StatefulWidget {
   const AppointmentBookingScreen({super.key});
@@ -33,8 +34,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     'الصفائح الدموية',
   ];
 
-   List<String> _dates = [];
-
+  List<String> _dates = [];
 
   final List<String> _timeSlots = [
     '11:30 ص',
@@ -47,9 +47,14 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   @override
   void initState() {
     super.initState();
-    _generateDates();
+    initializeDateFormatting('ar', null).then((_) {
+      setState(() {
+        _generateDates(); // Generate dates after initializing date formatting
+      });
+    });
   }
-   void _generateDates() {
+
+  void _generateDates() {
     final DateFormat formatter = DateFormat('d MMMM', 'ar');
     final DateTime today = DateTime.now();
     _dates = List.generate(7, (index) {
@@ -57,6 +62,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       return formatter.format(date);
     });
   }
+
   void _resetSelections() {
     setState(() {
       _selectedCenter = null;
@@ -64,6 +70,25 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       _selectedDate = null;
       _selectedTimeSlot = null;
     });
+  }
+
+  Future<bool> _hasExistingBookingForCurrentMonth() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      final now = DateTime.now();
+      final oneMonthAgo = now.subtract(const Duration(days: 30));
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('appointments')
+          .where('userId', isEqualTo: user.uid)
+          .where('timestamp', isGreaterThanOrEqualTo: oneMonthAgo)
+          .get();
+
+      return querySnapshot.docs.isNotEmpty;
+    }
+
+    return false;
   }
 
   Future<void> _saveBooking() async {
@@ -278,6 +303,29 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                             setState(() {
                               _isButtonDisabled = true;
                             });
+                            final hasBooking =
+                                await _hasExistingBookingForCurrentMonth();
+                            if (hasBooking) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('تحذير'),
+                                    content: const Text(
+                                        'لا يمكنك حجز موعد أكثر من مرة في الشهر.'),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('موافق'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              return;
+                            }
                             await _saveBooking();
                             showDialog(
                               context: context,
