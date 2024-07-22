@@ -7,10 +7,11 @@ class MyAccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('حسابي'),
+        backgroundColor: Colors.white,
       ),
-      body: Padding(padding: EdgeInsets.all(16),
+      body: Padding(padding: EdgeInsets.all(20),
        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
