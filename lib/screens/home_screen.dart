@@ -128,6 +128,7 @@ class HomeScreen extends StatelessWidget {
                 'عرض المزيد',
                 style: TextStyle(
                     fontSize: 14,
+                       color: Colors.black,
                     fontFamily: 'BAHIJ'),
                 textAlign: TextAlign.left,
               ),
