@@ -107,7 +107,7 @@ class _MapScreenState extends State<MapScreen> {
           // Initialize the map center and zoom level
           initialCenter:
               _currentLocation ?? const LatLng(34.8021, 38.9968), // Syria
-          initialZoom: 6.0,
+          initialZoom: 8.0,
         ),
         children: [
           TileLayer(

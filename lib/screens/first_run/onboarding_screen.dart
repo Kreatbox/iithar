@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:iithar/screens/intro1_screen.dart';
-import 'package:iithar/screens/intro2_screen.dart';
-import 'package:iithar/screens/register_screen.dart';
+import 'package:iithar/screens/first_run/intro1_screen.dart';
+import 'package:iithar/screens/first_run/intro2_screen.dart';
+import 'package:iithar/screens/accounts/register_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Onboarding extends StatefulWidget {

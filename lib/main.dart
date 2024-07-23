@@ -9,12 +9,12 @@ import 'package:iithar/screens/publish_request.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iithar/screens/home_screen.dart';
 import 'package:iithar/screens/map_screen.dart';
-import 'package:iithar/screens/onboarding_screen.dart';
-import 'package:iithar/screens/register_screen.dart';
+import 'package:iithar/screens/first_run/onboarding_screen.dart';
+import 'package:iithar/screens/accounts/register_screen.dart';
 import 'firebase/firebase_options.dart';
-import 'screens/signup_screen.dart';
-import 'screens/login_screen.dart';
-import 'screens/userdata_screen.dart';
+import 'screens/accounts/signup_screen.dart';
+import 'screens/accounts/login_screen.dart';
+import 'screens/accounts/userdata_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
@@ -75,17 +75,13 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/notifications': (context) => NotificationsScreen(),
         '/form': (context) => DonationForm(),
-        '/publishrequest':(context )=> PublishRequest(),
-        '/appointment': (context)=> AppointmentBookingScreen(),
-        '/nav': (context)=>  NavigationMenu(),
+        '/publishrequest': (context) => PublishRequest(),
+        '/appointment': (context) => AppointmentBookingScreen(),
+        '/nav': (context) => NavigationMenu(),
         '/userdata': (context) =>
-            UserDataScreen(
-                user: FirebaseAuth.instance.currentUser!),
-        // Pass current user to UserDataScreen
+            UserDataScreen(user: FirebaseAuth.instance.currentUser!),
         '/map': (context) => MapScreen(),
         '/onboarding': (context) => const Onboarding(),
-        '/appointment' : (context) => AppointmentBookingScreen()
-
       },
     );
   }

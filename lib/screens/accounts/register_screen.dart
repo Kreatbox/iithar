@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -64,37 +63,6 @@ class RegisterScreen extends StatelessWidget {
                     fixedSize: const Size(170, 25)),
                 child: Text(
                   'إنشاء حساب',
-                  style: TextStyle(
-                      fontFamily: 'HSI', fontSize: 25, color: Colors.white),
-                )),
-            const SizedBox(height: 20),
-            FirebaseAuth.instance.currentUser != null
-                ? ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/userdata');
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFAE0E03),
-                        padding: const EdgeInsets.only(
-                            right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
-                        fixedSize: const Size(170, 25)),
-                    child: Text(
-                      'عرض بياناتي',
-                      style: TextStyle(
-                          fontFamily: 'HSI', fontSize: 25, color: Colors.white),
-                    ))
-                : const SizedBox(height: 20),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/map');
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFAE0E03),
-                    padding: const EdgeInsets.only(
-                        right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
-                    fixedSize: const Size(170, 25)),
-                child: const Text(
-                  'تجريب خريطة',
                   style: TextStyle(
                       fontFamily: 'HSI', fontSize: 25, color: Colors.white),
                 )),

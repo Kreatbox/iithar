@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iithar/screens/home_screen.dart';
 import 'package:iithar/screens/publish_request.dart';
-import 'package:iithar/screens/userdata_screen.dart';
+import 'package:iithar/screens/accounts/userdata_screen.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});
@@ -12,18 +12,16 @@ class NavigationMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
 
-    return Scaffold(backgroundColor: Colors.white,
-      bottomNavigationBar: Container(height: 50,
-
-
-
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      bottomNavigationBar: Container(
+        height: 50,
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-
           boxShadow: [
             BoxShadow(
-              color: Color.fromRGBO(112, 112, 112,100).withOpacity(0.2),
+              color: const Color.fromRGBO(112, 112, 112, 100).withOpacity(0.2),
               blurRadius: 15,
               //offset: Offset(0,20),
             )
@@ -33,10 +31,10 @@ class NavigationMenu extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30), // Add rounded corners
           child: Obx(
-                () => NavigationBar(
-
+            () => NavigationBar(
               selectedIndex: controller.selectedIndex.value,
-              onDestinationSelected: (index) => controller.selectedIndex.value = index,
+              onDestinationSelected: (index) =>
+                  controller.selectedIndex.value = index,
               destinations: [
                 NavigationDestination(
                   icon: Image.asset(
@@ -62,8 +60,9 @@ class NavigationMenu extends StatelessWidget {
               ],
               indicatorColor: Colors.black12, // لون المؤشر المحدد
               backgroundColor: Colors.white,
-                   height: 20, surfaceTintColor: Colors.white,shadowColor: Colors.cyan,
-                  // ارتفاع شريط التنقل
+              height: 20, surfaceTintColor: Colors.white,
+              shadowColor: Colors.cyan,
+              // ارتفاع شريط التنقل
             ),
           ),
         ),
@@ -84,7 +83,7 @@ class NavigationController extends GetxController {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: NavigationMenu(),
   ));
 }
