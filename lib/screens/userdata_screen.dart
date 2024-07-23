@@ -36,6 +36,11 @@ class UserDataScreen extends StatelessWidget {
 
           // Access user data from Firestore
           var userData = snapshot.data!.data() as Map<String, dynamic>;
+          
+          bool hasFormAnswer = userData.containsKey('formAnswer');
+          String formAnswer = hasFormAnswer ? userData['formAnswer'] : '';
+          bool isEligibleForDonation = formAnswer == '000000000';
+
           return Center(
             child: SingleChildScrollView(
               
@@ -55,9 +60,23 @@ class UserDataScreen extends StatelessWidget {
 
                   ]),
                    const SizedBox(height: 20),
+                       if (!hasFormAnswer) ...[
+                    const Text(
+                      'لم تقم بملء استبيان التبرع بعد. يرجى ملء الاستبيان لإكمال بياناتك.',
+                      style: TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/form');
+                      },
+                      child: const Text('ملء استبيان التبرع'),
+                    ),
+                  ],
                   _buildInfoSection('مواعيدي ', [
                   ]),
                   const SizedBox(height: 20),
+                  
                   ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       fixedSize: const Size(175, 45),
