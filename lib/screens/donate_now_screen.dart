@@ -54,10 +54,10 @@ class UserInfoCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     CircleAvatar(
-                      backgroundColor:  Color(0xFFAE0E03),
+                      backgroundColor: Colors.grey[20] ,
                       radius: 20.0,
                       child: Icon(
-                        Icons.person,color: Colors.white,
+                        Icons.person,color: Color(0xFFAE0E03),
                         size: 20,
                       ),
                     ),
@@ -173,7 +173,7 @@ class UserInfoCard extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text('تم إرسال قبول للمتبرع',
+          title: Text('شكراً لك على مساهمتك في إنقاذ حياة',
             textAlign: TextAlign.center,
             style: TextStyle(
           fontSize: 25,
@@ -182,14 +182,15 @@ class UserInfoCard extends StatelessWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Image.asset('assets/icons/icon6.png',width:90,height: 90,),
+
               SizedBox(height: 16.0),
-              Text('!شكراً لك على مساهمتك في إنقاذ حياة',
+              Text('لقد تم إرسال قبول للمتبرع ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 18,
                   fontFamily: 'BAHIJ',color: Colors.black)),
-              SizedBox(height: 16.0),
+              SizedBox(height: 25.0),
+              Image.asset('assets/icons/icon6.png',width:90,height: 90,),
             ],
           ),
           actions: <Widget>[
