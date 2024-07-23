@@ -16,40 +16,47 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('تسجيل الدخول'),
+        backgroundColor: Colors.white,
+
       ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
           child: Column(
+
             children: <Widget>[
-              TextFormField(
-                controller: _emailController,
-                decoration:
-                    const InputDecoration(labelText: 'البريد الإلكتروني'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'يرجى إدخال بريدك الإلكتروني';
-                  }
-                  return null;
-                },
+              Image.asset(
+                'assets/icons/logo.png',
+                alignment: Alignment.center,
+                width: 125,
+                height: 125,
               ),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'كلمة المرور'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'يرجى إدخال كلمة المرور';
-                  }
-                  return null;
-                },
+
+              Text(
+                '!مرحباً  بعودتك',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    fontFamily: 'HSI', fontSize: 50, color: Color(0xFFAE0E03)),
               ),
               const SizedBox(height: 20),
+            _buildInfoSection(' ', [
+              _buildTextFieldemail(_emailController, 'البريد الإلكتروني', 'يرجى إدخال بريدك الإلكتروني'),
+              const SizedBox(height: 10),
+              _buildTextFieldpassword(_passwordController, 'كلمة المرور', 'يرجى إدخال كلمة المرور'),
+              const SizedBox(height: 20),
+            ]),
+              const SizedBox(height: 20),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(175, 45),
+                    backgroundColor: const Color(0xFFAE0E03),
+                    padding: const EdgeInsets.only(
+                        right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                    alignment: Alignment.center),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     try {
@@ -68,7 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   }
                 },
-                child: const Text('تسجيل الدخول'),
+                child: const Text('تسجيل الدخول',  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: 'HSI', fontSize: 25, color: Colors.white),)
               ),
             ],
           ),
@@ -83,4 +92,92 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+}
+Widget _buildInfoSection(String title, List<Widget> children) {
+  return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(112, 112, 112, 100),
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            ...children,
+          ],
+        ),
+      ));
+}
+Widget _buildTextFieldemail(TextEditingController controller, String labelText, String errorText,
+){
+  return Directionality(
+      textDirection: TextDirection.rtl,
+      child: TextFormField(
+      controller:  controller,
+      textAlign: TextAlign.right,
+      style: TextStyle(
+      fontFamily: 'HSI',
+      fontSize: 15,
+      color: Colors.black,
+  ),
+
+  decoration: InputDecoration(
+  labelStyle: TextStyle(
+  fontFamily: 'HSI',
+  fontSize: 15,
+  color: Colors.black,
+  ),
+    labelText: labelText,
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+    alignLabelWithHint: true,
+  ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'يرجى إدخال بريدك الإلكتروني';
+            }
+            return null;
+  },));
+}
+Widget _buildTextFieldpassword(TextEditingController controller, String labelText, String errorText,
+    ){
+  return Directionality(
+
+      textDirection: TextDirection.rtl,
+      child: TextFormField(
+        controller:  controller,
+        textAlign: TextAlign.right,
+        style: TextStyle(
+          fontFamily: 'HSI',
+          fontSize: 15,
+          color: Colors.black,
+        ),
+
+        decoration: InputDecoration(
+          labelStyle: TextStyle(
+            fontFamily: 'HSI',
+            fontSize: 15,
+            color: Colors.black,
+
+
+          ),
+          labelText: labelText,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          alignLabelWithHint: true,
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'يرجى إدخال كلمة المرور';
+          }
+          return null;
+        },));
 }
