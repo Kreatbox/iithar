@@ -14,11 +14,16 @@ class UserDataScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text(
-          'المعلومات الشخصية ',
-          textAlign: TextAlign.right,
-          style:
-              TextStyle(fontFamily: 'HSI', fontSize: 30, color: Colors.black),
+        title: const Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'المعلومات الشخصية',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  fontFamily: 'HSI', fontSize: 30, color: Colors.black),
+            ),
+          ),
         ),
       ),
       body: FutureBuilder<DocumentSnapshot>(
@@ -37,7 +42,7 @@ class UserDataScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(20.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text('لا توجد بيانات'),
                     SizedBox(height: 20),
@@ -156,25 +161,24 @@ class UserDataScreen extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          const CircleAvatar(
-            radius: 50,
-            backgroundColor: Color(0xFFAE0E03),
-          ),
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'تغيير الصورة الشخصية ',
-              style: TextStyle(
-                  fontSize: 22, fontFamily: 'HSI', color: Colors.black),
+           CircleAvatar(
+            radius: 40,
+            backgroundColor: Colors.grey[20] ,
+            child: Icon(
+              Icons.person,color: Color(0xFFAE0E03),
+              size: 50,
             ),
           ),
+
         ],
       ),
     );
   }
 
   Widget _buildInfoSection(String title, List<Widget> children) {
-    return Container(
+    return  Directionality(
+        textDirection: TextDirection.rtl,
+        child: Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -193,20 +197,23 @@ class UserDataScreen extends StatelessWidget {
             title,
             style: const TextStyle(
               fontFamily: 'HSI',
-              fontSize: 18,
+              fontSize: 25,
             ),
           ),
-          const Divider(),
+          const Divider(
+            thickness: 1.5,
+          ),
           ...children,
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
+
         children: [
           Text(
             label,

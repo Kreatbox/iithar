@@ -63,7 +63,7 @@ class _MapScreenState extends State<MapScreen> {
   LatLng _findNearestBloodBank() {
     if (_currentLocation == null) {
       return _bloodBankLocations[
-          0]; // Default to first location if user location is not available
+      0]; // Default to first location if user location is not available
     }
 
     double minDistance = double.infinity;
@@ -100,14 +100,26 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('خريطة البنوك الدموية'),
+        backgroundColor: Colors.white,
+        title: const Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'خريطة البنوك الدموية',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  fontFamily: 'HSI', fontSize: 30, color: Colors.black),
+            ),
+          ),
+        ),
       ),
       body: FlutterMap(
         options: MapOptions(
           // Initialize the map center and zoom level
           initialCenter:
-              _currentLocation ?? const LatLng(34.8021, 38.9968), // Syria
+          _currentLocation ?? const LatLng(34.8021, 38.9968), // Syria
           initialZoom: 8.0,
+
         ),
         children: [
           TileLayer(
@@ -122,22 +134,128 @@ class _MapScreenState extends State<MapScreen> {
                   height: 80.0,
                   point: _currentLocation!,
                   // Using a custom child widget for the marker
-                  child: const Icon(
-                    Icons.my_location,
+                  child: Container(
+                    child:
+                   IconButton(
+                    icon:  Icon(Icons.my_location),
                     color: Colors.blue,
-                    size: 40.0,
+                     onPressed: (){
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (builder){
+                            return Container(
+                              color: Colors.white,
+                              child: Text("bottom sheet"),
+                            );
+                            });
+
+                     },
                   ),
-                ),
+                ),),
               ..._bloodBankLocations.map(
-                (location) => Marker(
+                    (location) => Marker(
                   width: 80.0,
                   height: 80.0,
                   point: location,
                   // Using a custom child widget for the marker
-                  child: const Icon(
-                    Icons.location_on,
-                    color: Colors.red,
-                    size: 40.0,
+                      child: Container(
+                        height: 50,
+                        width: 100,
+                        child:
+                        IconButton(
+                          icon:  Icon(Icons.location_on),
+                          color: Colors.red,
+                          iconSize: 45.0,
+                          onPressed: (){
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (builder){
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    height: 300,
+                                    width: 400,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        //SizedBox(height: 20),
+                                        Container(width: 400,
+                                            padding: const EdgeInsets.only(
+                                                left: 0.0, right: 0.0, top: 10.0, bottom: 10.0),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFAE0E03),
+                                              borderRadius: BorderRadius.circular(25),
+                                            ),
+                                        child:
+                                        Text('بنك الدم - حلب',
+                                          style: const TextStyle(
+                                            fontFamily: 'HSI',
+                                            color: Colors.white,
+                                            fontSize: 30,
+                                          ),textAlign: TextAlign.center,
+                                        )),
+                                        SizedBox(height: 20),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text('حلب - العزيزية - شارع قسطاكي حمصي',
+                                                style: const TextStyle(
+                                              fontFamily: 'HSI',
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                            ),textAlign: TextAlign.left
+                                            ), Icon(Icons.location_on,color: Color(0xFFAE0E03),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 15),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text('0999999999',
+                                                style: const TextStyle(
+                                                  fontFamily: 'HSI',
+                                                  color: Colors.black,
+                                                  fontSize: 20,
+                                                ),textAlign: TextAlign.left
+                                            ), Icon(Icons.phone,color: Color(0xFFAE0E03),),
+                                          ],
+                                        ),
+                                        SizedBox(height: 15),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text('9 am - 3 pm',
+                                                style: const TextStyle(
+                                                  fontFamily: 'HSI',
+                                                  color: Colors.black,
+                                                  fontSize: 20,
+                                                ),textAlign: TextAlign.left
+                                            ), Icon(Icons.lock_clock,color: Color(0xFFAE0E03),),
+                                          ],
+                                        ), SizedBox(height: 30),
+                                        ElevatedButton(  style: ElevatedButton.styleFrom(
+                                            fixedSize: const Size(180, 45),
+                                            backgroundColor: const Color(0xFFAE0E03),
+                                            padding: const EdgeInsets.only(
+                                                right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                                            alignment: Alignment.center),
+                                          onPressed: (){
+                                            Navigator.pushNamed(context, '/appointment');
+                                                },
+                                          child: const Text(
+                                            'احجز موعداًالآن',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontFamily: 'HSI', fontSize: 20, color: Colors.white),
+                                          ),)
+                                      ],
+                                    ),
+                                  );
+                                });
+                          },
+                        ),
                   ),
                 ),
               ),

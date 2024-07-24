@@ -366,7 +366,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               const Divider(
                 height: 22,
-                thickness: 2,
+                thickness: 1.5,
               ),
               ...children,
             ],
