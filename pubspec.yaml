@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.19.0
   flutter_map_marker_popup: ^7.0.0
   custom_info_window: ^1.0.1
+  flutter_datetime_picker: ^1.5.1
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,8 @@
-// ignore_for_file: use_build_context_synchronously, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -115,17 +114,20 @@ class _SignupScreenState extends State<SignupScreen> {
                       'يرجى إدخال رقم هاتفك',
                       isPhone: true),
                   const SizedBox(height: 10),
-                  _buildTextField(_birthDateController, 'تاريخ الميلاد',
-                      'يرجى إدخال تاريخ ميلادك',
-                      isDate: true),
+                  _buildDateField(_birthDateController, 'تاريخ الميلاد',
+                      'يرجى إدخال تاريخ ميلادك'),
                   const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(
-                        child: _buildDropdownField(),
+                        child: _buildDialogField('فصيلة الدم', _selectedBloodType,
+                            _showBloodTypeDialog),
                       ),
                       const SizedBox(width: 10),
-                      Expanded(child: _buildDropdownFieldGender())
+                      Expanded(
+                        child: _buildDialogField('الجنس', _selectedGenderType,
+                            _showGenderDialog),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -254,123 +256,158 @@ class _SignupScreenState extends State<SignupScreen> {
         ));
   }
 
-  Widget _buildDropdownField() {
-    return DropdownButtonFormField<String>(
-      dropdownColor: Colors.white,
-      alignment: AlignmentDirectional.center,
-      style: const TextStyle(
-        fontFamily: 'HSI',
-        fontSize: 15,
-        color: Colors.black,
+  Widget _buildDateField(
+      TextEditingController controller, String labelText, String errorText) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: InkWell(
+        onTap: () {
+          DatePicker.showDatePicker(context,
+              showTitleActions: true,
+              minTime: DateTime(1900, 1, 1),
+              maxTime: DateTime(2100, 12, 31),
+              onChanged: (date) {
+            controller.text = '${date.year}-${date.month}-${date.day}';
+          }, onConfirm: (date) {
+            controller.text = '${date.year}-${date.month}-${date.day}';
+          }, currentTime: DateTime.now(), locale: LocaleType.ar);
+        },
+        child: IgnorePointer(
+          child: TextFormField(
+            textAlign: TextAlign.right,
+            controller: controller,
+            style: const TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 15,
+              color: Colors.black,
+            ),
+            decoration: InputDecoration(
+              labelStyle: const TextStyle(
+                fontFamily: 'HSI',
+                fontSize: 15,
+                color: Colors.black,
+              ),
+              labelText: labelText,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              alignLabelWithHint: true,
+            ),
+            validator: (values) {
+              if (values == null || values.isEmpty) {
+                return errorText;
+              }
+              return null;
+            },
+          ),
+        ),
       ),
-      value: _selectedBloodType,
-      decoration: InputDecoration(
-        labelText: 'فصيلة الدم',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        alignLabelWithHint: true,
+    );
+  }
+
+  Widget _buildInfoSection(String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            title,
+            style: const TextStyle(
+                fontFamily: 'HSI', fontSize: 20, color: Colors.black),
+          ),
+        ),
+        const SizedBox(height: 10),
+        ...children,
+      ],
+    );
+  }
+
+  Widget _buildDialogField(String title, String currentValue, Function onTap) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: InkWell(
+        onTap: () => onTap(),
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: title,
+            labelStyle: const TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 15,
+              color: Colors.black,
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+          child: Text(
+            currentValue,
+            style: const TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 15,
+              color: Colors.black,
+            ),
+          ),
+        ),
       ),
-      items: _bloodTypes.map((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
+    );
+  }
+
+  void _showBloodTypeDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('اختر فصيلة الدم', textAlign: TextAlign.right),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: _bloodTypes
+                  .map(
+                    (bloodType) => GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedBloodType = bloodType;
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        bloodType,
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         );
-      }).toList(),
-      onChanged: (String? newValue) {
-        setState(() {
-          _selectedBloodType = newValue!;
-        });
-      },
-      validator: (value) {
-        if (value == null || !_bloodTypes.contains(value)) {
-          return 'يرجى اختيار فصيلة دم صحيحة';
-        }
-        return null;
       },
     );
   }
 
-  Widget _buildDropdownFieldGender() {
-    return Directionality(
-        textDirection: TextDirection.rtl,
-        child: DropdownButtonFormField<String>(
-          dropdownColor: Colors.white,
-          alignment: AlignmentDirectional.center,
-          style: const TextStyle(
-            fontFamily: 'HSI',
-            fontSize: 15,
-            color: Colors.black,
+  void _showGenderDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('اختر الجنس', textAlign: TextAlign.right),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: _genderTypes
+                  .map(
+                    (genderType) => GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedGenderType = genderType;
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        genderType,
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
-          value: _selectedGenderType,
-          decoration: InputDecoration(
-            labelText: 'الجنس',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-            alignLabelWithHint: true,
-          ),
-          items: _genderTypes.map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  value,
-                  textAlign: TextAlign.right,
-                ),
-              ),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            setState(() {
-              _selectedGenderType = newValue!;
-            });
-          },
-          validator: (value) {
-            if (value == null || !_genderTypes.contains(value)) {
-              return 'يرجى اختيار فصيلة دم صحيحة';
-            }
-            return null;
-          },
-        ));
-  }
-
-  Widget _buildInfoSection(String title, List<Widget> children) {
-    return Directionality(
-        textDirection: TextDirection.rtl,
-        child: Container(
-          padding: const EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
-            boxShadow: [
-              const BoxShadow(
-                color: Color.fromRGBO(112, 112, 112, 100),
-                blurRadius: 5,
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 25,
-                ),
-              ),
-              const Divider(
-                height: 22,
-                thickness: 1.5,
-              ),
-              ...children,
-            ],
-          ),
-        ));
+        );
+      },
+    );
   }
 }
