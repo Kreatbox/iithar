@@ -18,7 +18,7 @@ class UserDataScreen extends StatelessWidget {
           child: Align(
             alignment: Alignment.centerRight,
             child: Text(
-              'المعلومات الشخصية',
+              'معلومات الحساب ',
               textAlign: TextAlign.right,
               style: TextStyle(
                   fontFamily: 'HSI', fontSize: 30, color: Colors.black),
@@ -85,7 +85,6 @@ class UserDataScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  _buildProfilePictureSection(),
                   const SizedBox(height: 20),
                   _buildInfoSection('المعلومات الشخصية', [
                     _buildInfoRow('الاسم', userData['firstName']),
@@ -157,24 +156,7 @@ class UserDataScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfilePictureSection() {
-    return Center(
-      child: Column(
-        children: [
-           CircleAvatar(
-            radius: 40,
-            backgroundColor: Colors.grey[20] ,
-            child: Icon(
-              Icons.person,color: Color(0xFFAE0E03),
-              size: 50,
-            ),
-          ),
-
-        ],
-      ),
-    );
-  }
-
+ 
   Widget _buildInfoSection(String title, List<Widget> children) {
     return  Directionality(
         textDirection: TextDirection.rtl,
