@@ -1,8 +1,7 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart' ;
+import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class AppointmentBookingScreen extends StatefulWidget {
@@ -48,12 +47,13 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     '01:30 م',
     '02:00 م',
   ];
+
   @override
   void initState() {
     super.initState();
     initializeDateFormatting('ar', null).then((_) {
       setState(() {
-        _generateDates(); // Generate dates after initializing date formatting
+        _generateDates();
       });
     });
   }
@@ -112,7 +112,6 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -143,55 +142,83 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          backgroundColor: Colors.white,
-                          actionsAlignment: MainAxisAlignment.start,
-                          title: const Text('اختر مركز',textAlign: TextAlign.right,),
-                          content: SizedBox(
-                            width: double.maxFinite,
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: _centers.map((center) {
-                                return ListTile(
-                                  title:
-                                      Text(center, textAlign: TextAlign.right),
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedCenter = center;
-                                    });
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: AbsorbPointer(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: _selectedCenter ?? 'اختر مركز',
-                        contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      textAlign: TextAlign.right,
-                       // تحديد اتجاه النص
-                    ),
-                  )
+                Text(
+                  'اختر مركز تبرع',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 25, fontFamily: 'HSI'),
                 ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            actionsAlignment: MainAxisAlignment.start,
+                            title: const Text(
+                              'مراكز التبرع',
+                              textAlign: TextAlign.right,
+                            ),
+                            content: SizedBox(
+                              width: double.maxFinite,
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: _centers.map((center) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedCenter = center;
+                                      });
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(10),
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      decoration: BoxDecoration(
+                                        color: _selectedCenter == center
+                                            ? const Color(0xFFAE0E03)
+                                            : Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Text(
+                                        center,
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          color: _selectedCenter == center
+                                              ? Colors.white
+                                              : Colors.black,
+                                          fontFamily: 'HSI',
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: AbsorbPointer(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: _selectedCenter ?? 'اختر مركز',
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 16),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                    )),
                 const SizedBox(height: 25),
                 const Text(
-                  'اختر نوع التبرع',textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 22, fontFamily: 'HSI'),
+                  'اختر نوع التبرع',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 25, fontFamily: 'HSI'),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -218,8 +245,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                             color: _selectedDonationType == type
                                 ? Colors.white
                                 : Colors.black,
-                                  fontFamily: 'HSI'
-
+                            fontFamily: 'HSI',
                           ),
                         ),
                       ),
@@ -227,10 +253,10 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   }).toList(),
                 ),
                 const SizedBox(height: 25),
-                const
-                  Text(
-                  'اختر تاريخ',textAlign: TextAlign.right,
-                    style: TextStyle(fontSize: 22, fontFamily: 'HSI'),
+                const Text(
+                  'اختر تاريخ',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 25, fontFamily: 'HSI'),
                 ),
                 const SizedBox(height: 8),
                 SingleChildScrollView(
@@ -258,7 +284,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                               color: _selectedDate == date
                                   ? Colors.white
                                   : Colors.black,
-                                    fontFamily: 'HSI'
+                              fontFamily: 'HSI',
                             ),
                           ),
                         ),
@@ -268,7 +294,8 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                 ),
                 const SizedBox(height: 25),
                 const Text(
-                  'اختر وقت',textAlign: TextAlign.right,
+                  'اختر وقت',
+                  textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 25, fontFamily: 'HSI'),
                 ),
                 const SizedBox(height: 8),
@@ -297,7 +324,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                               color: _selectedTimeSlot == slot
                                   ? Colors.white
                                   : Colors.black,
-                                    fontFamily: 'HSI'
+                              fontFamily: 'HSI',
                             ),
                           ),
                         ),
@@ -305,25 +332,22 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     }).toList(),
                   ),
                 ),
-
               ],
-            ),),
-
-              Column(
-
-                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 280),
-                Container(
-                  alignment: Alignment.center,
-                  child:
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(fixedSize: Size(175, 45),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 400),
+              Container(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: Size(175, 45),
                     backgroundColor: const Color(0xFFAE0E03),
-                      padding: const EdgeInsets.only(
-                          right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
-                      alignment: Alignment.center,
-
+                    padding: const EdgeInsets.only(
+                        right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                    alignment: Alignment.center,
                   ),
                   onPressed: _isButtonDisabled
                       ? null
@@ -394,12 +418,12 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     style: TextStyle(
                         fontFamily: 'HSI', fontSize: 25, color: Colors.white),
                   ),
-                ),),
-                const SizedBox(height: 20),
-                  Container(
-                      alignment: Alignment.center,
-                      child:
-                ElevatedButton(
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                alignment: Alignment.center,
+                child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       fixedSize: const Size(175, 45),
                       backgroundColor: const Color(0xFFAE0E03),
@@ -414,12 +438,12 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                         fontFamily: 'HSI', fontSize: 25, color: Colors.white),
                   ),
                 ),
-                ),
-                  const SizedBox(height: 20),]),
-
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ],
       ),
     );
   }
 }
-
