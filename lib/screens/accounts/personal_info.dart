@@ -37,7 +37,7 @@ class UserinfoDataScreen extends StatelessWidget {
             return Center(child: Text('حدث خطأ: ${snapshot.error}'));
           }
           if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(
+            return const Center(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(20.0),
                 child: Column(

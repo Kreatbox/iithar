@@ -177,6 +177,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         'date': _selectedDate,
         'timeSlot': _selectedTimeSlot,
         'timestamp': FieldValue.serverTimestamp(),
+        'done': false,
       });
     }
   }

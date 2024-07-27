@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 class MyRequestScreen extends StatelessWidget {
+  const MyRequestScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

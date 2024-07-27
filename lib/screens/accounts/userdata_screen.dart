@@ -171,7 +171,7 @@ class UserDataScreen extends StatelessWidget {
                                   size: 30,
                                 ),
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/myrequest');
+                                  Navigator.pushNamed(context, '/mydonations');
                                 }),
                             const Spacer(),
                           ],

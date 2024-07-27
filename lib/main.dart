@@ -5,9 +5,9 @@ import 'package:iithar/navigation_menu.dart';
 import 'package:iithar/screens/accounts/personal_info.dart';
 import 'package:iithar/screens/appointment_booking.dart';
 import 'package:iithar/screens/donation_form.dart';
-import 'package:iithar/screens/my_appointment.dart';
-import 'package:iithar/screens/my_donations.dart';
-import 'package:iithar/screens/my_request.dart';
+import 'package:iithar/screens/accounts/my_appointment.dart';
+import 'package:iithar/screens/accounts/my_donations.dart';
+import 'package:iithar/screens/accounts/my_request.dart';
 import 'package:iithar/screens/notification_screen.dart';
 import 'package:iithar/screens/publish_request.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,16 +78,17 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
         '/notifications': (context) => NotificationsScreen(),
-        '/form': (context) => DonationForm(),
-        '/publishrequest': (context) => PublishRequest(),
-        '/appointment': (context) => AppointmentBookingScreen(),
-        '/nav': (context) => NavigationMenu(),
+        '/form': (context) => const DonationForm(),
+        '/publishrequest': (context) => const PublishRequest(),
+        '/appointment': (context) => const AppointmentBookingScreen(),
+        '/nav': (context) => const NavigationMenu(),
         '/userdata': (context) =>
             UserDataScreen(user: FirebaseAuth.instance.currentUser!),
-        '/map': (context) => MapScreen(),
+        '/map': (context) => const MapScreen(),
         '/onboarding': (context) => const Onboarding(),
-        '/myappointment': (context)=> MyAppointmentScreen(),
-        '/personalinfo': (context) => UserinfoDataScreen(userinfo: FirebaseAuth.instance.currentUser!),
+        '/myappointment': (context) => const MyAppointmentScreen(),
+        '/personalinfo': (context) =>
+            UserinfoDataScreen(userinfo: FirebaseAuth.instance.currentUser!),
         '/myrequest': (context) => MyRequestScreen(),
         '/mydonations': (context) => MyDonationsScreen()
       },
