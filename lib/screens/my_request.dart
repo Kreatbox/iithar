@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
-;
+
 class MyRequestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -20,5 +20,6 @@ class MyRequestScreen extends StatelessWidget {
           ),
         ),
       ),
-    )  ;
-  }}
+    );
+  }
+}

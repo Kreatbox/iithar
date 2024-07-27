@@ -7,10 +7,10 @@ class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  SignupScreenState createState() => SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class SignupScreenState extends State<SignupScreen> {
   var _isButtonDisabled = false;
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
@@ -25,7 +25,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
   // Ensure default values exist in the dropdown lists
   final List<String> _bloodTypes = [
-    'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-'
   ];
   final List<String> _genderTypes = ['ذكر', 'انثى'];
 
@@ -125,7 +132,8 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Text(
             'إنشاء حساب ',
             textAlign: TextAlign.right,
-            style: TextStyle(fontFamily: 'HSI', fontSize: 40, color: Colors.black),
+            style:
+                TextStyle(fontFamily: 'HSI', fontSize: 40, color: Colors.black),
           ),
         ),
       ),
@@ -142,36 +150,50 @@ class _SignupScreenState extends State<SignupScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildTextField(_lastNameController, 'اسم العائلة', 'يرجى إدخال اسم عائلتك'),
+                        child: _buildTextField(_firstNameController,
+                            'الاسم الأول', 'يرجى إدخال اسمك الأول'),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: _buildTextField(_firstNameController, 'الاسم الأول', 'يرجى إدخال اسمك الأول'),
+                        child: _buildTextField(_lastNameController,
+                            'اسم العائلة', 'يرجى إدخال اسم عائلتك'),
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
-                  _buildTextField(_ssidController, 'الرقم الوطني', 'يرجى إدخال رقمك القومي', isNumber: true),
+                  _buildTextField(
+                      _ssidController, 'الرقم الوطني', 'يرجى إدخال رقمك القومي',
+                      isNumber: true),
                   const SizedBox(height: 10),
-                  _buildTextField(_phoneNumberController, 'رقم الهاتف', 'يرجى إدخال رقم هاتفك', isPhone: true),
+                  _buildTextField(_phoneNumberController, 'رقم الهاتف',
+                      'يرجى إدخال رقم هاتفك',
+                      isPhone: true),
                   const SizedBox(height: 10),
-                  _buildTextField(_birthDateController, 'تاريخ الميلاد', 'يرجى إدخال تاريخ ميلادك', isDate: true),
+                  _buildTextField(_birthDateController, 'تاريخ الميلاد',
+                      'يرجى إدخال تاريخ ميلادك',
+                      isDate: true),
                   const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(
-                        child: _buildDialogField('فصيلة الدم', _selectedBloodType, _showBloodTypeDialog),
+                        child: _buildDialogField('فصيلة الدم',
+                            _selectedBloodType, _showBloodTypeDialog),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: _buildDialogField('الجنس', _selectedGenderType, _showGenderDialog),
+                        child: _buildDialogField(
+                            'الجنس', _selectedGenderType, _showGenderDialog),
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
-                  _buildTextField(_emailController, 'البريد الإلكتروني', 'يرجى إدخال بريدك الإلكتروني', isEmail: true),
+                  _buildTextField(_emailController, 'البريد الإلكتروني',
+                      'يرجى إدخال بريدك الإلكتروني',
+                      isEmail: true),
                   const SizedBox(height: 10),
-                  _buildTextField(_passwordController, 'كلمة المرور', 'يرجى إدخال كلمة المرور', isPassword: true),
+                  _buildTextField(_passwordController, 'كلمة المرور',
+                      'يرجى إدخال كلمة المرور',
+                      isPassword: true),
                   const SizedBox(height: 10),
                 ]),
                 const SizedBox(height: 30),
@@ -179,53 +201,62 @@ class _SignupScreenState extends State<SignupScreen> {
                   style: ElevatedButton.styleFrom(
                     fixedSize: const Size(175, 45),
                     backgroundColor: const Color(0xFFAE0E03),
-                    padding: const EdgeInsets.only(right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                    padding: const EdgeInsets.only(
+                        right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
                     alignment: Alignment.center,
                   ),
-                  onPressed: _isButtonDisabled ? null : () async {
-                    if (_formKey.currentState!.validate()) {
-                      // Create a new account
-                      setState(() {
-                        _isButtonDisabled = true;
-                      });
-                      try {
-                        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                        );
+                  onPressed: _isButtonDisabled
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.validate()) {
+                            // Create a new account
+                            setState(() {
+                              _isButtonDisabled = true;
+                            });
+                            try {
+                              UserCredential userCredential =
+                                  await _auth.createUserWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              );
 
-                        // Save user data in Firestore
-                        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
-                          'firstName': _firstNameController.text,
-                          'lastName': _lastNameController.text,
-                          'email': _emailController.text,
-                          'phoneNumber': _phoneNumberController.text,
-                          'ssid': _ssidController.text,
-                          'birthDate': _birthDateController.text,
-                          'bloodType': _selectedBloodType,
-                          'genderType': _selectedGenderType,
-                        });
+                              // Save user data in Firestore
+                              await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userCredential.user!.uid)
+                                  .set({
+                                'firstName': _firstNameController.text,
+                                'lastName': _lastNameController.text,
+                                'email': _emailController.text,
+                                'phoneNumber': _phoneNumberController.text,
+                                'ssid': _ssidController.text,
+                                'birthDate': _birthDateController.text,
+                                'bloodType': _selectedBloodType,
+                                'genderType': _selectedGenderType,
+                              });
 
-                        // Navigate to the donation form screen
-                        Navigator.pushReplacementNamed(context, '/form');
-                      } catch (e) {
-                        if (kDebugMode) {
-                          print('فشل إنشاء الحساب: ${e.toString()}');
-                        }
-                        // Show error message to the user
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('فشل إنشاء الحساب')),
-                        );
-                        setState(() {
-                          _isButtonDisabled = false;
-                        });
-                      }
-                    }
-                  },
+                              // Navigate to the donation form screen
+                              Navigator.pushReplacementNamed(context, '/form');
+                            } catch (e) {
+                              if (kDebugMode) {
+                                print('فشل إنشاء الحساب: ${e.toString()}');
+                              }
+                              // Show error message to the user
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('فشل إنشاء الحساب')),
+                              );
+                              setState(() {
+                                _isButtonDisabled = false;
+                              });
+                            }
+                          }
+                        },
                   child: const Text(
                     'إنشاء حساب',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontFamily: 'HSI', fontSize: 25, color: Colors.white),
+                    style: TextStyle(
+                        fontFamily: 'HSI', fontSize: 25, color: Colors.white),
                   ),
                 ),
               ],
@@ -236,8 +267,13 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String labelText, String errorText,
-      {bool isEmail = false, bool isPassword = false, bool isPhone = false, bool isNumber = false, bool isDate = false}) {
+  Widget _buildTextField(
+      TextEditingController controller, String labelText, String errorText,
+      {bool isEmail = false,
+      bool isPassword = false,
+      bool isPhone = false,
+      bool isNumber = false,
+      bool isDate = false}) {
     return Directionality(
         textDirection: TextDirection.rtl,
         child: TextFormField(
@@ -307,8 +343,8 @@ class _SignupScreenState extends State<SignupScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(30),
-            boxShadow: [
-              const BoxShadow(
+            boxShadow: const [
+              BoxShadow(
                 color: Color.fromRGBO(112, 112, 112, 100),
                 blurRadius: 5,
               ),

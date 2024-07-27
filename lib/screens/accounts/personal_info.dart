@@ -4,9 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserinfoDataScreen extends StatelessWidget {
   final User userinfo;
-
   const UserinfoDataScreen({super.key, required this.userinfo});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,8 +24,10 @@ class UserinfoDataScreen extends StatelessWidget {
         ),
       ),
       body: FutureBuilder<DocumentSnapshot>(
-        future:
-        FirebaseFirestore.instance.collection('users').doc(userinfo.uid).get(),
+        future: FirebaseFirestore.instance
+            .collection('users')
+            .doc(userinfo.uid)
+            .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -50,14 +50,10 @@ class UserinfoDataScreen extends StatelessWidget {
               ),
             );
           }
-
-          // Access user data from Firestore
           var userData = snapshot.data!.data() as Map<String, dynamic>;
-
           bool hasFormAnswer = userData.containsKey('formAnswer');
           String formAnswer = hasFormAnswer ? userData['formAnswer'] : '';
           bool isEligibleForDonation = formAnswer == '000000000';
-
           return Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
@@ -107,7 +103,6 @@ class UserinfoDataScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                   ],
                   const SizedBox(height: 20),
-                
                 ],
               ),
             ),
@@ -117,9 +112,8 @@ class UserinfoDataScreen extends StatelessWidget {
     );
   }
 
-
   Widget _buildInfoSection(String title, List<Widget> children) {
-    return  Directionality(
+    return Directionality(
         textDirection: TextDirection.rtl,
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -156,7 +150,6 @@ class UserinfoDataScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-
         children: [
           Text(
             label,
