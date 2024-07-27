@@ -75,7 +75,6 @@ class BookingSummaryScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Functionality for editing the appointment
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFAE0E03),
@@ -92,7 +91,46 @@ class BookingSummaryScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Functionality for cancelling the appointment
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(
+                            'إلغاء الموعد',
+                            style: TextStyle(
+                              fontFamily: 'HSI',
+                              fontSize: 25,
+                              color: Colors.black,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          content: Text(
+                            'تم إلغاء الموعد. ننصحك بحجز موعد آخر بأقرب فرصة.',
+                            style: TextStyle(
+                              fontFamily: 'HSI',
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                'حسناً',
+                                style: TextStyle(
+                                  fontFamily: 'HSI',
+                                  fontSize: 20,
+                                  color: const Color(0xFFAE0E03),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFAE0E03),
