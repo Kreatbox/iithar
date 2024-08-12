@@ -7,8 +7,13 @@ class DonationRequestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-      title: const Text('طلبات التبرع'),
+      title: const Text('طلبات التبرع',style: TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 30,
+              color: Colors.black,
+            ),),
         ),
       );
   }
-}
+} 
+

@@ -14,7 +14,12 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('الإشعارات'),
+        title: Text('الإشعارات',  
+                          style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 25,
+                            color: Colors.black,
+                          ),),
       ),
       body: ListView.builder(
         itemCount: notifications.length,

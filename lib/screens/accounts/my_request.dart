@@ -5,7 +5,8 @@ class MyRequestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: AppBar(      backgroundColor: Colors.white,
+
         title: Align(
           alignment: Alignment.centerRight,
           child: Text(
@@ -23,14 +24,14 @@ class MyRequestScreen extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         children: <Widget>[
           BloodDonationRequestCard(
-            patientName: 'اسم المريض كاملاً',
-            bloodType: 'زمرة الدم المطلوبة',
-            city: 'المدينة',
-            donationLocation: 'موقع التبرع',
-            medicalCondition: 'الحالة الطبية',
-            phoneNumber: 'رقم الهاتف',
-            donationDateTime: 'تاريخ ووقت التبرع الممكن',
-            note: 'ملاحظة',
+            patientName: '  ',
+            bloodType: '  ',
+            city: '',
+            donationLocation: ' ',
+            medicalCondition: ' ',
+            phoneNumber: ' ',
+            donationDateTime: '   ',
+            note: '',
           ),
         ],
       ),

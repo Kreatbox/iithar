@@ -34,7 +34,12 @@ class _DonationFormState extends State<DonationForm> {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         title: Row(
           children: [
-            const Text('استبيان التبرع بالدم'),
+            const Text('استبيان التبرع بالدم',  textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 25,
+                            color: Colors.black,
+                          ),),
             const Spacer(),
             IconButton(
               icon: const Icon(Icons.notifications),
@@ -185,7 +190,12 @@ class _DonationFormState extends State<DonationForm> {
                     );
                   }
                 },
-                child: const Text('كن متبرعاً'),
+                child: const Text('كن متبرعاً',  textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),),
               ),
             ],
           ),
