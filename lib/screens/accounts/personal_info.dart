@@ -63,12 +63,26 @@ class UserinfoDataScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   _buildInfoSection('المعلومات الشخصية', [
                     _buildInfoRow('الاسم', userData['firstName']),
+                                    const Divider(),
+
                     _buildInfoRow('اسم العائلة', userData['lastName']),
+                                    const Divider(),
+
                     _buildInfoRow('تاريخ الميلاد', userData['birthDate']),
+                                    const Divider(),
+
                     _buildInfoRow('فصيلة الدم', userData['bloodType']),
+                                    const Divider(),
+
                     _buildInfoRow('الجنس', userData['genderType']),
+                                    const Divider(),
+
                     _buildInfoRow('رقم الجوال', '${userData['phoneNumber']}'),
+                                    const Divider(),
+
                     _buildInfoRow('الرقم الوطني', userData['ssid']),
+                                    const Divider(),
+
                     _buildInfoRow(
                         'قابل للتبرع', isEligibleForDonation ? 'نعم' : 'لا'),
                   ]),
