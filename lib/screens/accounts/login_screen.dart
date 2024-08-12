@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -16,6 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isPasswordVisible = false; // للتحكم في رؤية كلمة المرور
 
   @override
   Widget build(BuildContext context) {
@@ -108,97 +107,103 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
-}
 
-Widget _buildInfoSection(String title, List<Widget> children) {
-  return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: const [
-            BoxShadow(
-              color: Color.fromRGBO(112, 112, 112, 100),
-              blurRadius: 5,
+  Widget _buildInfoSection(String title, List<Widget> children) {
+    return Directionality(
+        textDirection: TextDirection.rtl,
+        child: Container(
+          padding: const EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: const [
+              BoxShadow(
+                color: Color.fromRGBO(112, 112, 112, 100),
+                blurRadius: 5,
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              ...children,
+            ],
+          ),
+        ));
+  }
+
+  Widget _buildTextFieldemail(
+      TextEditingController controller, String labelText, String errorText) {
+    return Directionality(
+        textDirection: TextDirection.rtl,
+        child: TextFormField(
+          controller: controller,
+          textAlign: TextAlign.right,
+          style: const TextStyle(
+            fontFamily: 'HSI',
+            fontSize: 15,
+            color: Colors.black,
+          ),
+          decoration: InputDecoration(
+            labelStyle: const TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 15,
+              color: Colors.black,
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            ...children,
-          ],
-        ),
-      ));
-}
+            labelText: labelText,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            alignLabelWithHint: true,
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'يرجى إدخال بريدك الإلكتروني';
+            }
+            return null;
+          },
+        ));
+  }
 
-Widget _buildTextFieldemail(
-  TextEditingController controller,
-  String labelText,
-  String errorText,
-) {
-  return Directionality(
-      textDirection: TextDirection.rtl,
-      child: TextFormField(
-        controller: controller,
-        textAlign: TextAlign.right,
-        style: const TextStyle(
-          fontFamily: 'HSI',
-          fontSize: 15,
-          color: Colors.black,
-        ),
-        decoration: InputDecoration(
-          labelStyle: const TextStyle(
+  Widget _buildTextFieldpassword(
+      TextEditingController controller, String labelText, String errorText) {
+    return Directionality(
+        textDirection: TextDirection.rtl,
+        child: TextFormField(
+          controller: controller,
+          textAlign: TextAlign.right,
+          obscureText: !_isPasswordVisible, 
+          style: const TextStyle(
             fontFamily: 'HSI',
             fontSize: 15,
             color: Colors.black,
           ),
-          labelText: labelText,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          alignLabelWithHint: true,
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'يرجى إدخال بريدك الإلكتروني';
-          }
-          return null;
-        },
-      ));
-}
-
-Widget _buildTextFieldpassword(
-  TextEditingController controller,
-  String labelText,
-  String errorText,
-) {
-  return Directionality(
-      textDirection: TextDirection.rtl,
-      child: TextFormField(
-        controller: controller,
-        textAlign: TextAlign.right,
-        style: const TextStyle(
-          fontFamily: 'HSI',
-          fontSize: 15,
-          color: Colors.black,
-        ),
-        decoration: InputDecoration(
-          labelStyle: const TextStyle(
-            fontFamily: 'HSI',
-            fontSize: 15,
-            color: Colors.black,
+          decoration: InputDecoration(
+            labelStyle: const TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 15,
+              color: Colors.black,
+            ),
+            labelText: labelText,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            alignLabelWithHint: true,
+            suffixIcon: IconButton(
+              icon: Icon(
+                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                setState(() {
+                  _isPasswordVisible = !_isPasswordVisible;
+                });
+              },
+            ),
           ),
-          labelText: labelText,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          alignLabelWithHint: true,
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'يرجى إدخال كلمة المرور';
-          }
-          return null;
-        },
-      ));
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return errorText;
+            }
+            return null;
+          },
+        ));
+  }
 }

@@ -20,7 +20,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   String? _selectedDate;
   String? _selectedTimeSlot;
   List<BloodBank> _bloodBanks = [];
-  Map<String, String> _bankHours = {}; // Map for bankId to hours
+  Map<String, String> _bankHours = {}; 
 
   final List<String> _donationTypes = [
     'الدم الكامل',
@@ -73,7 +73,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         phoneNumber: phoneNumber,
         location: LatLng(latitude, longitude),
       ));
-      bankHours[bankId] = hours; // Updated to store hours as a string
+      bankHours[bankId] = hours; 
     }
 
     setState(() {
@@ -106,14 +106,13 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   void _updateTimeSlots(String hours) {
     final List<String> splitHours = hours.split(' - ');
     if (splitHours.length != 2) {
-      return; // Invalid hours format
+      return; 
     }
 
     final DateFormat timeFormat = DateFormat('H:mm');
     final DateTime openingTime = timeFormat.parse(splitHours[0]);
     final DateTime closingTime = timeFormat.parse(splitHours[1]);
 
-    // Ensure the last booking is at least 15 minutes before closing
     final DateTime lastPossibleTime =
         closingTime.subtract(const Duration(minutes: 15));
 
@@ -227,10 +226,13 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30.0), 
+      ),
                           actionsAlignment: MainAxisAlignment.start,
                           title: const Text(
-                            'مراكز التبرع',
-                            textAlign: TextAlign.right,
+                            'مراكز التبرع',style: TextStyle(fontSize: 25, fontFamily: 'HSI'),
+                            textAlign: TextAlign.center,
                           ),
                           content: SizedBox(
                             width: double.maxFinite,
@@ -441,18 +443,34 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: const Text('تحذير'),
+                                    title: const Text('تحذير',textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 25,
+                            color: Colors.black),),
                                     content: const Text(
-                                        'لا يمكنك حجز موعد أكثر من مرة في الشهر.'),
+                                        'لا يمكنك حجز موعد أكثر من مرة في الشهر',textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 15,
+                            color: Colors.black),),
                                     actions: [
                                       ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+
+                        backgroundColor: const Color(0xFFAE0E03),
+),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           setState(() {
                                             _isButtonDisabled = false;
                                           });
                                         },
-                                        child: const Text('موافق'),
+                                        child: const Text('موافق',textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 15,
+                            color: Colors.white),),
                                       ),
                                     ],
                                   );
@@ -476,18 +494,48 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                                           _isButtonDisabled = false;
                                         });
                                       },
-                                      child: const Text('تأكيد'),
+                                      child: const Text('تأكيد',textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 15,
+                            color: Colors.black),),
                                     ),
                                   ],
                                 );
                               },
                             );
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('لم يتم استكمال الحجز'),
-                              ),
-                            );
+                           showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          'لم يتم استكمال الحجز',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'HSI',
+            fontSize: 25,
+            color: Colors.black,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'حسناً',        
+              style: TextStyle(
+                fontFamily: 'HSI',
+                fontSize: 18,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
                           }
                         },
                   child: const Text(

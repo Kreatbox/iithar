@@ -23,7 +23,8 @@ class SignupScreenState extends State<SignupScreen> {
   final _ssidController = TextEditingController();
   final _birthDateController = TextEditingController();
 
-  // Ensure default values exist in the dropdown lists
+  bool _isPasswordVisible = false; 
+
   final List<String> _bloodTypes = [
     'A+',
     'A-',
@@ -36,14 +37,12 @@ class SignupScreenState extends State<SignupScreen> {
   ];
   final List<String> _genderTypes = ['ذكر', 'انثى'];
 
-  // Default values
   String _selectedBloodType = 'A+';
-  String _selectedGenderType = 'ذكر';
+  String _selectedGenderType = 'ذكر,';
 
   @override
   void initState() {
     super.initState();
-    // Verify default values
     if (!_bloodTypes.contains(_selectedBloodType)) {
       _selectedBloodType = _bloodTypes.first;
     }
@@ -54,7 +53,6 @@ class SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    // Dispose controllers when the page is disposed
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
@@ -70,7 +68,11 @@ class SignupScreenState extends State<SignupScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('اختر الجنس'),
+          title: const Text('اختر الجنس',textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 25,
+                            color: Colors.black),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: _genderTypes.map((gender) {
@@ -98,7 +100,11 @@ class SignupScreenState extends State<SignupScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('اختر فصيلة الدم'),
+          title: const Text('اختر فصيلة الدم', textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 25,
+                            color: Colors.black),),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: _bloodTypes.map((bloodType) {
@@ -191,9 +197,7 @@ class SignupScreenState extends State<SignupScreen> {
                       'يرجى إدخال بريدك الإلكتروني',
                       isEmail: true),
                   const SizedBox(height: 10),
-                  _buildTextField(_passwordController, 'كلمة المرور',
-                      'يرجى إدخال كلمة المرور',
-                      isPassword: true),
+                  _buildPasswordTextField(), // Use the new password field
                   const SizedBox(height: 10),
                 ]),
                 const SizedBox(height: 30),
@@ -209,7 +213,6 @@ class SignupScreenState extends State<SignupScreen> {
                       ? null
                       : () async {
                           if (_formKey.currentState!.validate()) {
-                            // Create a new account
                             setState(() {
                               _isButtonDisabled = true;
                             });
@@ -220,7 +223,6 @@ class SignupScreenState extends State<SignupScreen> {
                                 password: _passwordController.text,
                               );
 
-                              // Save user data in Firestore
                               await FirebaseFirestore.instance
                                   .collection('users')
                                   .doc(userCredential.user!.uid)
@@ -235,13 +237,11 @@ class SignupScreenState extends State<SignupScreen> {
                                 'genderType': _selectedGenderType,
                               });
 
-                              // Navigate to the donation form screen
                               Navigator.pushReplacementNamed(context, '/form');
                             } catch (e) {
                               if (kDebugMode) {
                                 print('فشل إنشاء الحساب: ${e.toString()}');
                               }
-                              // Show error message to the user
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text('فشل إنشاء الحساب')),
@@ -267,10 +267,51 @@ class SignupScreenState extends State<SignupScreen> {
     );
   }
 
+  Widget _buildPasswordTextField() {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: TextFormField(
+        textAlign: TextAlign.right,
+        controller: _passwordController,
+        obscureText: !_isPasswordVisible, 
+        style: const TextStyle(
+          fontFamily: 'HSI',
+          fontSize: 15,
+          color: Colors.black,
+        ),
+        decoration: InputDecoration(
+          labelStyle: const TextStyle(
+            fontFamily: 'HSI',
+            fontSize: 15,
+            color: Colors.black,
+          ),
+          labelText: 'كلمة المرور',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          alignLabelWithHint: true,
+          suffixIcon: IconButton(
+            icon: Icon(
+              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+            ),
+            onPressed: () {
+              setState(() {
+                _isPasswordVisible = !_isPasswordVisible;
+              });
+            },
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'يرجى إدخال كلمة المرور';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
   Widget _buildTextField(
       TextEditingController controller, String labelText, String errorText,
       {bool isEmail = false,
-      bool isPassword = false,
       bool isPhone = false,
       bool isNumber = false,
       bool isDate = false}) {
@@ -294,7 +335,6 @@ class SignupScreenState extends State<SignupScreen> {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             alignLabelWithHint: true,
           ),
-          obscureText: isPassword,
           keyboardType: isEmail
               ? TextInputType.emailAddress
               : isPhone

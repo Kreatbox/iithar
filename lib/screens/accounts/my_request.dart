@@ -23,7 +23,7 @@ class BloodDonationRequestScreen extends StatelessWidget {
         title: const Align(
           alignment: Alignment.centerRight,
           child: Text(
-            'تفاصيل طلب التبرع',
+            '  ',
             style: TextStyle(
               fontFamily: 'HSI',
               fontSize: 30,
@@ -80,12 +80,7 @@ class BloodDonationRequestCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(112, 112, 112, 0.2),
-            blurRadius: 5,
-          ),
-        ],
+     
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -93,7 +88,7 @@ class BloodDonationRequestCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             _buildInfoSection(
-              'تفاصيل التبرع',
+              'تفاصيل طلب التبرع',
               [
                 InfoRow(
                   icon: Icons.person,
