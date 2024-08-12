@@ -26,10 +26,10 @@ class MyDonationsScreen extends StatelessWidget {
         ),
       ),
       body: DonationsList(),
+      
     );
   }
 }
-
 class DonationsList extends StatefulWidget {
   @override
   _DonationsListState createState() => _DonationsListState();
@@ -128,12 +128,6 @@ class _DonationsListState extends State<DonationsList> {
                 value: donationData['timeSlot'] ?? 'Unknown Time',
               ),
               const Divider(),
-              const InfoRow(
-                icon: Icons.hourglass_empty,
-                label: 'مدة التبرع',
-                value: '15 دقيقة',
-              ),
-              const Divider(),
               InfoRow(
                 icon: Icons.local_hospital,
                 label: 'نوع التبرع',
@@ -183,3 +177,4 @@ class InfoRow extends StatelessWidget {
     );
   }
 }
+
