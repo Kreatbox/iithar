@@ -61,6 +61,7 @@ class MapScreenState extends State<MapScreen> {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       String bankId = doc.id;
       String name = data['name'];
+      String place = data['place'];
       String hours = data['hours'];
       String phoneNumber = data['phoneNumber'];
       String location = data['location'];
@@ -70,6 +71,7 @@ class MapScreenState extends State<MapScreen> {
       fetchedBanks.add(BloodBank(
         bankId: bankId,
         name: name,
+        place: place,
         hours: hours,
         phoneNumber: phoneNumber,
         location: LatLng(latitude, longitude),
@@ -137,8 +139,8 @@ class MapScreenState extends State<MapScreen> {
         options: MapOptions(
           // Initialize the map center and zoom level
           initialCenter:
-              _currentLocation ?? const LatLng(34.8021, 38.9968), // Syria
-          initialZoom: 8.0,
+              _currentLocation ?? const LatLng(33.4986997, 36.245859), // Syria
+          initialZoom: 16.0,
         ),
         children: [
           TileLayer(
@@ -220,20 +222,20 @@ class MapScreenState extends State<MapScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 20),
-                                  const Row(
+                                  Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Text(
-                                        "هالحكي بظن ما في داعي ألو",
-                                        style: TextStyle(
+                                        bank.place,
+                                        style: const TextStyle(
                                           fontFamily: 'HSI',
                                           color: Colors.black,
                                           fontSize: 20,
                                         ),
                                         textAlign: TextAlign.left,
                                       ),
-                                      Icon(
+                                      const Icon(
                                         Icons.location_on,
                                         color: Color(0xFFAE0E03),
                                       ),
@@ -341,6 +343,7 @@ class MapScreenState extends State<MapScreen> {
 class BloodBank {
   final String bankId;
   final String name;
+  final String place;
   final String hours;
   final String phoneNumber;
   final LatLng location;
@@ -348,6 +351,7 @@ class BloodBank {
   BloodBank({
     required this.bankId,
     required this.name,
+    required this.place,
     required this.hours,
     required this.phoneNumber,
     required this.location,
