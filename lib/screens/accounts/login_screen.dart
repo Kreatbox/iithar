@@ -77,11 +77,28 @@ class _LoginScreenState extends State<LoginScreen> {
                               // Navigate to home page using navgation widget
                               Navigator.pushReplacementNamed(context, '/nav');
                             } catch (e) {
+                              String errorMessage;
+                              if (e is FirebaseAuthException) {
+                                switch (e.code) {
+                                  case 'invalid-email':
+                                    errorMessage = 'البريد الإلكتروني غير مسجل';
+                                    break;
+                                  case 'invalid-credential':
+                                    errorMessage = 'كلمة المرور خاطئة';
+                                    break;
+                                  default:
+                                    errorMessage =
+                                        'حصل خطأ في تسجيل الدخول متعلق بالحساب';
+                                }
+                              } else {
+                                errorMessage = 'خطأ في تسجيل الدخول';
+                              }
+
                               // Show error message to the user
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('فشل تسجيل الدخول')),
+                                SnackBar(content: Text(errorMessage)),
                               );
+
                               setState(() {
                                 _isButtonDisabled = false;
                               });
@@ -171,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: TextFormField(
           controller: controller,
           textAlign: TextAlign.right,
-          obscureText: !_isPasswordVisible, 
+          obscureText: !_isPasswordVisible,
           style: const TextStyle(
             fontFamily: 'HSI',
             fontSize: 15,
