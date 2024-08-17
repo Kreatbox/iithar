@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:iithar/notifications/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:iithar/navigation_menu.dart';
@@ -26,6 +27,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  final NotificationService notificationService = NotificationService();
+  await notificationService.initNotification();
   runApp(const MyApp());
 }
 

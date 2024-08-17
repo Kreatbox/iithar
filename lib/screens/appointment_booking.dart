@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iithar/notifications/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -20,12 +21,33 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   String? _selectedDate;
   String? _selectedTimeSlot;
   List<BloodBank> _bloodBanks = [];
-  Map<String, String> _bankHours = {}; 
+  Map<String, String> _bankHours = {};
 
   final List<String> _donationTypes = [
     'الدم الكامل',
     'الصفائح الدموية',
   ];
+  final Map<String, String> arabicToEnglishMonths = {
+    'كانون الثاني': 'January',
+    'شباط': 'February',
+    'آذار': 'March',
+    'نيسان': 'April',
+    'أيار': 'May',
+    'حزيران': 'June',
+    'تموز': 'July',
+    'آب': 'August',
+    'أيلول': 'September',
+    'تشرين الأول': 'October',
+    'تشرين الثاني': 'November',
+    'كانون الأول': 'December',
+  };
+
+  String convertArabicDateToEnglish(String arabicDate) {
+    arabicToEnglishMonths.forEach((arabicMonth, englishMonth) {
+      arabicDate = arabicDate.replaceAll(arabicMonth, englishMonth);
+    });
+    return arabicDate;
+  }
 
   List<String> _dates = [];
   List<String> _timeSlots = [];
@@ -73,7 +95,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         phoneNumber: phoneNumber,
         location: LatLng(latitude, longitude),
       ));
-      bankHours[bankId] = hours; 
+      bankHours[bankId] = hours;
     }
 
     setState(() {
@@ -95,18 +117,35 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   }
 
   void _generateDates() {
-    final DateFormat formatter = DateFormat('d MMMM', 'ar');
     final DateTime today = DateTime.now();
+    final List<String> arabicMonths = [
+      'كانون الثاني',
+      'شباط',
+      'آذار',
+      'نيسان',
+      'أيار',
+      'حزيران',
+      'تموز',
+      'آب',
+      'أيلول',
+      'تشرين الأول',
+      'تشرين الثاني',
+      'كانون الأول',
+    ];
     _dates = List.generate(7, (index) {
       final DateTime date = today.add(Duration(days: index));
-      return formatter.format(date);
+      final String day = DateFormat('d').format(date);
+      final String month = arabicMonths[date.month - 1];
+      final String year =
+          DateFormat('yyyy').format(date); // to use later, don't delete <3
+      return '$day $month';
     });
   }
 
   void _updateTimeSlots(String hours) {
     final List<String> splitHours = hours.split(' - ');
     if (splitHours.length != 2) {
-      return; 
+      return;
     }
 
     final DateFormat timeFormat = DateFormat('H:mm');
@@ -148,36 +187,65 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
 
   Future<bool> _hasExistingBookingForCurrentMonth() async {
     final User? user = FirebaseAuth.instance.currentUser;
-
     if (user != null) {
       final now = DateTime.now();
-      final oneMonthAgo = now.subtract(const Duration(days: 30));
-
+      final englishDate =
+          convertArabicDateToEnglish('$_selectedDate ${DateTime.now().year}');
+      final fullDateTimeString = '$englishDate $_selectedTimeSlot';
+      final DateTime selectedDateTime =
+          DateFormat('d MMMM yyyy hh:mm a').parse(fullDateTimeString);
+      final oneMonthAgo = selectedDateTime.subtract(const Duration(days: 30));
       final querySnapshot = await FirebaseFirestore.instance
           .collection('appointments')
           .where('userId', isEqualTo: user.uid)
-          .where('timestamp', isGreaterThanOrEqualTo: oneMonthAgo)
           .get();
-
-      return querySnapshot.docs.isNotEmpty;
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data();
+        final String arabicDateStr = data['date'];
+        final String timeSlotStr = data['timeSlot'];
+        final String englishDateStr = convertArabicDateToEnglish(arabicDateStr);
+        final DateTime appointmentDateTime =
+            DateFormat('d MMMM yyyy hh:mm a', 'en')
+                .parse('$englishDateStr $timeSlotStr');
+        if (appointmentDateTime.isAfter(oneMonthAgo) &&
+            appointmentDateTime.isBefore(now)) {
+          return true;
+        }
+      }
     }
-
     return false;
   }
 
   Future<void> _saveBooking() async {
     final User? user = FirebaseAuth.instance.currentUser;
-
+    final now = DateTime.now();
+    String year = now.year.toString();
     if (user != null) {
       await FirebaseFirestore.instance.collection('appointments').add({
         'userId': user.uid,
         'center': _selectedCenter,
         'donationType': _selectedDonationType,
-        'date': _selectedDate,
+        'date': "$_selectedDate $year",
         'timeSlot': _selectedTimeSlot,
         'timestamp': FieldValue.serverTimestamp(),
         'done': false,
       });
+      final englishDate =
+          convertArabicDateToEnglish('$_selectedDate ${DateTime.now().year}');
+      final fullDateTimeString = '$englishDate $_selectedTimeSlot';
+      final DateTime selectedDateTime =
+          DateFormat('d MMMM yyyy hh:mm a').parse(fullDateTimeString);
+      final DateTime reminderTime =
+          selectedDateTime.subtract(const Duration(hours: 1));
+      final int notificationId =
+          DateTime.now().millisecondsSinceEpoch ~/ 3600000;
+      final NotificationService notificationService = NotificationService();
+      await notificationService.scheduleNotification(
+        notificationId,
+        'موعد تبرع بالدم',
+        'تذكير بموعدك للتبرع بالدم في $_selectedCenter في الساعة $_selectedTimeSlot',
+        reminderTime,
+      );
     }
   }
 
@@ -226,12 +294,13 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0), 
-      ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
                           actionsAlignment: MainAxisAlignment.start,
                           title: const Text(
-                            'مراكز التبرع',style: TextStyle(fontSize: 25, fontFamily: 'HSI'),
+                            'مراكز التبرع',
+                            style: TextStyle(fontSize: 25, fontFamily: 'HSI'),
                             textAlign: TextAlign.center,
                           ),
                           content: SizedBox(
@@ -443,34 +512,42 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: const Text('تحذير',textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'HSI',
-                            fontSize: 25,
-                            color: Colors.black),),
+                                    title: const Text(
+                                      'تحذير',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: 'HSI',
+                                          fontSize: 25,
+                                          color: Colors.black),
+                                    ),
                                     content: const Text(
-                                        'لا يمكنك حجز موعد أكثر من مرة في الشهر',textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'HSI',
-                            fontSize: 15,
-                            color: Colors.black),),
+                                      'لا يمكنك حجز موعد أكثر من مرة في الشهر',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: 'HSI',
+                                          fontSize: 15,
+                                          color: Colors.black),
+                                    ),
                                     actions: [
                                       ElevatedButton(
-                                                          style: ElevatedButton.styleFrom(
-
-                        backgroundColor: const Color(0xFFAE0E03),
-),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xFFAE0E03),
+                                        ),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           setState(() {
                                             _isButtonDisabled = false;
                                           });
                                         },
-                                        child: const Text('موافق',textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'HSI',
-                            fontSize: 15,
-                            color: Colors.white),),
+                                        child: const Text(
+                                          'موافق',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontFamily: 'HSI',
+                                              fontSize: 15,
+                                              color: Colors.white),
+                                        ),
                                       ),
                                     ],
                                   );
@@ -494,48 +571,51 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                                           _isButtonDisabled = false;
                                         });
                                       },
-                                      child: const Text('تأكيد',textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'HSI',
-                            fontSize: 15,
-                            color: Colors.black),),
+                                      child: const Text(
+                                        'تأكيد',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontFamily: 'HSI',
+                                            fontSize: 15,
+                                            color: Colors.black),
+                                      ),
                                     ),
                                   ],
                                 );
                               },
                             );
                           } else {
-                           showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(
-          'لم يتم استكمال الحجز',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'HSI',
-            fontSize: 25,
-            color: Colors.black,
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              'حسناً',        
-              style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 18,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ],
-      );
-    },
-  );
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    'لم يتم استكمال الحجز',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'HSI',
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text(
+                                        'حسناً',
+                                        style: TextStyle(
+                                          fontFamily: 'HSI',
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           }
                         },
                   child: const Text(
