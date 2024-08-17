@@ -247,6 +247,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         reminderTime,
       );
     }
+  
   }
 
   @override
@@ -560,11 +561,21 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: const Text('تأكيد الحجز'),
+                                  title: const Text('تأكيد الحجز', textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontFamily: 'HSI',
+                                              fontSize: 15,
+                                              color: Colors.black),),
                                   content: Text(
                                       'تم حجز موعدك في $_selectedCenter للتبرع بـ $_selectedDonationType في تاريخ $_selectedDate في وقت $_selectedTimeSlot'),
                                   actions: [
                                     ElevatedButton(
+                                       style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(100, 45),
+                      backgroundColor: const Color(0xFFAE0E03),
+                      padding: const EdgeInsets.only(
+                       top: 5.0, bottom: 1.0),
+                      alignment: Alignment.center),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                         setState(() {
@@ -577,7 +588,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                                         style: TextStyle(
                                             fontFamily: 'HSI',
                                             fontSize: 15,
-                                            color: Colors.black),
+                                            color: Colors.white),
                                       ),
                                     ),
                                   ],
