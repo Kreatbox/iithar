@@ -9,6 +9,7 @@ import 'package:iithar/screens/donation_form.dart';
 import 'package:iithar/screens/accounts/my_appointment.dart';
 import 'package:iithar/screens/accounts/my_donations.dart';
 import 'package:iithar/screens/accounts/my_request.dart';
+import 'package:iithar/screens/first_run/splash_screen.dart';
 import 'package:iithar/screens/notification_screen.dart';
 import 'package:iithar/screens/publish_request.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
         } else {
           bool isFirstRun = snapshot.data!;
           if (isFirstRun) {
-            return const Onboarding();
+            return const SplashScreen();
           } else if (user == null) {
             return const RegisterScreen();
           } else {
