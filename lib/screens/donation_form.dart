@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:iithar/screens/notification_screen.dart';
 
 class DonationForm extends StatefulWidget {
   const DonationForm({super.key});
@@ -30,25 +29,23 @@ class _DonationFormState extends State<DonationForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+              backgroundColor: Color.fromARGB(255, 255, 255, 255),
+
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         title: Row(
           children: [
-            const Text('استبيان التبرع بالدم',  textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'HSI',
-                            fontSize: 25,
-                            color: Colors.black,
-                          ),),
-            const Spacer(),
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return  NotificationsScreen();
-                }));
-              },
+            const Text(
+              'استبيان التبرع بالدم',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontFamily: 'HSI',
+                fontSize: 25,
+                color: Colors.black,
+              ),
             ),
+            const Spacer(),
+          
           ],
         ),
       ),
@@ -149,15 +146,22 @@ class _DonationFormState extends State<DonationForm> {
               ),
               const SizedBox(height: 10),
               CheckboxListTile(
-                title: const Text('أنت موافق على الأحكام والشروط'),
-                value: acceptedTerms,
-                onChanged: (newValue) {
-                  setState(() {
-                    acceptedTerms = newValue ?? false;
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
+  title: const Text(
+    'أنت موافق على الأحكام والشروط',
+    style: TextStyle(
+      fontFamily: 'HSI',
+    ),
+  ),
+  value: acceptedTerms,
+  onChanged: (newValue) {
+    setState(() {
+      acceptedTerms = newValue ?? false;
+    });
+  },
+  activeColor: const Color(0xFFAE0E03), 
+  controlAffinity: ListTileControlAffinity.leading,
+),
+
               const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -165,10 +169,8 @@ class _DonationFormState extends State<DonationForm> {
                 ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate() && acceptedTerms) {
-                    // Create form answers string
                     String formAnswers = _getFormAnswersString();
                     try {
-                      // Save form answers to Firestore
                       await _saveFormAnswers(formAnswers);
 
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -186,16 +188,24 @@ class _DonationFormState extends State<DonationForm> {
                   } else if (!acceptedTerms) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text('يجب الموافقة على الأحكام والشروط')),
+                          content: Text('يجب الموافقة على الأحكام والشروط',  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'HSI',
+                    fontSize: 25,
+                    color: Colors.white,
+                  ),)),
                     );
                   }
                 },
-                child: const Text('كن متبرعاً',  textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'HSI',
-                            fontSize: 25,
-                            color: Colors.white,
-                          ),),
+                child: const Text(
+                  'كن متبرعاً',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'HSI',
+                    fontSize: 25,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),
@@ -203,37 +213,50 @@ class _DonationFormState extends State<DonationForm> {
       ),
     );
   }
+
   Widget buildQuestion(
       String question, Function(bool?) onChanged, bool? groupValue) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(5),
-      ),
+       decoration: BoxDecoration(
+      color: Colors.white, 
+      border: Border.all(color: Colors.grey),
+      borderRadius: BorderRadius.circular(15), 
+    ),
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             question,
-            style: const TextStyle(fontSize: 18),
+textAlign: TextAlign.right,
+            style: const TextStyle(
+              fontSize: 18,
+              fontFamily: 'HSI', 
+            ),
           ),
           Row(
             children: <Widget>[
               Expanded(
                 child: RadioListTile<bool>(
-                  title: const Text('نعم'),
+                  title: const Text('نعم',
+                      style: TextStyle(
+                        fontFamily: 'HSI', 
+                      )),
                   value: true,
                   groupValue: groupValue,
+                  activeColor: const Color(0xFFAE0E03), 
                   onChanged: onChanged,
                 ),
               ),
               Expanded(
                 child: RadioListTile<bool>(
-                  title: const Text('لا'),
+                  title: const Text('لا',
+                      style: TextStyle(
+                        fontFamily: 'HSI',
+                      )),
                   value: false,
                   groupValue: groupValue,
+                  activeColor:  Color(0xFFAE0E03),
                   onChanged: onChanged,
                 ),
               ),
