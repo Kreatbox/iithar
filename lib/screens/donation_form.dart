@@ -29,24 +29,22 @@ class _DonationFormState extends State<DonationForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-              backgroundColor: Color.fromARGB(255, 255, 255, 255),
-
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        title: Row(
-          children: [
-            const Text(
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      appBar:AppBar(
+        backgroundColor: Colors.white,
+        title: const Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
               'استبيان التبرع بالدم',
               textAlign: TextAlign.right,
               style: TextStyle(
                 fontFamily: 'HSI',
-                fontSize: 25,
+                fontSize: 30,
                 color: Colors.black,
               ),
             ),
-            const Spacer(),
-          
-          ],
+          ),
         ),
       ),
       body: Padding(
@@ -54,7 +52,7 @@ class _DonationFormState extends State<DonationForm> {
         child: Form(
           key: _formKey,
           child: ListView(
-            children: <Widget>[
+            children: [
               buildQuestion(
                 'هل وزنك أقل من 50 كغ؟',
                 (value) {
@@ -146,33 +144,31 @@ class _DonationFormState extends State<DonationForm> {
               ),
               const SizedBox(height: 10),
               CheckboxListTile(
-  title: const Text(
-    'أنت موافق على الأحكام والشروط',
-    style: TextStyle(
-      fontFamily: 'HSI',
-    ),
-  ),
-  value: acceptedTerms,
-  onChanged: (newValue) {
-    setState(() {
-      acceptedTerms = newValue ?? false;
-    });
-  },
-  activeColor: const Color(0xFFAE0E03), 
-  controlAffinity: ListTileControlAffinity.leading,
-),
-
+                title: const Text(
+                  'أنت موافق على الأحكام والشروط',
+                  style: TextStyle(
+                    fontFamily: 'HSI',
+                  ),
+                ),
+                value: acceptedTerms,
+                onChanged: (newValue) {
+                  setState(() {
+                    acceptedTerms = newValue ?? false;
+                  });
+                },
+                activeColor: const Color(0xFFAE0E03),
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFAE0E03),
                 ),
                 onPressed: () async {
-                  if (_formKey.currentState!.validate() && acceptedTerms) {
+                  if (_formKey.currentState!.validate() && acceptedTerms  && _allQuestionsAnswered()) {
                     String formAnswers = _getFormAnswersString();
                     try {
                       await _saveFormAnswers(formAnswers);
-
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('الاستبيان مكتمل!')),
                       );
@@ -188,12 +184,30 @@ class _DonationFormState extends State<DonationForm> {
                   } else if (!acceptedTerms) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text('يجب الموافقة على الأحكام والشروط',  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 25,
-                    color: Colors.white,
-                  ),)),
+                        content: Text(
+                          'يجب الموافقة على الأحكام والشروط',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    );
+                  }else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'يجب الإجابة على جميع الأسئلة',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'HSI',
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     );
                   }
                 },
@@ -213,52 +227,77 @@ class _DonationFormState extends State<DonationForm> {
       ),
     );
   }
-
+  bool _allQuestionsAnswered() {
+    return weightUnder50 != null &&
+        heartOrLungProblems != null &&
+        hadColdInLast28Days != null &&
+        hadCancer != null &&
+        hasDiabetes != null &&
+        hadSurgeryInLast3Months != null &&
+        hadVaccineInLast3Months != null &&
+        hadBloodTransfusionInLast12Months != null &&
+        agreedToBloodTests != null;
+  }
   Widget buildQuestion(
       String question, Function(bool?) onChanged, bool? groupValue) {
     return Container(
-       decoration: BoxDecoration(
-      color: Colors.white, 
-      border: Border.all(color: Colors.grey),
-      borderRadius: BorderRadius.circular(15), 
-    ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(15),
+      ),
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: Column(
-        children: <Widget>[
+        crossAxisAlignment: CrossAxisAlignment.end, // Add this line
+        children: [
           Text(
             question,
-textAlign: TextAlign.right,
+            textAlign: TextAlign.right, // Modify this line
             style: const TextStyle(
               fontSize: 18,
-              fontFamily: 'HSI', 
+              fontFamily: 'HSI',
             ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              Expanded(
-                child: RadioListTile<bool>(
-                  title: const Text('نعم',
-                      style: TextStyle(
-                        fontFamily: 'HSI', 
-                      )),
-                  value: true,
-                  groupValue: groupValue,
-                  activeColor: const Color(0xFFAE0E03), 
-                  onChanged: onChanged,
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'نعم',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                    ),
+                  ),
+                  Radio<bool>(
+                    value: true,
+                    groupValue: groupValue,
+                    activeColor: const Color(0xFFAE0E03),
+                    onChanged: onChanged,
+                  ),
+                ],
               ),
-              Expanded(
-                child: RadioListTile<bool>(
-                  title: const Text('لا',
-                      style: TextStyle(
-                        fontFamily: 'HSI',
-                      )),
-                  value: false,
-                  groupValue: groupValue,
-                  activeColor:  Color(0xFFAE0E03),
-                  onChanged: onChanged,
-                ),
+              const SizedBox(
+                width: 100,
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'لا',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                    ),
+                  ),
+                  Radio<bool>(
+                    value: false,
+                    groupValue: groupValue,
+                    activeColor: const Color(0xFFAE0E03),
+                    onChanged: onChanged,
+                  ),
+                ],
               ),
             ],
           ),
