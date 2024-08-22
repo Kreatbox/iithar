@@ -140,7 +140,7 @@ class MapScreenState extends State<MapScreen> {
           // Initialize the map center and zoom level
           initialCenter:
               _currentLocation ?? const LatLng(33.4986997, 36.245859), // Syria
-          initialZoom: 16.0,
+          initialZoom: 12.0,
         ),
         children: [
           TileLayer(
@@ -193,20 +193,27 @@ class MapScreenState extends State<MapScreen> {
                             return Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25),bottomLeft: Radius.zero,bottomRight: Radius.zero),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(25),
+                                    topRight: Radius.circular(25),
+                                    bottomLeft: Radius.zero,
+                                    bottomRight: Radius.zero),
                               ),
                               height: 300,
                               width: 400,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
-
                                 children: [
                                   Container(
                                     width: 400,
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFAE0E03),
-                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25),bottomLeft: Radius.zero,bottomRight: Radius.zero),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(25),
+                                          topRight: Radius.circular(25),
+                                          bottomLeft: Radius.zero,
+                                          bottomRight: Radius.zero),
                                     ),
                                     child: Text(
                                       bank.name,
