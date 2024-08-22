@@ -193,95 +193,98 @@ class MapScreenState extends State<MapScreen> {
                             return Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25),bottomLeft: Radius.zero,bottomRight: Radius.zero),
                               ),
                               height: 300,
                               width: 400,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
+
                                 children: [
                                   Container(
                                     width: 400,
-                                    padding: const EdgeInsets.only(
-                                        left: 0.0,
-                                        right: 0.0,
-                                        top: 10.0,
-                                        bottom: 10.0),
+                                    padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFAE0E03),
-                                      borderRadius: BorderRadius.circular(25),
+                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(25),topRight: Radius.circular(25),bottomLeft: Radius.zero,bottomRight: Radius.zero),
                                     ),
                                     child: Text(
                                       bank.name,
                                       style: const TextStyle(
                                         fontFamily: 'HSI',
                                         color: Colors.white,
-                                        fontSize: 30,
+                                        fontSize: 35,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                   const SizedBox(height: 20),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Text(
                                         bank.place,
                                         style: const TextStyle(
                                           fontFamily: 'HSI',
                                           color: Colors.black,
-                                          fontSize: 20,
+                                          fontSize: 23,
                                         ),
                                         textAlign: TextAlign.left,
                                       ),
+                                      const SizedBox(width: 20),
                                       const Icon(
                                         Icons.location_on,
                                         color: Color(0xFFAE0E03),
+                                        size: 28,
                                       ),
+                                      const SizedBox(width: 15),
                                     ],
                                   ),
                                   const SizedBox(height: 15),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Text(
                                         bank.phoneNumber,
                                         style: const TextStyle(
                                           fontFamily: 'HSI',
                                           color: Colors.black,
-                                          fontSize: 20,
+                                          fontSize: 23,
                                         ),
                                         textAlign: TextAlign.left,
                                       ),
+                                      const SizedBox(width: 20),
                                       const Icon(
                                         Icons.phone,
                                         color: Color(0xFFAE0E03),
+                                        size: 28,
                                       ),
+                                      const SizedBox(width: 15),
                                     ],
                                   ),
                                   const SizedBox(height: 15),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Text(
                                         bank.hours,
                                         style: const TextStyle(
                                           fontFamily: 'HSI',
                                           color: Colors.black,
-                                          fontSize: 20,
+                                          fontSize: 23,
                                         ),
                                         textAlign: TextAlign.left,
                                       ),
+                                      const SizedBox(width: 20),
                                       const Icon(
                                         Icons.lock_clock,
                                         color: Color(0xFFAE0E03),
+                                        size: 28,
                                       ),
+                                      const SizedBox(width: 15),
                                     ],
                                   ),
-                                  const SizedBox(height: 30),
+                                  const SizedBox(height: 15),
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       fixedSize: const Size(180, 45),

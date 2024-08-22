@@ -348,17 +348,21 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     );
                   },
                   child: AbsorbPointer(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: _selectedCenter ?? 'اختر مركز',
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      textAlign: TextAlign.right,
+                  child: Container(
+                    width: 400,
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(15),
                     ),
+                    child: Text(
+                      _selectedCenter ?? 'اختر مركز',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(fontSize: 20, fontFamily: 'HSI',
+                          color:Colors.black ),
+                    ),
+                  ),
                   ),
                 ),
                 const SizedBox(height: 25),
