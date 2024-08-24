@@ -33,5 +33,46 @@ Future<List<DonationRequest>> getDonationRequests() async {
       bloodType: 'B+',
       location: 'حمص',
     ),
+    DonationRequest(
+      name: 'مستشفى الفارابي',
+      bloodType: 'B+',
+      location: 'حمص',
+    ),
+    DonationRequest(
+      name: 'مستشفى الفارابي',
+      bloodType: 'B+',
+      location: 'حمص',
+    ),
+    DonationRequest(
+      name: 'مستشفى الفارابي',
+      bloodType: 'B+',
+      location: 'حمص',
+    ),
+    DonationRequest(
+      name: 'مستشفى الفارابي',
+      bloodType: 'B+',
+      location: 'حمص',
+    ),
+    DonationRequest(
+      name: 'مستشفى الفارابي',
+      bloodType: 'B+',
+      location: 'حمص',
+    ),
+    DonationRequest(
+      name: 'مستشفى الفارابي',
+      bloodType: 'B+',
+      location: 'حمص',
+    ),
+    DonationRequest(
+      name: 'مستشفى الفارابي',
+      bloodType: 'B+',
+      location: 'حمص',
+    ),
+    DonationRequest(
+      name: 'مستشفى الفارابي',
+      bloodType: 'B+',
+      location: 'حمص',
+    ),
+
   ];
 }

@@ -44,10 +44,8 @@ class NavigationMenu extends StatelessWidget {
                   label: 'الرئيسية',
                 ),
                 NavigationDestination(
-                  icon: Image.asset(
-                    'assets/icons/icon3.png',
-                    height: 20,
-                  ),
+                  icon:  Icon(Icons.bloodtype_outlined, color:  Color(0xFFAE0E03,
+                  )),
                   label: 'نشر',
                 ),
                 NavigationDestination(

@@ -281,7 +281,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const SizedBox(height: 20),
+
                 const Text(
                   'اختر مركز تبرع',
                   textAlign: TextAlign.right,
