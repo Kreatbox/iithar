@@ -4,12 +4,10 @@ import 'package:iithar/screens/donate_now_screen.dart';
 
 class DonationRequestsListView extends StatefulWidget {
   const DonationRequestsListView({super.key});
-
   @override
   State<DonationRequestsListView> createState() =>
       _DonationRequestsListViewState();
 }
-
 class _DonationRequestsListViewState extends State<DonationRequestsListView> {
   @override
   Widget build(BuildContext context) {

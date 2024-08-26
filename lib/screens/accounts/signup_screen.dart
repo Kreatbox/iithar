@@ -67,6 +67,7 @@ class SignupScreenState extends State<SignupScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text(
             'اختر الجنس',
             textAlign: TextAlign.center,
@@ -77,7 +78,10 @@ class SignupScreenState extends State<SignupScreen> {
             mainAxisSize: MainAxisSize.min,
             children: _genderTypes.map((gender) {
               return ListTile(
-                title: Text(gender),
+                title: Text(gender,
+                  textAlign: TextAlign.right,
+                  style:
+                  TextStyle(fontFamily: 'HSI', fontSize: 18, color: Colors.black),),
                 onTap: () {
                   Navigator.of(context).pop(gender);
                 },
@@ -100,6 +104,7 @@ class SignupScreenState extends State<SignupScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text(
             'اختر فصيلة الدم',
             textAlign: TextAlign.center,
@@ -110,7 +115,10 @@ class SignupScreenState extends State<SignupScreen> {
             mainAxisSize: MainAxisSize.min,
             children: _bloodTypes.map((bloodType) {
               return ListTile(
-                title: Text(bloodType),
+                title: Text(bloodType,
+                    textAlign: TextAlign.right,
+                    style:
+                    TextStyle( fontSize: 18, color: Colors.black)),
                 onTap: () {
                   Navigator.of(context).pop(bloodType);
                 },
@@ -144,7 +152,8 @@ class SignupScreenState extends State<SignupScreen> {
           ),
         ),
       ),
-      body: Stack(children: [
+      body: Stack(
+          children: [
         SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
           child: Form(

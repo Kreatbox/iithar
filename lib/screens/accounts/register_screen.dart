@@ -6,9 +6,10 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(children: [
         Image.asset(
-          'assets/Images/intro.png',
+          'assets/Images/bg.png',
           fit: BoxFit.cover,
           width: double.infinity,
           height: double.infinity,
