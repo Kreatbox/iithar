@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:iithar/notifications/notification_service.dart';
+import 'package:iithar/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:iithar/models/blood_bank.dart';
+import 'package:iithar/services/data_service.dart';
+import 'dart:ui' as ui;
 
 class AppointmentBookingScreen extends StatefulWidget {
   const AppointmentBookingScreen({super.key});
@@ -72,30 +74,17 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   }
 
   Future<void> _fetchBloodBanks(String? defaultBankId, String? hours) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    QuerySnapshot querySnapshot = await firestore.collection('banks').get();
-
-    final List<BloodBank> fetchedBanks = [];
+    final dataService = DataService();
+    List<BloodBank> fetchedBanks = await dataService.loadBankData();
     final Map<String, String> bankHours = {};
 
-    for (var doc in querySnapshot.docs) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      String bankId = doc.id;
-      String name = data['name'];
-      String hours = data['hours'];
-      String phoneNumber = data['phoneNumber'];
-      String location = data['location'];
-      List<String> coordinates = location.split(',');
-      double latitude = double.parse(coordinates[0]);
-      double longitude = double.parse(coordinates[1]);
-      fetchedBanks.add(BloodBank(
-        bankId: bankId,
-        name: name,
-        hours: hours,
-        phoneNumber: phoneNumber,
-        location: LatLng(latitude, longitude),
-      ));
-      bankHours[bankId] = hours;
+    if (fetchedBanks.isEmpty) {
+      // Handle the case where there are no cached banks
+      return;
+    }
+
+    for (var bank in fetchedBanks) {
+      bankHours[bank.bankId] = bank.hours;
     }
 
     setState(() {
@@ -136,9 +125,8 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       final DateTime date = today.add(Duration(days: index));
       final String day = DateFormat('d').format(date);
       final String month = arabicMonths[date.month - 1];
-      final String year =
-          DateFormat('yyyy').format(date); // to use later, don't delete <3
-      return '$day $month';
+      final String year = DateFormat('yyyy').format(date);
+      return '$day $month $year';
     });
   }
 
@@ -189,8 +177,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final now = DateTime.now();
-      final englishDate =
-          convertArabicDateToEnglish('$_selectedDate ${DateTime.now().year}');
+      final englishDate = convertArabicDateToEnglish('$_selectedDate');
       final fullDateTimeString = '$englishDate $_selectedTimeSlot';
       final DateTime selectedDateTime =
           DateFormat('d MMMM yyyy hh:mm a').parse(fullDateTimeString);
@@ -218,20 +205,17 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
 
   Future<void> _saveBooking() async {
     final User? user = FirebaseAuth.instance.currentUser;
-    final now = DateTime.now();
-    String year = now.year.toString();
     if (user != null) {
       await FirebaseFirestore.instance.collection('appointments').add({
         'userId': user.uid,
         'center': _selectedCenter,
         'donationType': _selectedDonationType,
-        'date': "$_selectedDate $year",
+        'date': "$_selectedDate",
         'timeSlot': _selectedTimeSlot,
         'timestamp': FieldValue.serverTimestamp(),
         'done': false,
       });
-      final englishDate =
-          convertArabicDateToEnglish('$_selectedDate ${DateTime.now().year}');
+      final englishDate = convertArabicDateToEnglish('$_selectedDate');
       final fullDateTimeString = '$englishDate $_selectedTimeSlot';
       final DateTime selectedDateTime =
           DateFormat('d MMMM yyyy hh:mm a').parse(fullDateTimeString);
@@ -243,11 +227,10 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       await notificationService.scheduleNotification(
         notificationId,
         'موعد تبرع بالدم',
-        'تذكير بموعدك للتبرع بالدم في $_selectedCenter في الساعة $_selectedTimeSlot',
+        'تذكير بموعدك للتبرع بالدم في $_selectedCenter في الساعة $_selectedTimeSlot في التاريخ  $_selectedDate',
         reminderTime,
       );
     }
-  
   }
 
   @override
@@ -281,7 +264,6 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-
                 const Text(
                   'اختر مركز تبرع',
                   textAlign: TextAlign.right,
@@ -348,21 +330,23 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                     );
                   },
                   child: AbsorbPointer(
-                  child: Container(
-                    width: 400,
-                    padding: const EdgeInsets.all(10),
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(15),
+                    child: Container(
+                      width: 400,
+                      padding: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text(
+                        _selectedCenter ?? 'اختر مركز',
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'HSI',
+                            color: Colors.black),
+                      ),
                     ),
-                    child: Text(
-                      _selectedCenter ?? 'اختر مركز',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(fontSize: 20, fontFamily: 'HSI',
-                          color:Colors.black ),
-                    ),
-                  ),
                   ),
                 ),
                 const SizedBox(height: 25),
@@ -415,31 +399,34 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   child: Row(
                     children: _dates.map((date) {
                       return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedDate = date;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          margin: const EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(
-                            color: _selectedDate == date
-                                ? const Color(0xFFAE0E03)
-                                : Colors.grey[200],
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Text(
-                            date,
-                            style: TextStyle(
+                          onTap: () {
+                            setState(() {
+                              _selectedDate = date;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            decoration: BoxDecoration(
                               color: _selectedDate == date
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontFamily: 'HSI',
+                                  ? const Color(0xFFAE0E03)
+                                  : Colors.grey[200],
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                          ),
-                        ),
-                      );
+                            child: Directionality(
+                              textDirection: ui.TextDirection.rtl,
+                              child: Text(
+                                date,
+                                style: TextStyle(
+                                  color: _selectedDate == date
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontFamily: 'HSI',
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ));
                     }).toList(),
                   ),
                 ),
@@ -565,21 +552,25 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: const Text('تأكيد الحجز', textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontFamily: 'HSI',
-                                              fontSize: 15,
-                                              color: Colors.black),),
+                                  title: const Text(
+                                    'تأكيد الحجز',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontFamily: 'HSI',
+                                        fontSize: 15,
+                                        color: Colors.black),
+                                  ),
                                   content: Text(
                                       'تم حجز موعدك في $_selectedCenter للتبرع بـ $_selectedDonationType في تاريخ $_selectedDate في وقت $_selectedTimeSlot'),
                                   actions: [
                                     ElevatedButton(
-                                       style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(100, 45),
-                      backgroundColor: const Color(0xFFAE0E03),
-                      padding: const EdgeInsets.only(
-                       top: 5.0, bottom: 1.0),
-                      alignment: Alignment.center),
+                                      style: ElevatedButton.styleFrom(
+                                          fixedSize: const Size(100, 45),
+                                          backgroundColor:
+                                              const Color(0xFFAE0E03),
+                                          padding: const EdgeInsets.only(
+                                              top: 5.0, bottom: 1.0),
+                                          alignment: Alignment.center),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                         setState(() {
@@ -604,7 +595,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text(
+                                  title: const Text(
                                     'لم يتم استكمال الحجز',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -618,7 +609,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text(
+                                      child: const Text(
                                         'حسناً',
                                         style: TextStyle(
                                           fontFamily: 'HSI',
@@ -667,20 +658,4 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       ),
     );
   }
-}
-
-class BloodBank {
-  final String bankId;
-  final String name;
-  final String hours;
-  final String phoneNumber;
-  final LatLng location;
-
-  BloodBank({
-    required this.bankId,
-    required this.name,
-    required this.hours,
-    required this.phoneNumber,
-    required this.location,
-  });
 }

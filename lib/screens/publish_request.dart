@@ -4,16 +4,17 @@ class PublishRequest extends StatefulWidget {
   const PublishRequest({super.key});
 
   @override
-  _PublishRequestState createState() => _PublishRequestState();
+  PublishRequestState createState() => PublishRequestState();
 }
 
-class _PublishRequestState extends State<PublishRequest> {
+class PublishRequestState extends State<PublishRequest> {
   String? _selectedBloodType;
   String? _selectedCity;
   String? _selectedBloodBank;
   String? _selectedMedicalCondition;
-  TextEditingController _otherConditionController = TextEditingController();
-  TextEditingController _dateTimeController = TextEditingController();
+  final TextEditingController _otherConditionController =
+      TextEditingController();
+  final TextEditingController _dateTimeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class _PublishRequestState extends State<PublishRequest> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Expanded(
+        title: const Expanded(
           child: Align(
             alignment: Alignment.centerRight,
             child: Text('نشر طلب بحاجة إلى دم ',
@@ -45,17 +46,17 @@ class _PublishRequestState extends State<PublishRequest> {
               _buildDateTimeField(
                   Icons.access_time, 'تاريخ ووقت التبرع الممكن'),
               _buildRequestField(Icons.note, 'أضف ملاحظة'),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  fixedSize: Size(175, 45),
+                  fixedSize: const Size(175, 45),
                   backgroundColor: const Color(0xFFAE0E03),
                   padding: const EdgeInsets.only(
                       right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
                   alignment: Alignment.center,
                 ),
                 onPressed: () {},
-                child: Text(
+                child: const Text(
                   'نشر الطلب ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -81,12 +82,14 @@ class _PublishRequestState extends State<PublishRequest> {
             textDirection: TextDirection.rtl,
             child: TextField(
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.location_on, color: Color(0xFFAE0E03)),
+                prefixIcon:
+                    const Icon(Icons.location_on, color: Color(0xFFAE0E03)),
                 labelText: _selectedCity ?? 'المدينة',
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 18,
-                  color: Colors.grey,),
+                  color: Colors.grey,
+                ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 16),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -110,12 +113,13 @@ class _PublishRequestState extends State<PublishRequest> {
       builder: (BuildContext context) {
         return SimpleDialog(
           backgroundColor: Colors.white,
-          title: Text(
-            'اختر المدينة',style: const TextStyle(
-            fontFamily: 'HSI',
-            fontSize: 25,
-            color: Colors.black,
-          ),
+          title: const Text(
+            'اختر المدينة',
+            style: TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 25,
+              color: Colors.black,
+            ),
             textAlign: TextAlign.center,
           ),
           children: <Widget>[
@@ -126,13 +130,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('حمص',
+              child: const Text(
+                'حمص',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
                   color: Colors.black,
-                ),),
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -141,13 +147,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('دمشق',
+              child: const Text(
+                'دمشق',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
                   color: Colors.black,
-                ),),
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -156,13 +164,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('حلب',
+              child: const Text(
+                'حلب',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
                   color: Colors.black,
-                ),),
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -171,13 +181,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('حماة',
+              child: const Text(
+                'حماة',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
                   color: Colors.black,
-                ),),
+                ),
+              ),
             ),
           ],
         );
@@ -198,12 +210,13 @@ class _PublishRequestState extends State<PublishRequest> {
             child: TextField(
               decoration: InputDecoration(
                 prefixIcon:
-                    Icon(Icons.local_hospital, color: Color(0xFFAE0E03)),
+                    const Icon(Icons.local_hospital, color: Color(0xFFAE0E03)),
                 labelText: _selectedBloodBank ?? 'موقع التبرع',
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 18,
-                  color: Colors.grey,),
+                  color: Colors.grey,
+                ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
@@ -223,13 +236,15 @@ class _PublishRequestState extends State<PublishRequest> {
       builder: (BuildContext context) {
         return SimpleDialog(
           backgroundColor: Colors.white,
-          title: Text('اختر موقع التبرع',
+          title: const Text(
+            'اختر موقع التبرع',
             textAlign: TextAlign.center,
-            style: const TextStyle(
-            fontFamily: 'HSI',
-            fontSize: 25,
-            color: Colors.black,
-          ),),
+            style: TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 25,
+              color: Colors.black,
+            ),
+          ),
           children: <Widget>[
             SimpleDialogOption(
               onPressed: () {
@@ -238,13 +253,16 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('بنك الدم في حمص',
-              textAlign: TextAlign.right,
-              style: const TextStyle(
-              fontFamily: 'HSI',
-              fontSize: 15,
-              color: Colors.black,),
-            ),),
+              child: const Text(
+                'بنك الدم في حمص',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontFamily: 'HSI',
+                  fontSize: 15,
+                  color: Colors.black,
+                ),
+              ),
+            ),
             SimpleDialogOption(
               onPressed: () {
                 setState(() {
@@ -252,11 +270,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('بنك الدم في حماة',textAlign: TextAlign.right,
-                style: const TextStyle(
+              child: const Text(
+                'بنك الدم في حماة',
+                textAlign: TextAlign.right,
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -265,12 +287,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('بنك الدم في دمشق',
+              child: const Text(
+                'بنك الدم في دمشق',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
           ],
         );
@@ -290,12 +315,14 @@ class _PublishRequestState extends State<PublishRequest> {
             textDirection: TextDirection.rtl,
             child: TextField(
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.bloodtype, color: Color(0xFFAE0E03)),
+                prefixIcon:
+                    const Icon(Icons.bloodtype, color: Color(0xFFAE0E03)),
                 labelText: _selectedBloodType ?? 'زمرة الدم المطلوبة',
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 18,
-                  color: Colors.grey,),
+                  color: Colors.grey,
+                ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 16),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -314,12 +341,15 @@ class _PublishRequestState extends State<PublishRequest> {
       builder: (BuildContext context) {
         return SimpleDialog(
           backgroundColor: Colors.white,
-          title: Text('اختر زمرة الدم',
+          title: const Text(
+            'اختر زمرة الدم',
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'HSI',
               fontSize: 25,
-              color: Colors.black,),),
+              color: Colors.black,
+            ),
+          ),
           children: <Widget>[
             SimpleDialogOption(
               onPressed: () {
@@ -328,12 +358,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('A+',
+              child: const Text(
+                'A+',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -342,12 +375,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('A-',
+              child: const Text(
+                'A-',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -356,12 +392,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('B+',
+              child: const Text(
+                'B+',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -370,12 +409,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('B-',
+              child: const Text(
+                'B-',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -384,12 +426,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('O+',
+              child: const Text(
+                'O+',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -398,12 +443,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('O-',
+              child: const Text(
+                'O-',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -412,12 +460,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('AB+',
+              child: const Text(
+                'AB+',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -426,12 +477,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('AB-',
+              child: const Text(
+                'AB-',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
           ],
         );
@@ -454,14 +508,17 @@ class _PublishRequestState extends State<PublishRequest> {
                 textDirection: TextDirection.rtl,
                 child: TextField(
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.medical_services, color: Color(0xFFAE0E03)),
+                    prefixIcon: const Icon(Icons.medical_services,
+                        color: Color(0xFFAE0E03)),
                     labelText: _selectedMedicalCondition ?? 'الحالة الطبية',
-                    labelStyle: TextStyle(
+                    labelStyle: const TextStyle(
                       fontFamily: 'HSI',
                       fontSize: 18,
-                      color: Colors.grey,),
+                      color: Colors.grey,
+                    ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15)),
                   ),
                   textAlign: TextAlign.right,
                 ),
@@ -476,12 +533,14 @@ class _PublishRequestState extends State<PublishRequest> {
                 child: TextField(
                   controller: _otherConditionController,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.note_add, color: Color(0xFFAE0E03)),
+                    prefixIcon:
+                        const Icon(Icons.note_add, color: Color(0xFFAE0E03)),
                     labelText: 'يرجى توضيح الحالة الطبية ',
-                    labelStyle: TextStyle(
+                    labelStyle: const TextStyle(
                       fontFamily: 'HSI',
                       fontSize: 18,
-                      color: Colors.grey,),
+                      color: Colors.grey,
+                    ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -496,19 +555,21 @@ class _PublishRequestState extends State<PublishRequest> {
     );
   }
 
-
   void _showMedicalConditionDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          backgroundColor:  Colors.white,
-          title: Text('اختر الحالة الطبية',
+          backgroundColor: Colors.white,
+          title: const Text(
+            'اختر الحالة الطبية',
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'HSI',
               fontSize: 25,
-              color: Colors.black,),),
+              color: Colors.black,
+            ),
+          ),
           children: <Widget>[
             SimpleDialogOption(
               onPressed: () {
@@ -517,12 +578,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('حادث',
+              child: const Text(
+                'حادث',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -531,12 +595,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('مرض مزمن',
+              child: const Text(
+                'مرض مزمن',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -545,12 +612,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('عملية جراحية',
+              child: const Text(
+                'عملية جراحية',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -559,12 +629,15 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: const Text('ولادة',
+              child: const Text(
+                'ولادة',
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 15,
-                  color: Colors.black,),),
+                  color: Colors.black,
+                ),
+              ),
             ),
             SimpleDialogOption(
               onPressed: () {
@@ -573,17 +646,18 @@ class _PublishRequestState extends State<PublishRequest> {
                 });
                 Navigator.pop(context);
               },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end
-                ,
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const Text('أخرى',
+                  Text(
+                    'أخرى',
                     textAlign: TextAlign.right,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'HSI',
                       fontSize: 15,
-                      color: Colors.black,),),
-
+                      color: Colors.black,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -600,12 +674,13 @@ class _PublishRequestState extends State<PublishRequest> {
         textDirection: TextDirection.rtl,
         child: TextField(
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Color(0xFFAE0E03)),
+            prefixIcon: Icon(icon, color: const Color(0xFFAE0E03)),
             labelText: label,
-            labelStyle: TextStyle(
+            labelStyle: const TextStyle(
               fontFamily: 'HSI',
               fontSize: 18,
-              color: Colors.grey,),
+              color: Colors.grey,
+            ),
             contentPadding: const EdgeInsets.symmetric(vertical: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
@@ -630,13 +705,13 @@ class _PublishRequestState extends State<PublishRequest> {
             child: TextField(
               controller: _dateTimeController,
               decoration: InputDecoration(
-
-                prefixIcon: Icon(icon, color: Color(0xFFAE0E03)),
+                prefixIcon: Icon(icon, color: const Color(0xFFAE0E03)),
                 labelText: label,
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 18,
-                  color: Colors.grey,),
+                  color: Colors.grey,
+                ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 16),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -651,49 +726,49 @@ class _PublishRequestState extends State<PublishRequest> {
 
   Future<void> _selectDateTime() async {
     final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-
-      builder: (BuildContext context, Widget? child){
-        return Theme(data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.light(
-            primary: Color(0xFFAE0E03),
-            onPrimary: Colors.black,
-            onSurface: Colors.black,
-          ),
-          dialogBackgroundColor: Colors.white,
-        ), child:  child!
-        );
-      }
-    );
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: const ColorScheme.light(
+                  primary: Color(0xFFAE0E03),
+                  onPrimary: Colors.black,
+                  onSurface: Colors.black,
+                ),
+                dialogBackgroundColor: Colors.white,
+              ),
+              child: child!);
+        });
 
     if (pickedDate != null) {
       final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-          builder: (BuildContext context, Widget? child){
-            return Theme(data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Color(0xFFAE0E03),
-                onPrimary: Colors.black,
-                onSurface: Colors.black,
-              ),
-              dialogBackgroundColor: Colors.white,
-              timePickerTheme: TimePickerThemeData(
-                dayPeriodTextColor: Colors.black,
-                dayPeriodColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return Color(0xFFAE0E03);
-                  }
-                  return Colors.white;
-                }),
-              ),
-            ), child:  child!
-            );
-          }
-      );
+          context: context,
+          initialTime: TimeOfDay.now(),
+          builder: (BuildContext context, Widget? child) {
+            return Theme(
+                data: Theme.of(context).copyWith(
+                  colorScheme: const ColorScheme.light(
+                    primary: Color(0xFFAE0E03),
+                    onPrimary: Colors.black,
+                    onSurface: Colors.black,
+                  ),
+                  dialogBackgroundColor: Colors.white,
+                  timePickerTheme: TimePickerThemeData(
+                    dayPeriodTextColor: Colors.black,
+                    dayPeriodColor:
+                        WidgetStateColor.resolveWith((Set<WidgetState> states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return const Color(0xFFAE0E03);
+                      }
+                      return Colors.white;
+                    }),
+                  ),
+                ),
+                child: child!);
+          });
 
       if (pickedTime != null) {
         final DateTime pickedDateTime = DateTime(

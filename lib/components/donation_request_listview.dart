@@ -8,6 +8,7 @@ class DonationRequestsListView extends StatefulWidget {
   State<DonationRequestsListView> createState() =>
       _DonationRequestsListViewState();
 }
+
 class _DonationRequestsListViewState extends State<DonationRequestsListView> {
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.white,
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Color.fromRGBO(112, 112, 112, 1),
                       blurRadius: 5,
@@ -45,9 +46,9 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          shadowColor: Color.fromRGBO(112, 112, 112, 0.4),
+                          shadowColor: const Color.fromRGBO(112, 112, 112, 0.4),
                           elevation: 5,
-                         // Text color
+                          // Text color
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -55,10 +56,10 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                         onPressed: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                                return DonateNowScreen(
-                                  donationRequest: donationRequest,
-                                );
-                              }));
+                            return DonateNowScreen(
+                              donationRequest: donationRequest,
+                            );
+                          }));
                         },
                         child: const Text(
                           'تبرع الآن',
@@ -90,7 +91,8 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                             ),
                           ),
                           const SizedBox(
-                              width: 10.0), // Add some spacing between the text and the icon
+                              width:
+                                  10.0), // Add some spacing between the text and the icon
                           const Icon(
                             Icons.bloodtype,
                             color: Color(0xFFAE0E03),

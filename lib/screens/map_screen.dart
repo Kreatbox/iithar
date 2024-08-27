@@ -1,10 +1,10 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:iithar/models/blood_bank.dart';
+import 'package:iithar/services/data_service.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -53,31 +53,8 @@ class MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _fetchBloodBankLocations() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    QuerySnapshot querySnapshot = await firestore.collection('banks').get();
-
-    final List<BloodBank> fetchedBanks = [];
-    for (var doc in querySnapshot.docs) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      String bankId = doc.id;
-      String name = data['name'];
-      String place = data['place'];
-      String hours = data['hours'];
-      String phoneNumber = data['phoneNumber'];
-      String location = data['location'];
-      List<String> coordinates = location.split(',');
-      double latitude = double.parse(coordinates[0]);
-      double longitude = double.parse(coordinates[1]);
-      fetchedBanks.add(BloodBank(
-        bankId: bankId,
-        name: name,
-        place: place,
-        hours: hours,
-        phoneNumber: phoneNumber,
-        location: LatLng(latitude, longitude),
-      ));
-    }
-
+    final dataService = DataService();
+    List<BloodBank> fetchedBanks = await dataService.loadBankData();
     setState(() {
       _bloodBanks = fetchedBanks;
     });
@@ -348,22 +325,4 @@ class MapScreenState extends State<MapScreen> {
       ),
     );
   }
-}
-
-class BloodBank {
-  final String bankId;
-  final String name;
-  final String place;
-  final String hours;
-  final String phoneNumber;
-  final LatLng location;
-
-  BloodBank({
-    required this.bankId,
-    required this.name,
-    required this.place,
-    required this.hours,
-    required this.phoneNumber,
-    required this.location,
-  });
 }

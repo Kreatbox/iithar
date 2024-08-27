@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:iithar/notifications/notification_service.dart';
+import 'package:iithar/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:iithar/navigation_menu.dart';
@@ -22,6 +21,7 @@ import 'screens/accounts/signup_screen.dart';
 import 'screens/accounts/login_screen.dart';
 import 'screens/accounts/userdata_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'services/data_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +29,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   WidgetsFlutterBinding.ensureInitialized();
+
+  final DataService dataService = DataService();
+  await dataService.fetchAndCacheBankData();
+
   final NotificationService notificationService = NotificationService();
   await notificationService.initNotification();
   runApp(const MyApp());
@@ -36,7 +40,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   Future<bool> _isFirstRun() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstRun = prefs.getBool('isFirstRun') ?? true;
@@ -94,7 +97,7 @@ class MyApp extends StatelessWidget {
         '/myappointment': (context) => const MyAppointmentScreen(),
         '/personalinfo': (context) =>
             UserinfoDataScreen(userinfo: FirebaseAuth.instance.currentUser!),
-        '/myrequest': (context) => MyRequestScreen(),
+        '/myrequest': (context) => const MyRequestScreen(),
         '/mydonations': (context) => MyDonationsScreen()
       },
     );
