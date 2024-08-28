@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:iithar/models/blood_bank.dart';
+import 'package:iithar/services/data_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PublishRequest extends StatefulWidget {
   const PublishRequest({super.key});
@@ -8,13 +12,31 @@ class PublishRequest extends StatefulWidget {
 }
 
 class PublishRequestState extends State<PublishRequest> {
+  List<BloodBank> _bloodBanks = [];
+  bool _isLoadingBloodBanks = true;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
   String? _selectedBloodType;
-  String? _selectedCity;
   String? _selectedBloodBank;
   String? _selectedMedicalCondition;
   final TextEditingController _otherConditionController =
       TextEditingController();
   final TextEditingController _dateTimeController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _loadBloodBanks();
+  }
+
+  Future<void> _loadBloodBanks() async {
+    DataService dataService = DataService();
+    List<BloodBank> banks = await dataService.loadBankData();
+    setState(() {
+      _bloodBanks = banks;
+      _isLoadingBloodBanks = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +59,14 @@ class PublishRequestState extends State<PublishRequest> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildRequestField(Icons.person, 'الاسم كاملاً '),
+              _buildRequestField(Icons.person, 'الاسم كاملاً', _nameController),
               _buildBloodTypeDialog(),
-              _buildCityDialog(),
               _buildBloodBankDialog(),
               _buildMedicalConditionDialog(),
-              _buildRequestField(Icons.phone, 'رقم الهاتف'),
+              _buildRequestField(Icons.phone, 'رقم الهاتف', _phoneController),
               _buildDateTimeField(
                   Icons.access_time, 'تاريخ ووقت التبرع الممكن'),
-              _buildRequestField(Icons.note, 'أضف ملاحظة'),
+              _buildRequestField(Icons.note, 'أضف ملاحظة', _noteController),
               const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -55,145 +76,21 @@ class PublishRequestState extends State<PublishRequest> {
                       right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
                   alignment: Alignment.center,
                 ),
-                onPressed: () {},
+                onPressed: _saveRequest,
                 child: const Text(
                   'نشر الطلب ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontFamily: 'HSI', fontSize: 25, color: Colors.white),
+                    fontFamily: 'HSI',
+                    fontSize: 25,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildCityDialog() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: GestureDetector(
-        onTap: () {
-          _showCityDialog();
-        },
-        child: AbsorbPointer(
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: TextField(
-              decoration: InputDecoration(
-                prefixIcon:
-                    const Icon(Icons.location_on, color: Color(0xFFAE0E03)),
-                labelText: _selectedCity ?? 'المدينة',
-                labelStyle: const TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 18,
-                  color: Colors.grey,
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-              ),
-              style: const TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 15,
-                color: Colors.black,
-              ),
-              textAlign: TextAlign.right,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showCityDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          backgroundColor: Colors.white,
-          title: const Text(
-            'اختر المدينة',
-            style: TextStyle(
-              fontFamily: 'HSI',
-              fontSize: 25,
-              color: Colors.black,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedCity = 'حمص';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'حمص',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedCity = 'دمشق';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'دمشق',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedCity = 'حلب';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'حلب',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedCity = 'حماة';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'حماة',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -245,59 +142,27 @@ class PublishRequestState extends State<PublishRequest> {
               color: Colors.black,
             ),
           ),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedBloodBank = 'بنك الدم في حمص';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'بنك الدم في حمص',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedBloodBank = 'بنك الدم في حماة';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'بنك الدم في حماة',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  _selectedBloodBank = 'بنك الدم في دمشق';
-                });
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'بنك الدم في دمشق',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ],
+          children: _isLoadingBloodBanks
+              ? [const Center(child: CircularProgressIndicator())]
+              : _bloodBanks.map((bloodBank) {
+                  return SimpleDialogOption(
+                    onPressed: () {
+                      setState(() {
+                        _selectedBloodBank = bloodBank.name;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      bloodBank.name,
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(
+                        fontFamily: 'HSI',
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                  );
+                }).toList(),
         );
       },
     );
@@ -667,12 +532,14 @@ class PublishRequestState extends State<PublishRequest> {
     );
   }
 
-  Widget _buildRequestField(IconData icon, String label) {
+  Widget _buildRequestField(
+      IconData icon, String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextField(
+          controller: controller, // Use the provided controller
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: const Color(0xFFAE0E03)),
             labelText: label,
@@ -722,6 +589,119 @@ class PublishRequestState extends State<PublishRequest> {
         ),
       ),
     );
+  }
+
+  Future<void> _saveRequest() async {
+    // Ensure all required fields are filled
+    if (_selectedBloodType == null ||
+        _selectedBloodBank == null ||
+        _selectedMedicalCondition == null ||
+        _dateTimeController.text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('خطأ'),
+            content: const Text('يرجى ملء جميع الحقول المطلوبة.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('حسناً'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // Retrieve user information
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    String? userId = currentUser?.uid;
+
+    if (userId == null) {
+      // If userId is null, show error
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('خطأ'),
+            content: const Text('تعذر العثور على معرف المستخدم.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('حسناً'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    String name = _nameController.text.trim();
+    String phone = _phoneController.text.trim();
+    String note = _noteController.text.trim();
+    String bloodType = _selectedBloodType!;
+    String bloodBank = _selectedBloodBank!;
+    String medicalCondition = _selectedMedicalCondition!;
+    String otherCondition = _otherConditionController.text.trim();
+    String dateTime = _dateTimeController.text.trim();
+
+    Map<String, dynamic> requestData = {
+      'userId': userId, // Add userId to the request data
+      'name': name,
+      'phone': phone,
+      'note': note,
+      'bloodType': bloodType,
+      'bloodBank': bloodBank,
+      'medicalCondition': medicalCondition,
+      'otherCondition': otherCondition,
+      'dateTime': dateTime,
+    };
+
+    try {
+      await FirebaseFirestore.instance.collection('requests').add(requestData);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('نجاح'),
+            content: const Text('تم نشر طلبك بنجاح.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('حسناً'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('خطأ'),
+            content: Text('حدث خطأ أثناء نشر طلبك: $e'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('حسناً'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Future<void> _selectDateTime() async {

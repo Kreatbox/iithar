@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MyRequestScreen extends StatelessWidget {
   const MyRequestScreen({super.key});
@@ -14,6 +16,27 @@ class MyRequestScreen extends StatelessWidget {
 class BloodDonationRequestScreen extends StatelessWidget {
   const BloodDonationRequestScreen({super.key});
 
+  Future<Map<String, dynamic>?> fetchLastRequest() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return null;
+    }
+
+    final userId = user.uid;
+
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('requests')
+        .where('userId', isEqualTo: userId)
+        .orderBy('dateTime', descending: true)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      return querySnapshot.docs.first.data();
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +46,7 @@ class BloodDonationRequestScreen extends StatelessWidget {
         title: const Align(
           alignment: Alignment.centerRight,
           child: Text(
-            '  ',
+            'تفاصيل طلب التبرع',
             style: TextStyle(
               fontFamily: 'HSI',
               fontSize: 30,
@@ -33,20 +56,34 @@ class BloodDonationRequestScreen extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: const <Widget>[
-          BloodDonationRequestCard(
-            patientName: ' ',
-            bloodType: '',
-            city: '',
-            donationLocation: ' ',
-            medicalCondition: ' ',
-            phoneNumber: ' ',
-            donationDateTime: '  ',
-            note: '',
-          ),
-        ],
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: fetchLastRequest(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('حدث خطأ ما.'));
+          } else if (snapshot.hasData && snapshot.data != null) {
+            final requestData = snapshot.data!;
+            return ListView(
+              padding: const EdgeInsets.all(16.0),
+              children: [
+                BloodDonationRequestCard(
+                  patientName: requestData['name'] ?? 'غير معروف',
+                  bloodType: requestData['bloodType'] ?? 'غير معروف',
+                  donationLocation: requestData['bloodBank'] ?? 'غير معروف',
+                  medicalCondition:
+                      requestData['medicalCondition'] ?? 'غير معروف',
+                  phoneNumber: requestData['phone'] ?? 'غير معروف',
+                  donationDateTime: requestData['dateTime'] ?? 'غير معروف',
+                  note: requestData['note'] ?? 'غير معروف',
+                ),
+              ],
+            );
+          } else {
+            return const Center(child: Text('لا توجد طلبات.'));
+          }
+        },
       ),
     );
   }
@@ -55,7 +92,6 @@ class BloodDonationRequestScreen extends StatelessWidget {
 class BloodDonationRequestCard extends StatelessWidget {
   final String patientName;
   final String bloodType;
-  final String city;
   final String donationLocation;
   final String medicalCondition;
   final String phoneNumber;
@@ -66,7 +102,6 @@ class BloodDonationRequestCard extends StatelessWidget {
     super.key,
     required this.patientName,
     required this.bloodType,
-    required this.city,
     required this.donationLocation,
     required this.medicalCondition,
     required this.phoneNumber,
@@ -80,7 +115,6 @@ class BloodDonationRequestCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
-     
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -100,12 +134,6 @@ class BloodDonationRequestCard extends StatelessWidget {
                   icon: Icons.bloodtype,
                   label: 'زمرة الدم',
                   value: bloodType,
-                ),
-                const Divider(),
-                InfoRow(
-                  icon: Icons.location_city,
-                  label: 'المدينة',
-                  value: city,
                 ),
                 const Divider(),
                 InfoRow(
