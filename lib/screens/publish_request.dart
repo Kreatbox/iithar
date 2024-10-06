@@ -601,14 +601,23 @@ class PublishRequestState extends State<PublishRequest> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('خطأ'),
-            content: const Text('يرجى ملء جميع الحقول المطلوبة.'),
+            title: const Text('خطأ', textAlign: TextAlign.center,
+            style: TextStyle(
+          fontSize: 20,
+          fontFamily: 'BAHIJ',color: Colors.black),),
+            content: const Text('يرجى ملء جميع الحقول المطلوبة.' ,textAlign: TextAlign.center,
+            style: TextStyle(
+          fontSize: 20,
+          fontFamily: 'BAHIJ',color: Colors.black),),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('حسناً'),
+                child: const Text('حسناً', textAlign: TextAlign.center,
+            style: TextStyle(
+          fontSize: 20,
+          fontFamily: 'BAHIJ',color: Colors.black),),
               ),
             ],
           );
