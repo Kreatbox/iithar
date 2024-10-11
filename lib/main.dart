@@ -6,6 +6,7 @@ import 'package:iithar/screens/accounts/personal_info.dart';
 import 'package:iithar/screens/appointment_booking.dart';
 import 'package:iithar/screens/donation_form.dart';
 import 'package:iithar/screens/accounts/my_appointment.dart';
+import 'package:iithar/screens/admin/bloodbank_admins_screen.dart';
 import 'package:iithar/screens/accounts/my_donations.dart';
 import 'package:iithar/screens/accounts/my_request.dart';
 import 'package:iithar/screens/first_run/splash_screen.dart';
@@ -98,7 +99,8 @@ class MyApp extends StatelessWidget {
         '/personalinfo': (context) =>
             UserinfoDataScreen(userinfo: FirebaseAuth.instance.currentUser!),
         '/myrequest': (context) => const MyRequestScreen(),
-        '/mydonations': (context) => MyDonationsScreen()
+        '/mydonations': (context) => const MyDonationsScreen(),
+        '/bloodbankadmin': (context) => const BloodbankAdminScreen()
       },
     );
   }

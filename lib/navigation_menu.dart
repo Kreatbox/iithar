@@ -43,9 +43,11 @@ class NavigationMenu extends StatelessWidget {
                   ),
                   label: 'الرئيسية',
                 ),
-                NavigationDestination(
-                  icon:  Icon(Icons.bloodtype_outlined, color:  Color(0xFFAE0E03,
-                  )),
+                const NavigationDestination(
+                  icon: Icon(Icons.bloodtype_outlined,
+                      color: Color(
+                        0xFFAE0E03,
+                      )),
                   label: 'نشر',
                 ),
                 NavigationDestination(

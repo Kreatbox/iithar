@@ -132,22 +132,20 @@ class MapScreenState extends State<MapScreen> {
                   height: 80.0,
                   point: _currentLocation!,
                   // Using a custom child widget for the marker
-                  child: Container(
-                    child: IconButton(
-                      icon: const Icon(Icons.my_location),
-                      color: Colors.blue,
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (builder) {
-                            return Container(
-                              color: Colors.white,
-                              child: const Text("bottom sheet"),
-                            );
-                          },
-                        );
-                      },
-                    ),
+                  child: IconButton(
+                    icon: const Icon(Icons.my_location),
+                    color: Colors.blue,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (builder) {
+                          return Container(
+                            color: Colors.white,
+                            child: const Text("bottom sheet"),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ..._bloodBanks.map(
@@ -156,7 +154,7 @@ class MapScreenState extends State<MapScreen> {
                   height: 80.0,
                   point: bank.location,
                   // Using a custom child widget for the marker
-                  child: Container(
+                  child: SizedBox(
                     height: 50,
                     width: 100,
                     child: IconButton(
@@ -168,7 +166,7 @@ class MapScreenState extends State<MapScreen> {
                           context: context,
                           builder: (builder) {
                             return Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(25),
@@ -184,8 +182,8 @@ class MapScreenState extends State<MapScreen> {
                                   Container(
                                     width: 400,
                                     padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFAE0E03),
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFAE0E03),
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(25),
                                           topRight: Radius.circular(25),

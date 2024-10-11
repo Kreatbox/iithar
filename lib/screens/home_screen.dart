@@ -1,8 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:iithar/components/donation_request_listview.dart';
 import 'package:iithar/screens/appointment_booking.dart';
 import 'package:iithar/screens/donation_requests.dart';
@@ -28,7 +24,7 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/notifications');
                   // Handle the notification icon press
-                  print('Notification icon pressed');
+                  debugPrint('Notification icon pressed');
                 },
               ),
               const Expanded(
@@ -45,12 +41,10 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: ListView(
-            padding: const EdgeInsets.all(15.0),
-            children: [
+        body: ListView(padding: const EdgeInsets.all(15.0), children: [
           Column(
             children: [
-              Container(
+              SizedBox(
                 height: 125,
                 width: 400,
                 child: Padding(
@@ -60,8 +54,8 @@ class HomeScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
-                      boxShadow: [
-                        const BoxShadow(
+                      boxShadow: const [
+                        BoxShadow(
                           color: Color.fromRGBO(112, 112, 112, 100),
                           blurRadius: 5,
                         ),
@@ -173,14 +167,14 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildGridItem(String assetPath, String title, Function() onTap) {
     return ListView(padding: const EdgeInsets.all(5.0), children: [
-      Container(
+      SizedBox(
         height: 100,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Colors.white,
-            boxShadow: [
-              const BoxShadow(
+            boxShadow: const [
+              BoxShadow(
                 color: Color.fromRGBO(112, 112, 112, 100),
                 blurRadius: 5,
               ),

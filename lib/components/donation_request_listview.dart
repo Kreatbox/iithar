@@ -71,24 +71,22 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                       ),
                       Row(
                         children: [
-                          Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  donationRequest.name,
-                                  style: const TextStyle(fontFamily: 'BAHIJ'),
-                                ),
-                                Text(
-                                  'الزمرة: ${donationRequest.bloodType}',
-                                  style: const TextStyle(fontFamily: 'BAHIJ'),
-                                ),
-                                Text(
-                                  'الموقع: ${donationRequest.location}',
-                                  style: const TextStyle(fontFamily: 'BAHIJ'),
-                                ),
-                              ],
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                donationRequest.name,
+                                style: const TextStyle(fontFamily: 'BAHIJ'),
+                              ),
+                              Text(
+                                'الزمرة: ${donationRequest.bloodType}',
+                                style: const TextStyle(fontFamily: 'BAHIJ'),
+                              ),
+                              Text(
+                                'الموقع: ${donationRequest.location}',
+                                style: const TextStyle(fontFamily: 'BAHIJ'),
+                              ),
+                            ],
                           ),
                           const SizedBox(
                               width:

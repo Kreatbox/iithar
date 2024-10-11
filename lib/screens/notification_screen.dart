@@ -8,6 +8,8 @@ class NotificationsScreen extends StatelessWidget {
       'time': 'قبل ساعة'
     },
   ];
+
+  NotificationsScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,41 +32,49 @@ class NotificationsScreen extends StatelessWidget {
         itemCount: notifications.length,
         itemBuilder: (context, index) {
           return Card(
-            margin: EdgeInsets.all(8.0),
+            margin: const EdgeInsets.all(8.0),
             color: Colors.white,
-            shadowColor: Color(0xFFAE0E03),
+            shadowColor: const Color(0xFFAE0E03),
             child: ListTile(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(notifications[index]['title']!,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                      fontFamily: 'HSI', fontSize: 20, color: Colors.black),
-                ),
-                  SizedBox(width: 15,),
-                  Icon(Icons.notifications, color:  Color(0xFFAE0E03,
-                  )),
+                  Text(
+                    notifications[index]['title']!,
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
+                        fontFamily: 'HSI', fontSize: 20, color: Colors.black),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  const Icon(Icons.notifications,
+                      color: Color(
+                        0xFFAE0E03,
+                      )),
                 ],
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(notifications[index]['description']!,
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                    fontFamily: 'HSI', fontSize: 20, color: Colors.black),
-              ),
-                  SizedBox(height: 5),
-                  Text(notifications[index]['time']!,
+                  Text(
+                    notifications[index]['description']!,
                     textAlign: TextAlign.right,
-                    style: TextStyle(
+                    style: const TextStyle(
+                        fontFamily: 'HSI', fontSize: 20, color: Colors.black),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    notifications[index]['time']!,
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
                       color: Colors.grey,
-                      fontFamily: 'HSI',),
+                      fontFamily: 'HSI',
+                    ),
                   ),
                 ],
               ),
-              leading: Icon(Icons.arrow_back_ios),
+              leading: const Icon(Icons.arrow_back_ios),
               onTap: () {
                 // Action when notification is tapped
               },

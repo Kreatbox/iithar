@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MyDonationsScreen extends StatelessWidget {
+  const MyDonationsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,17 +27,19 @@ class MyDonationsScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: DonationsList(),
-      
+      body: const DonationsList(),
     );
   }
 }
+
 class DonationsList extends StatefulWidget {
+  const DonationsList({super.key});
+
   @override
-  _DonationsListState createState() => _DonationsListState();
+  DonationsListState createState() => DonationsListState();
 }
 
-class _DonationsListState extends State<DonationsList> {
+class DonationsListState extends State<DonationsList> {
   late Future<List<Map<String, dynamic>>> _donationsData;
 
   @override
@@ -177,4 +181,3 @@ class InfoRow extends StatelessWidget {
     );
   }
 }
-

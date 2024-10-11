@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,10 +9,10 @@ class DonationForm extends StatefulWidget {
   const DonationForm({super.key});
 
   @override
-  _DonationFormState createState() => _DonationFormState();
+  DonationFormState createState() => DonationFormState();
 }
 
-class _DonationFormState extends State<DonationForm> {
+class DonationFormState extends State<DonationForm> {
   final _formKey = GlobalKey<FormState>();
   bool? weightUnder50;
   bool? heartOrLungProblems;
@@ -30,7 +32,7 @@ class _DonationFormState extends State<DonationForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      appBar:AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Expanded(
           child: Align(
@@ -165,7 +167,9 @@ class _DonationFormState extends State<DonationForm> {
                   backgroundColor: const Color(0xFFAE0E03),
                 ),
                 onPressed: () async {
-                  if (_formKey.currentState!.validate() && acceptedTerms  && _allQuestionsAnswered()) {
+                  if (_formKey.currentState!.validate() &&
+                      acceptedTerms &&
+                      _allQuestionsAnswered()) {
                     String formAnswers = _getFormAnswersString();
                     try {
                       await _saveFormAnswers(formAnswers);
@@ -195,7 +199,7 @@ class _DonationFormState extends State<DonationForm> {
                         ),
                       ),
                     );
-                  }else {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(
@@ -227,6 +231,7 @@ class _DonationFormState extends State<DonationForm> {
       ),
     );
   }
+
   bool _allQuestionsAnswered() {
     return weightUnder50 != null &&
         heartOrLungProblems != null &&
@@ -238,6 +243,7 @@ class _DonationFormState extends State<DonationForm> {
         hadBloodTransfusionInLast12Months != null &&
         agreedToBloodTests != null;
   }
+
   Widget buildQuestion(
       String question, Function(bool?) onChanged, bool? groupValue) {
     return Container(

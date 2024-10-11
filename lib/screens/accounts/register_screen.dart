@@ -46,7 +46,7 @@ class RegisterScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
                     alignment: Alignment.center),
-                child: Text(
+                child: const Text(
                   'تسجيل الدخول',
                   style: TextStyle(
                       fontFamily: 'HSI', fontSize: 25, color: Colors.white),
@@ -62,7 +62,7 @@ class RegisterScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
                     fixedSize: const Size(170, 25)),
-                child: Text(
+                child: const Text(
                   'إنشاء حساب',
                   style: TextStyle(
                       fontFamily: 'HSI', fontSize: 25, color: Colors.white),

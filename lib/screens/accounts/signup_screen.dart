@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -78,10 +80,12 @@ class SignupScreenState extends State<SignupScreen> {
             mainAxisSize: MainAxisSize.min,
             children: _genderTypes.map((gender) {
               return ListTile(
-                title: Text(gender,
+                title: Text(
+                  gender,
                   textAlign: TextAlign.right,
-                  style:
-                  TextStyle(fontFamily: 'HSI', fontSize: 18, color: Colors.black),),
+                  style: const TextStyle(
+                      fontFamily: 'HSI', fontSize: 18, color: Colors.black),
+                ),
                 onTap: () {
                   Navigator.of(context).pop(gender);
                 },
@@ -117,8 +121,7 @@ class SignupScreenState extends State<SignupScreen> {
               return ListTile(
                 title: Text(bloodType,
                     textAlign: TextAlign.right,
-                    style:
-                    TextStyle( fontSize: 18, color: Colors.black)),
+                    style: const TextStyle(fontSize: 18, color: Colors.black)),
                 onTap: () {
                   Navigator.of(context).pop(bloodType);
                 },
@@ -152,8 +155,7 @@ class SignupScreenState extends State<SignupScreen> {
           ),
         ),
       ),
-      body: Stack(
-          children: [
+      body: Stack(children: [
         SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
           child: Form(

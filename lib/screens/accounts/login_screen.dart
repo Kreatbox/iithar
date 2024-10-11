@@ -1,14 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   var _isButtonDisabled = false;
   final _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
@@ -67,17 +70,43 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                             try {
                               // Sign in with email and password
-                              await _auth.signInWithEmailAndPassword(
+                              UserCredential userCredential =
+                                  await _auth.signInWithEmailAndPassword(
                                 email: _emailController.text,
                                 password: _passwordController.text,
                               );
+
+                              // Fetch user data from Firestore
+                              DocumentSnapshot userDoc = await FirebaseFirestore
+                                  .instance
+                                  .collection('users')
+                                  .doc(userCredential.user!.uid)
+                                  .get();
+
+                              // Check if the 'role' field exists
+                              if (userDoc.exists && userDoc.data() != null) {
+                                Map<String, dynamic> userData =
+                                    userDoc.data() as Map<String, dynamic>;
+                                if (userData.containsKey('role')) {
+                                  String role = userData['role'];
+
+                                  // Save the role and navigate to /bloodbankadmin
+                                  // You can save this in a global variable or shared preferences
+                                  Navigator.pushReplacementNamed(
+                                      context, '/bloodbankadmin',
+                                      arguments: role);
+                                } else {
+                                  // Navigate to home page
+                                  Navigator.pushReplacementNamed(
+                                      context, '/nav');
+                                }
+                              }
                               setState(() {
                                 _isButtonDisabled = false;
                               });
-                              // Navigate to home page using navgation widget
-                              Navigator.pushReplacementNamed(context, '/nav');
                             } catch (e) {
-                              String errorMessage;
+                              // Handle errors
+                              String errorMessage = 'خطأ في تسجيل الدخول';
                               if (e is FirebaseAuthException) {
                                 switch (e.code) {
                                   case 'invalid-email':
@@ -90,8 +119,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     errorMessage =
                                         'حصل خطأ في تسجيل الدخول متعلق بالحساب';
                                 }
-                              } else {
-                                errorMessage = 'خطأ في تسجيل الدخول';
                               }
 
                               // Show error message to the user

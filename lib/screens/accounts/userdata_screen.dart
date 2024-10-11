@@ -54,17 +54,17 @@ class UserDataScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SingleChildScrollView(
-                            padding: EdgeInsets.all(20.0),
+                            padding: const EdgeInsets.all(20.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text('لا توجد بيانات'),
-                                SizedBox(height: 20),
+                                const Text('لا توجد بيانات'),
+                                const SizedBox(height: 20),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      fixedSize: Size(175, 45),
-                                      backgroundColor: Color(0xFFAE0E03),
-                                      padding: EdgeInsets.only(
+                                      fixedSize: const Size(175, 45),
+                                      backgroundColor: const Color(0xFFAE0E03),
+                                      padding: const EdgeInsets.only(
                                           right: 25.0,
                                           left: 25.0,
                                           top: 5.0,
@@ -75,7 +75,7 @@ class UserDataScreen extends StatelessWidget {
                                     Navigator.pushReplacementNamed(
                                         context, '/register');
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'تسجيل الخروج',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -100,15 +100,15 @@ class UserDataScreen extends StatelessWidget {
                             Row(
                               children: [
                                 TextButton.icon(
-                                    label: Text(
+                                    label: const Text(
                                       'معلوماتي الشخصية',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 20,
                                           fontFamily: 'HSI',
                                           color: Colors.black),
                                       textAlign: TextAlign.right,
                                     ),
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.person,
                                       color: Color(0xFFAE0E03),
                                       size: 30,
@@ -123,15 +123,15 @@ class UserDataScreen extends StatelessWidget {
                             Row(
                               children: [
                                 TextButton.icon(
-                                    label: Text(
+                                    label: const Text(
                                       'مواعيدي',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 20,
                                           fontFamily: 'HSI',
                                           color: Colors.black),
                                       textAlign: TextAlign.right,
                                     ),
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.list,
                                       color: Color(0xFFAE0E03),
                                       size: 30,
@@ -146,15 +146,15 @@ class UserDataScreen extends StatelessWidget {
                             Row(
                               children: [
                                 TextButton.icon(
-                                    label: Text(
+                                    label: const Text(
                                       'طلباتي',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 20,
                                           fontFamily: 'HSI',
                                           color: Colors.black),
                                       textAlign: TextAlign.right,
                                     ),
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.list,
                                       color: Color(0xFFAE0E03),
                                       size: 30,
@@ -169,15 +169,15 @@ class UserDataScreen extends StatelessWidget {
                             Row(
                               children: [
                                 TextButton.icon(
-                                    label: Text(
+                                    label: const Text(
                                       'تبرعاتي',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 20,
                                           fontFamily: 'HSI',
                                           color: Colors.black),
                                       textAlign: TextAlign.right,
                                     ),
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.list,
                                       color: Color(0xFFAE0E03),
                                       size: 30,

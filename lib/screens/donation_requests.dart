@@ -9,31 +9,26 @@ class DonationRequestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-        appBar:AppBar(
-          backgroundColor: Colors.white,
-          title: const Expanded(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                'طلبات التبرع',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 30,
-                  color: Colors.black,
-                ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'طلبات التبرع',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontFamily: 'HSI',
+                fontSize: 30,
+                color: Colors.black,
               ),
             ),
           ),
         ),
-       body: ListView(
-    padding: const EdgeInsets.all(15.0),
-    children: [
-      DonationRequestsListView(),
-
-    ]),
-
-      );
+      ),
+      body: ListView(padding: const EdgeInsets.all(15.0), children: const [
+        DonationRequestsListView(),
+      ]),
+    );
   }
-} 
-
+}
