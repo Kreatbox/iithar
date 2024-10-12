@@ -1,9 +1,13 @@
 class DonationRequest {
-  DonationRequest(
-      {required this.name, required this.bloodType, required this.location});
+  final String name;
+  final String bloodType;
+  final String location;
+  final String phone;
 
-  String name;
-  String bloodType;
-  String location;
-  // String notes;
+  DonationRequest({
+    required this.name,
+    required this.bloodType,
+    required this.location,
+    required this.phone,
+  });
 }

@@ -1,78 +1,20 @@
 import 'package:iithar/models/donation_request.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<List<DonationRequest>> getDonationRequests() async {
-  await Future.delayed(const Duration(milliseconds: 500));
-  return [
-    DonationRequest(
-      name: 'مستشفى الأسد',
-      bloodType: 'A+',
-      location: 'دمشق',
-    ),
-    DonationRequest(
-      name: 'مستشفى الباسل',
-      bloodType: 'B-',
-      location: 'حلب',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'O+',
-      location: 'حمص',
-    ),
-    DonationRequest(
-      name: 'مستشفى الأسد',
-      bloodType: 'AB-',
-      location: 'دمشق',
-    ),
-    DonationRequest(
-      name: 'مستشفى الباسل',
-      bloodType: 'A-',
-      location: 'حلب',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'B+',
-      location: 'حمص',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'B+',
-      location: 'حمص',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'B+',
-      location: 'حمص',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'B+',
-      location: 'حمص',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'B+',
-      location: 'حمص',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'B+',
-      location: 'حمص',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'B+',
-      location: 'حمص',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'B+',
-      location: 'حمص',
-    ),
-    DonationRequest(
-      name: 'مستشفى الفارابي',
-      bloodType: 'B+',
-      location: 'حمص',
-    ),
+  // Fetch data from Firestore
+  QuerySnapshot snapshot =
+      await FirebaseFirestore.instance.collection('requests').get();
 
-  ];
+  // Map Firestore documents to DonationRequest model
+  List<DonationRequest> requests = snapshot.docs.map((doc) {
+    return DonationRequest(
+      name: doc['name'] as String, // From Firestore field
+      bloodType: doc['bloodType'] as String, // From Firestore field
+      location: doc['bloodBank'] as String, // Display bloodBank as location
+      phone: doc['phone'] as String, // Display phone as well
+    );
+  }).toList();
+
+  return requests;
 }

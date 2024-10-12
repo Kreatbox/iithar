@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:iithar/firebase/get_data.dart';
 import 'package:iithar/screens/donate_now_screen.dart';
+import 'package:iithar/models/donation_request.dart';
 
 class DonationRequestsListView extends StatefulWidget {
   const DonationRequestsListView({super.key});
+
   @override
   State<DonationRequestsListView> createState() =>
       _DonationRequestsListViewState();
@@ -12,19 +14,27 @@ class DonationRequestsListView extends StatefulWidget {
 class _DonationRequestsListViewState extends State<DonationRequestsListView> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getDonationRequests(),
+    return FutureBuilder<List<DonationRequest>>(
+      future: getDonationRequests(), // Fetch data from Firestore
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
           );
+        } else if (snapshot.hasError) {
+          return const Center(
+            child: Text('حدث خطأ أثناء تحميل البيانات'),
+          );
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(
+            child: Text('لا توجد طلبات تبرع متاحة حالياً'),
+          );
         } else {
-          final donationRequests = snapshot.data;
+          final donationRequests = snapshot.data!;
           return ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: donationRequests!.length,
+            itemCount: donationRequests.length,
             itemBuilder: (context, index) {
               final donationRequest = donationRequests[index];
               return Container(
@@ -48,7 +58,6 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                           backgroundColor: Colors.white,
                           shadowColor: const Color.fromRGBO(112, 112, 112, 0.4),
                           elevation: 5,
-                          // Text color
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -75,22 +84,24 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                donationRequest.name,
-                                style: const TextStyle(fontFamily: 'BAHIJ'),
-                              ),
-                              Text(
                                 'الزمرة: ${donationRequest.bloodType}',
-                                style: const TextStyle(fontFamily: 'BAHIJ'),
+                                style: const TextStyle(
+                                    fontFamily: 'BAHIJ', fontSize: 14),
                               ),
                               Text(
-                                'الموقع: ${donationRequest.location}',
-                                style: const TextStyle(fontFamily: 'BAHIJ'),
+                                '${donationRequest.location}',
+                                style: const TextStyle(
+                                    fontFamily: 'BAHIJ', fontSize: 14),
+                              ),
+                              Text(
+                                'الهاتف: ${donationRequest.phone}', // Display the phone number
+                                style: const TextStyle(
+                                    fontFamily: 'BAHIJ', fontSize: 14),
                               ),
                             ],
                           ),
                           const SizedBox(
-                              width:
-                                  10.0), // Add some spacing between the text and the icon
+                              width: 10.0), // Spacing between text and icon
                           const Icon(
                             Icons.bloodtype,
                             color: Color(0xFFAE0E03),

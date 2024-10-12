@@ -21,10 +21,11 @@ class DonateNowScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           children: [
-            UserInfoCard(),
+            // Pass the donationRequest to UserInfoCard
+            UserInfoCard(donationRequest: donationRequest),
           ],
         ),
       ),
@@ -33,7 +34,9 @@ class DonateNowScreen extends StatelessWidget {
 }
 
 class UserInfoCard extends StatelessWidget {
-  const UserInfoCard({super.key});
+  final DonationRequest donationRequest;
+
+  const UserInfoCard({super.key, required this.donationRequest});
 
   @override
   Widget build(BuildContext context) {
@@ -65,69 +68,75 @@ class UserInfoCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 16.0),
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'احمد',
+                          donationRequest.name, // Use donationRequest name
                           textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 20, fontFamily: 'BAHIJ'),
+                          style: const TextStyle(
+                              fontSize: 20, fontFamily: 'BAHIJ'),
                         ),
                       ],
                     ),
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Icon(Icons.bloodtype, color: Color(0xFFAE0E03)),
-                        SizedBox(width: 8.0),
-                        Text(
+                        const Icon(Icons.bloodtype, color: Color(0xFFAE0E03)),
+                        const SizedBox(width: 8.0),
+                        const Text(
                           'فصيلة الدم المطلوبة:',
                           style: TextStyle(fontSize: 16, fontFamily: 'BAHIJ'),
                         ),
-                        SizedBox(width: 16.0),
+                        const SizedBox(width: 16.0),
                         Text(
-                          'O+',
-                          style: TextStyle(fontSize: 16, fontFamily: 'BAHIJ'),
+                          donationRequest
+                              .bloodType, // Use donationRequest bloodType
+                          style: const TextStyle(
+                              fontSize: 16, fontFamily: 'BAHIJ'),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Icon(Icons.timer, color: Color(0xFFAE0E03)),
-                        SizedBox(width: 8.0),
-                        Text(
+                        const Icon(Icons.timer, color: Color(0xFFAE0E03)),
+                        const SizedBox(width: 8.0),
+                        const Text(
                           'الوقت المتبقي:',
                           style: TextStyle(fontSize: 16, fontFamily: 'BAHIJ'),
                         ),
-                        SizedBox(width: 16.0),
+                        const SizedBox(width: 16.0),
                         Text(
-                          '20 دقيقة ',
-                          style: TextStyle(fontSize: 16, fontFamily: 'BAHIJ'),
+                          '20 دقيقة ', // Update with real data if available
+                          style: const TextStyle(
+                              fontSize: 16, fontFamily: 'BAHIJ'),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Icon(Icons.location_on, color: Color(0xFFAE0E03)),
-                        SizedBox(width: 8.0),
-                        Text(
+                        const Icon(Icons.location_on, color: Color(0xFFAE0E03)),
+                        const SizedBox(width: 8.0),
+                        const Text(
                           'الموقع:',
                           style: TextStyle(fontSize: 16, fontFamily: 'BAHIJ'),
                         ),
-                        SizedBox(width: 16.0),
+                        const SizedBox(width: 16.0),
                         Text(
-                          'دمشق',
-                          style: TextStyle(fontSize: 16, fontFamily: 'BAHIJ'),
+                          donationRequest
+                              .location, // Use donationRequest location
+                          style: const TextStyle(
+                              fontSize: 16, fontFamily: 'BAHIJ'),
                         ),
                       ],
                     ),
