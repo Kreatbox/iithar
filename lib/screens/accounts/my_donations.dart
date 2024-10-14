@@ -12,9 +12,8 @@ class MyDonationsScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
+        title: const Align(
+          alignment: Alignment.centerRight,
             child: Text(
               'تبرعاتي ',
               textAlign: TextAlign.right,
@@ -26,7 +25,7 @@ class MyDonationsScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
+
       body: const DonationsList(),
     );
   }

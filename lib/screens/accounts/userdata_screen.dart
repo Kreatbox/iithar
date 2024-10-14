@@ -188,6 +188,29 @@ class UserDataScreen extends StatelessWidget {
                                     }),
                                 const Spacer(),
                               ],
+                            ),
+                            Row(
+                              children: [
+                                TextButton.icon(
+                                    label: const Text(
+                                      'تواصل معنا',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontFamily: 'HSI',
+                                          color: Colors.black),
+                                      textAlign: TextAlign.right,
+                                    ),
+                                    icon: const Icon(
+                                      Icons.list,
+                                      color: Color(0xFFAE0E03),
+                                      size: 30,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, '/contactus' );
+                                    }),
+                                const Spacer(),
+                              ],
                             )
                           ]),
                           const SizedBox(
