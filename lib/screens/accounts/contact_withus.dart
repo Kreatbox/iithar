@@ -8,141 +8,109 @@ class ContactWithus extends StatefulWidget {
 }
 
 class _ContactWithusState extends State<ContactWithus> {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
+  final _titleController = TextEditingController();
   final _msgController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFAE0E03),
       appBar: AppBar(
         backgroundColor: const Color(0xFFAE0E03),
       ),
-      body: Column(
-          //mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(right: 25),
-              child: Text(
-                ' تواصل معنا في حال وجود مشاكل او مقترحات ',
-                style: TextStyle(
-                    fontSize: 25, fontFamily: 'HSI', color: Colors.white),
-                textAlign: TextAlign.right,
-              ),
-            ),
-            const SizedBox(height: 28),
-            Container(
-                width: 420,
-                height: 670,
-                padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
-                      bottomLeft: Radius.zero,
-                      bottomRight: Radius.zero),
+      body: SingleChildScrollView(
+        child: Column(
+            //mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(right: 25),
+                child: Text(
+                  ' تواصل معنا في حال وجود مشاكل او مقترحات ',
+                  style: TextStyle(
+                      fontSize: 25, fontFamily: 'HSI', color: Colors.white),
+                  textAlign: TextAlign.right,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20, left: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      const Text(
-                        ' تواصل معنا  ',
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontFamily: 'HSI',
-                            color: Colors.black),
-                        textAlign: TextAlign.right,
-                      ),
-                      const SizedBox(
-                        height: 28,
-                      ),
-                      _buildText(_nameController, 'الاسم', 'يرجى ادخال الاسم'),
-                      const SizedBox(
-                        height: 28,
-                      ),
-                      _buildTextFieldemail(_emailController,
-                          'البريد الالكتروني', 'يرجى ادخال الايميل الالكتروني'),
-                      const SizedBox(
-                        height: 28,
-                      ),
-                      _buildTextFieldmsg(
-                          _msgController, 'الرسالة', 'يرجى ادخال الرسالة '),
-                      const SizedBox(
-                        height: 60,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(160, 45),
-                                backgroundColor: const Color(0xFFAE0E03),
-                                padding: const EdgeInsets.only(
-                                    right: 25.0,
-                                    left: 25.0,
-                                    top: 5.0,
-                                    bottom: 1.0),
-                                alignment: Alignment.center),
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/nav');
-                            },
-                            child: const Text(
-                              'أرسل',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontFamily: 'HSI',
-                                  fontSize: 25,
-                                  color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+              ),
+              const SizedBox(height: 28),
+              Container(
+                  width: 420,
+                  height: 670,
+                  padding: const EdgeInsets.all(8),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                        bottomLeft: Radius.zero,
+                        bottomRight: Radius.zero),
                   ),
-                ))
-          ]),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20, left: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        const Text(
+                          ' تواصل معنا  ',
+                          style: TextStyle(
+                              fontSize: 30,
+                              fontFamily: 'HSI',
+                              color: Colors.black),
+                          textAlign: TextAlign.right,
+                        ),
+                        const SizedBox(
+                          height: 28,
+                        ),
+                        _buildTextFieldtiitle(_titleController,
+                            'العنوان', 'يرجى ادخال عنوان الرسالة'),
+                        const SizedBox(
+                          height: 28,
+                        ),
+                        _buildTextFieldmsg(
+                            _msgController, 'الرسالة', 'يرجى ادخال الرسالة '),
+                        const SizedBox(
+                          height: 60,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(160, 45),
+                                  backgroundColor: const Color(0xFFAE0E03),
+                                  padding: const EdgeInsets.only(
+                                      right: 25.0,
+                                      left: 25.0,
+                                      top: 5.0,
+                                      bottom: 1.0),
+                                  alignment: Alignment.center),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/nav');
+                              },
+                              child: const Text(
+                                'أرسل',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: 'HSI',
+                                    fontSize: 25,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ))
+            ]),
+      ),
     );
   }
 
-  Widget _buildText(
-      TextEditingController controller, String labelText, String errorText) {
-    return Directionality(
-        textDirection: TextDirection.rtl,
-        child: TextFormField(
-          controller: controller,
-          textAlign: TextAlign.right,
-          style: const TextStyle(
-            fontFamily: 'HSI',
-            fontSize: 15,
-            color: Colors.black,
-          ),
-          decoration: InputDecoration(
-            labelStyle: const TextStyle(
-              fontFamily: 'HSI',
-              fontSize: 15,
-              color: Colors.black,
-            ),
-            labelText: labelText,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-            alignLabelWithHint: true,
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'يرجى إدخال الاسم';
-            }
-            return null;
-          },
-        ));
-  }
 
-  Widget _buildTextFieldemail(
+  Widget _buildTextFieldtiitle(
       TextEditingController controller, String labelText, String errorText) {
     return Directionality(
         textDirection: TextDirection.rtl,
@@ -166,7 +134,7 @@ class _ContactWithusState extends State<ContactWithus> {
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'يرجى إدخال بريدك الإلكتروني';
+              return 'يرجى إدخال عنوان الرسالة';
             }
             return null;
           },

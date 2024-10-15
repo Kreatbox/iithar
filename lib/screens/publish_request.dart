@@ -626,8 +626,11 @@ class PublishRequestState extends State<PublishRequest> {
                   'حسناً',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 20, fontFamily: 'BAHIJ', color: Colors.black),
+                      fontFamily: 'HSI',
+                      fontSize: 20,
+                      color: Colors.black),
                 ),
+
               ),
             ],
           );
