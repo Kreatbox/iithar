@@ -31,10 +31,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   WidgetsFlutterBinding.ensureInitialized();
-
   final DataService dataService = DataService();
   await dataService.fetchAndCacheBankData();
-
   final NotificationService notificationService = NotificationService();
   await notificationService.initNotification();
   runApp(const MyApp());
@@ -68,7 +66,7 @@ class MyApp extends StatelessWidget {
           } else if (user == null) {
             return const RegisterScreen();
           } else {
-            return const NavigationMenu(); // RegisterScreen();
+            return const NavigationMenu();
           }
         }
       },
@@ -102,7 +100,7 @@ class MyApp extends StatelessWidget {
         '/myrequest': (context) => const MyRequestScreen(),
         '/mydonations': (context) => const MyDonationsScreen(),
         '/bloodbankadmin': (context) => const BloodbankAdminScreen(),
-        '/contactus' : (context) => const ContactWithus()
+        '/contactus': (context) => const ContactWithus()
       },
     );
   }

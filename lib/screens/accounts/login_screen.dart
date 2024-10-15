@@ -89,12 +89,16 @@ class LoginScreenState extends State<LoginScreen> {
                                     userDoc.data() as Map<String, dynamic>;
                                 if (userData.containsKey('role')) {
                                   String role = userData['role'];
-
                                   // Save the role and navigate to /bloodbankadmin
                                   // You can save this in a global variable or shared preferences
-                                  Navigator.pushReplacementNamed(
-                                      context, '/bloodbankadmin',
-                                      arguments: role);
+                                  if (role == '0') {
+                                    Navigator.pushReplacementNamed(
+                                        context, '/nav');
+                                  } else {
+                                    Navigator.pushReplacementNamed(
+                                        context, '/bloodbankadmin',
+                                        arguments: role);
+                                  }
                                 } else {
                                   // Navigate to home page
                                   Navigator.pushReplacementNamed(

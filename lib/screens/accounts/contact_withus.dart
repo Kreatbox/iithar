@@ -8,24 +8,21 @@ class ContactWithus extends StatefulWidget {
 }
 
 class _ContactWithusState extends State<ContactWithus> {
-
-
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _msgController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFAE0E03),
+      backgroundColor: const Color(0xFFAE0E03),
       appBar: AppBar(
-        backgroundColor: Color(0xFFAE0E03),
+        backgroundColor: const Color(0xFFAE0E03),
       ),
-      body: Container(
-          child: Column(
-              //mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 25),
+      body: Column(
+          //mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(right: 25),
               child: Text(
                 ' تواصل معنا في حال وجود مشاكل او مقترحات ',
                 style: TextStyle(
@@ -33,7 +30,7 @@ class _ContactWithusState extends State<ContactWithus> {
                 textAlign: TextAlign.right,
               ),
             ),
-            SizedBox(height: 28),
+            const SizedBox(height: 28),
             Container(
                 width: 420,
                 height: 670,
@@ -47,15 +44,15 @@ class _ContactWithusState extends State<ContactWithus> {
                       bottomRight: Radius.zero),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 20,left: 20),
+                  padding: const EdgeInsets.only(right: 20, left: 20),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 40,
                       ),
-                      Text(
+                      const Text(
                         ' تواصل معنا  ',
                         style: TextStyle(
                             fontSize: 30,
@@ -63,13 +60,23 @@ class _ContactWithusState extends State<ContactWithus> {
                             color: Colors.black),
                         textAlign: TextAlign.right,
                       ),
-                  SizedBox(height: 28,),
-                  _buildText(_nameController,'الاسم','يرجى ادخال الاسم'),
-                  SizedBox(height: 28,),
-                  _buildTextFieldemail(_emailController,'البريد الالكتروني','يرجى ادخال الايميل الالكتروني'),
-                    SizedBox(height: 28,),
-                  _buildTextFieldmsg(_msgController,'الرسالة','يرجى ادخال الرسالة '),
-                      SizedBox(height: 60,),
+                      const SizedBox(
+                        height: 28,
+                      ),
+                      _buildText(_nameController, 'الاسم', 'يرجى ادخال الاسم'),
+                      const SizedBox(
+                        height: 28,
+                      ),
+                      _buildTextFieldemail(_emailController,
+                          'البريد الالكتروني', 'يرجى ادخال الايميل الالكتروني'),
+                      const SizedBox(
+                        height: 28,
+                      ),
+                      _buildTextFieldmsg(
+                          _msgController, 'الرسالة', 'يرجى ادخال الرسالة '),
+                      const SizedBox(
+                        height: 60,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -78,7 +85,10 @@ class _ContactWithusState extends State<ContactWithus> {
                                 fixedSize: const Size(160, 45),
                                 backgroundColor: const Color(0xFFAE0E03),
                                 padding: const EdgeInsets.only(
-                                    right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                                    right: 25.0,
+                                    left: 25.0,
+                                    top: 5.0,
+                                    bottom: 1.0),
                                 alignment: Alignment.center),
                             onPressed: () {
                               Navigator.pushNamed(context, '/nav');
@@ -92,17 +102,15 @@ class _ContactWithusState extends State<ContactWithus> {
                                   color: Colors.white),
                             ),
                           ),
-
                         ],
                       ),
-
-
                     ],
                   ),
                 ))
-          ])),
+          ]),
     );
   }
+
   Widget _buildText(
       TextEditingController controller, String labelText, String errorText) {
     return Directionality(
@@ -133,9 +141,6 @@ class _ContactWithusState extends State<ContactWithus> {
           },
         ));
   }
-
-
-
 
   Widget _buildTextFieldemail(
       TextEditingController controller, String labelText, String errorText) {
@@ -197,9 +202,4 @@ class _ContactWithusState extends State<ContactWithus> {
       ),
     );
   }
-
-
-
-
-
 }

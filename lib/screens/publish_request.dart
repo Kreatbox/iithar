@@ -21,6 +21,7 @@ class PublishRequestState extends State<PublishRequest> {
   final TextEditingController _noteController = TextEditingController();
   String? _selectedBloodType;
   String? _selectedBloodBank;
+  String? _selectedBloodBankId;
   String? _selectedMedicalCondition;
   final TextEditingController _otherConditionController =
       TextEditingController();
@@ -151,6 +152,7 @@ class PublishRequestState extends State<PublishRequest> {
                     onPressed: () {
                       setState(() {
                         _selectedBloodBank = bloodBank.name;
+                        _selectedBloodBankId = bloodBank.bankId;
                       });
                       Navigator.pop(context);
                     },
@@ -664,7 +666,7 @@ class PublishRequestState extends State<PublishRequest> {
     String phone = _phoneController.text.trim();
     String note = _noteController.text.trim();
     String bloodType = _selectedBloodType!;
-    String bloodBank = _selectedBloodBank!;
+    String bankId = _selectedBloodBankId!;
     String medicalCondition = _selectedMedicalCondition!;
     String otherCondition = _otherConditionController.text.trim();
     String dateTime = _dateTimeController.text.trim();
@@ -675,10 +677,11 @@ class PublishRequestState extends State<PublishRequest> {
       'phone': phone,
       'note': note,
       'bloodType': bloodType,
-      'bloodBank': bloodBank,
+      'bankId': bankId,
       'medicalCondition': medicalCondition,
       'otherCondition': otherCondition,
       'dateTime': dateTime,
+      'state': '0'
     };
 
     try {

@@ -28,7 +28,6 @@ class MapScreenState extends State<MapScreen> {
     Location location = Location();
     bool serviceEnabled;
     PermissionStatus permissionGranted;
-
     serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
