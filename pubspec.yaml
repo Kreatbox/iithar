@@ -48,6 +48,7 @@ flutter:
     - assets/Images/Ve.png
     - assets/Images/bg.png
     - assets/icons/logo.png
+    - assets/icons/datetime.png
 
   fonts:
     - family: HSI
