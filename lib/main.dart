@@ -1,4 +1,5 @@
 import 'package:iithar/screens/accounts/contact_withus.dart';
+import 'package:iithar/screens/accounts/my_requests.dart';
 import 'package:iithar/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -97,10 +98,12 @@ class MyApp extends StatelessWidget {
         '/myappointment': (context) => const MyAppointmentScreen(),
         '/personalinfo': (context) =>
             UserinfoDataScreen(userinfo: FirebaseAuth.instance.currentUser!),
+        '/MyRequests': (context) => const MyRequests(),
         '/myrequest': (context) => const MyRequestScreen(),
         '/mydonations': (context) => const MyDonationsScreen(),
         '/bloodbankadmin': (context) => const BloodbankAdminScreen(),
-        '/contactus': (context) => const ContactWithus()
+        '/contactus': (context) => const ContactWithus(),
+
       },
     );
   }
