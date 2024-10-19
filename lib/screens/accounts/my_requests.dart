@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:iithar/models/blood_bank.dart';
+import 'package:iithar/services/data_service.dart'; // استيراد DataService
 
+import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 class MyRequests extends StatefulWidget {
   const MyRequests({super.key});
@@ -12,13 +15,25 @@ class MyRequests extends StatefulWidget {
 
 class _MyRequestsState extends State<MyRequests> {
   late List<Map<String, dynamic>> items = [];
+  late List<BloodBank> bloodBanks = []; // قائمة بنوك الدم
   bool isLoaded = false;
 
-  Future<void> fetchLastRequest() async {
+  // استدعاء بيانات البنوك والطلبات
+  Future<void> fetchData() async {
+    final DataService dataService = DataService();
+
+    // تحميل بيانات البنوك
+    bloodBanks = await dataService.loadBankData();
+
+    // استدعاء الطلبات
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
+      setState(() {
+        isLoaded = true; // لا يوجد مستخدم، لذا نعتبر التحميل مكتملًا
+      });
       return;
     }
+
     final userId = user.uid;
     final querySnapshot = await FirebaseFirestore.instance
         .collection('requests')
@@ -26,22 +41,24 @@ class _MyRequestsState extends State<MyRequests> {
         .orderBy('dateTime', descending: true)
         .get();
 
+    List<Map<String, dynamic>> tempList = [];
     if (querySnapshot.docs.isNotEmpty) {
-      List<Map<String, dynamic>> tempList = [];
-      querySnapshot.docs.forEach((element) {
+      for (var element in querySnapshot.docs) {
         tempList.add(element.data());
-      });
-      setState(() {
-        items = tempList;
-        isLoaded = true;
-      });
+      }
     }
+
+    // ضبط الحالة حتى إذا لم تكن هناك بيانات
+    setState(() {
+      items = tempList;
+      isLoaded = true;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    fetchLastRequest();
+    fetchData(); // استدعاء البيانات
   }
 
   @override
@@ -64,69 +81,103 @@ class _MyRequestsState extends State<MyRequests> {
         elevation: 0,
       ),
       body: isLoaded
-          ? ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                shape: RoundedRectangleBorder(
-                    side: const BorderSide(width: 0.5),
-                    borderRadius: BorderRadius.circular(20)),
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shadowColor:
-                        const Color.fromRGBO(112, 112, 112, 0.4),
-                        elevation: 5,
+          ? items.isNotEmpty
+              ? ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    // البحث عن اسم بنك الدم باستخدام bankId
+                    String bankId = items[index]["bankId"];
+                    String bankName =
+                        'Unknown Bank'; // اسم افتراضي في حال لم يُعثر على البنك
+                    BloodBank? bank = bloodBanks.firstWhere(
+                      (b) => b.bankId == bankId,
+                      orElse: () => BloodBank(
+                          bankId: '',
+                          name: 'Unknown Bank',
+                          hours: '',
+                          phoneNumber: '',
+                          location: const LatLng(0, 0),
+                          place: ''),
+                    );
+                    bankName = bank.name;
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/myrequest');
-                      },
-                      child: const Text(
-                        'عرض التفاصيل',
-                        style: TextStyle(
-                          fontFamily: 'BAHIJ',
-                          color: Color(0xFFAE0E03),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                            side: const BorderSide(width: 0.5),
+                            borderRadius: BorderRadius.circular(20)),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              items[index]["dateTime"] ?? "not given" , // يمكنك إضافة قيمة هنا
-                              style: const TextStyle(
-                                  fontFamily: 'BAHIJ', fontSize: 14),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shadowColor:
+                                    const Color.fromRGBO(112, 112, 112, 0.4),
+                                elevation: 5,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/myrequest');
+                              },
+                              child: const Text(
+                                'عرض التفاصيل',
+                                style: TextStyle(
+                                  fontFamily: 'BAHIJ',
+                                  color: Color(0xFFAE0E03),
+                                ),
+                              ),
                             ),
-                            Text(
-                              items[index]["medicalCondition"]?? "not given", // يجب إضافة قيمة هنا
-                              style: const TextStyle(
-                                  fontFamily: 'BAHIJ', fontSize: 14),
-                            )
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      items[index]["dateTime"] != null
+                                          ? items[index]["dateTime"]
+                                              .substring(0, 16)
+                                          : "غير متوفر",
+                                      style: const TextStyle(
+                                          fontFamily: 'BAHIJ', fontSize: 14),
+                                    ),
+                                    Text(
+                                      items[index]["medicalCondition"] ??
+                                          "غير متوفر",
+                                      style: const TextStyle(
+                                          fontFamily: 'BAHIJ', fontSize: 14),
+                                    ),
+                                    Text(
+                                      bankName, // عرض اسم بنك الدم
+                                      style: const TextStyle(
+                                          fontFamily: 'BAHIJ', fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 10.0),
+                                const Icon(
+                                  Icons.bloodtype,
+                                  color: Color(0xFFAE0E03),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
-                        const SizedBox(width: 10.0),
-                        const Icon(
-                          Icons.bloodtype,
-                          color: Color(0xFFAE0E03),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          })
-          : const Center(child: CircularProgressIndicator()), // عرض مؤشر التحميل إذا لم يتم تحميل البيانات بعد
+                      ),
+                    );
+                  })
+              : const Center(
+                  child: Text(
+                    'لا توجد طلبات حتى الآن',
+                    style: TextStyle(fontFamily: 'BAHIJ', fontSize: 16),
+                  ),
+                )
+          : const Center(
+              child: CircularProgressIndicator(),
+            ), // Show loading indicator while data is being loaded
     );
   }
 }

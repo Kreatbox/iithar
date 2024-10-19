@@ -53,8 +53,11 @@ Future<List<DonationRequest?>> getDonationRequests() async {
   Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
   String userBloodType = userData['bloodType']; // Get the user's blood type
 
-  QuerySnapshot snapshot =
-      await FirebaseFirestore.instance.collection('requests').get();
+  // Update the query to order by 'dateTime'
+  QuerySnapshot snapshot = await FirebaseFirestore.instance
+      .collection('requests')
+      .orderBy('dateTime') // Order the requests by dateTime
+      .get();
 
   DateTime now = DateTime.now(); // Get the current time
 
@@ -65,7 +68,7 @@ Future<List<DonationRequest?>> getDonationRequests() async {
         if (requestDateTime.isAfter(now)) {
           if (data['userId'] != currentUserId &&
               _isCompatibleBloodType(userBloodType, data['bloodType']) &&
-              data['state'] != 1) {
+              data['state'] != "1") {
             return DonationRequest(
               id: doc.id,
               name: data['name'] as String,
@@ -95,30 +98,30 @@ Future<List<DonationRequest?>> getDonationRequests() async {
 
 bool _isCompatibleBloodType(String userBloodType, String requestBloodType) {
   switch (userBloodType) {
-    case 'O-':
-      return requestBloodType == 'O-';
-    case 'O+':
-      return requestBloodType == 'O+' || requestBloodType == 'O-';
-    case 'A-':
-      return requestBloodType == 'A-' || requestBloodType == 'O-';
+    case 'AB+':
+      return requestBloodType == 'AB+';
+    case 'AB-':
+      return requestBloodType == 'AB+' || requestBloodType == 'AB-';
     case 'A+':
+      return requestBloodType == 'A+' || requestBloodType == 'O+';
+    case 'A-':
       return requestBloodType == 'A+' ||
           requestBloodType == 'A-' ||
-          requestBloodType == 'O+' ||
-          requestBloodType == 'O-';
-    case 'B-':
-      return requestBloodType == 'B-' || requestBloodType == 'O-';
+          requestBloodType == 'AB+' ||
+          requestBloodType == 'AB-';
     case 'B+':
+      return requestBloodType == 'B+' || requestBloodType == 'AB+';
+    case 'B-':
       return requestBloodType == 'B+' ||
           requestBloodType == 'B-' ||
-          requestBloodType == 'O+' ||
-          requestBloodType == 'O-';
-    case 'AB-':
-      return requestBloodType == 'AB-' ||
-          requestBloodType == 'A-' ||
-          requestBloodType == 'B-' ||
-          requestBloodType == 'O-';
-    case 'AB+':
+          requestBloodType == 'AB+' ||
+          requestBloodType == 'AB-';
+    case 'O+':
+      return requestBloodType == 'AB+' ||
+          requestBloodType == 'A+' ||
+          requestBloodType == 'B+' ||
+          requestBloodType == 'O+';
+    case 'O-':
       return true; // AB+ can receive from all blood types
     default:
       return false;

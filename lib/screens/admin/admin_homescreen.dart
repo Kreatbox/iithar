@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:iithar/screens/accounts/my_appointment.dart';
 
@@ -14,7 +13,6 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Align(
@@ -23,19 +21,18 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
             'لوحة تحكم مدير البنك',
             textAlign: TextAlign.right,
             style:
-            TextStyle(fontFamily: 'HSI', fontSize: 30, color: Colors.black),
+                TextStyle(fontFamily: 'HSI', fontSize: 30, color: Colors.black),
           ),
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(
               height: 40,
             ),
-
             const SizedBox(height: 5.0),
             GridView.count(
               shrinkWrap: true,
@@ -44,24 +41,21 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
               crossAxisSpacing: 1.0,
               childAspectRatio: 1, //نسبة العرض للارتفاع للعناصر
               children: [
-                _buildGridItem('assets/icons/datetime.png', 'حجوزات التبرع', () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
-                        return const MyAppointmentScreen();
-                      }));
+                _buildGridItem('assets/icons/datetime.png', 'حجوزات التبرع',
+                    () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const MyAppointmentScreen();
+                  }));
                 }),
-                _buildGridItem('assets/icons/icon3.png', 'زمر الدم',
-                        () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                            return const MyAppointmentScreen();
-                          }));
-                    }),
+                _buildGridItem('assets/icons/icon3.png', 'زمر الدم', () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const MyAppointmentScreen();
+                  }));
+                }),
                 _buildGridItem('assets/icons/icon3.png', 'طوارئ', () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
-                        return const MyAppointmentScreen();
-                      }));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const MyAppointmentScreen();
+                  }));
                 }),
               ],
             ),
@@ -71,6 +65,7 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
     );
   }
 }
+
 Widget _buildGridItem(String assetPath, String title, Function() onTap) {
   return ListView(padding: const EdgeInsets.all(5.0), children: [
     SizedBox(
@@ -98,8 +93,7 @@ Widget _buildGridItem(String assetPath, String title, Function() onTap) {
                 Image.asset(assetPath, height: 45),
                 const SizedBox(height: 5.0), //  المسافة بين الصورة والنص
                 Text(title,
-                    style:
-                    const TextStyle(fontSize: 14, fontFamily: 'BAHIJ')),
+                    style: const TextStyle(fontSize: 14, fontFamily: 'BAHIJ')),
               ],
             ),
           ),
@@ -108,4 +102,3 @@ Widget _buildGridItem(String assetPath, String title, Function() onTap) {
     ),
   ]);
 }
-

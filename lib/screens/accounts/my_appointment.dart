@@ -10,7 +10,7 @@ class MyAppointmentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      debugShowCheckedModeBanner:  false,
+      debugShowCheckedModeBanner: false,
       home: BookingSummaryScreen(),
     );
   }
@@ -57,10 +57,34 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
   }
 
   Future<void> _deleteAppointment(String appointmentId) async {
-    await FirebaseFirestore.instance
-        .collection('appointments')
-        .doc(appointmentId)
-        .delete();
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Check if the user has accepted any request associated with this appointment
+      final requestsSnapshot = await FirebaseFirestore.instance
+          .collection('requests')
+          .where('acceptedUserId', isEqualTo: user.uid)
+          .get();
+
+      if (requestsSnapshot.docs.isNotEmpty) {
+        // User has accepted at least one request, prevent deletion
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('لا يمكنك حذف هذا الموعد بعد قبول طلب سابق.')),
+        );
+        return; // Exit the method to prevent deletion
+      }
+
+      // Proceed with deletion if no matching acceptedUserId found
+      await FirebaseFirestore.instance
+          .collection('appointments')
+          .doc(appointmentId)
+          .delete();
+
+      // Optionally, show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تم حذف الموعد بنجاح.')),
+      );
+    }
   }
 
   @override
@@ -143,6 +167,8 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
                                     _appointmentData = _fetchAppointmentData();
                                   });
                                 }
+
+                                // Show the dialog regardless of delete success or failure
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
@@ -157,7 +183,7 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
                                         textAlign: TextAlign.center,
                                       ),
                                       content: const Text(
-                                        'تم إلغاء الموعد. ننصحك بحجز موعد آخر بأقرب فرصة.',
+                                        'تم معالجة طلب إلغاء الموعد أغلق لمعرفة النتيجة.',
                                         style: TextStyle(
                                           fontFamily: 'HSI',
                                           fontSize: 20,
@@ -171,7 +197,7 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
                                             Navigator.of(context).pop();
                                           },
                                           child: const Text(
-                                            'حسناً',
+                                            'إغلاق',
                                             style: TextStyle(
                                               fontFamily: 'HSI',
                                               fontSize: 20,

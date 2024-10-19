@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:iithar/screens/accounts/contact_withus.dart';
 import 'package:iithar/screens/accounts/my_requests.dart';
 import 'package:iithar/screens/admin/admin_homescreen.dart';
@@ -37,6 +38,13 @@ void main() async {
   await dataService.fetchAndCacheBankData();
   final NotificationService notificationService = NotificationService();
   await notificationService.initNotification();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // تقييد التوجه على الوضع العمودي فقط
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const MyApp());
 }
 
@@ -106,7 +114,6 @@ class MyApp extends StatelessWidget {
         '/contactus': (context) => const ContactWithus(),
         '/admin': (context) => const BloodbankAdminScreen(),
         '/adminscreen': (context) => const AdminHomescreen()
-
       },
     );
   }

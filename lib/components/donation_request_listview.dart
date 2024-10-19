@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/blood_bank.dart';
 import '../models/donation_request.dart';
 import '../screens/donate_now_screen.dart';
@@ -143,6 +142,11 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                                     ),
                                     Text(
                                       'الهاتف: ${donationRequest.phone}',
+                                      style: const TextStyle(
+                                          fontFamily: 'BAHIJ', fontSize: 14),
+                                    ),
+                                    Text(
+                                      'التاريخ: ${(donationRequest.dateTime).substring(0, 16)}', // Display remaining time
                                       style: const TextStyle(
                                           fontFamily: 'BAHIJ', fontSize: 14),
                                     ),

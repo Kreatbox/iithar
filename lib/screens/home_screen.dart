@@ -6,7 +6,6 @@ import 'package:iithar/screens/map_screen.dart';
 
 import 'admin/admin_homescreen.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -125,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                   }),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               Row(
@@ -135,8 +134,8 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                            return const AdminHomescreen();
-                          }));
+                        return const AdminHomescreen();
+                      }));
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -145,9 +144,7 @@ class HomeScreen extends StatelessWidget {
                     child: const Text(
                       'admin',
                       style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                          fontFamily: 'BAHIJ'),
+                          fontSize: 14, color: Colors.red, fontFamily: 'BAHIJ'),
                       textAlign: TextAlign.left,
                     ),
                   ),
