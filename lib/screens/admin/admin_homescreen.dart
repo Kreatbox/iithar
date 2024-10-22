@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:iithar/screens/accounts/my_appointment.dart';
+import 'package:iithar/screens/admin/bank_appointment.dart';
 
 class AdminHomescreen extends StatefulWidget {
   const AdminHomescreen({super.key});
 
   @override
   State<AdminHomescreen> createState() => _AdminHomescreenState();
-}
 
+}
+late List<Map<String, dynamic>> items = [];
 class _AdminHomescreenState extends State<AdminHomescreen> {
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,7 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
                 _buildGridItem('assets/icons/datetime.png', 'حجوزات التبرع',
                     () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const MyAppointmentScreen();
+                    return const BankAppintment();
                   }));
                 }),
                 _buildGridItem('assets/icons/icon3.png', 'زمر الدم', () {

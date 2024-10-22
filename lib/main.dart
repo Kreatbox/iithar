@@ -22,7 +22,6 @@ import 'package:iithar/screens/map_screen.dart';
 import 'package:iithar/screens/first_run/onboarding_screen.dart';
 import 'package:iithar/screens/accounts/register_screen.dart';
 import 'firebase/firebase_options.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'screens/accounts/signup_screen.dart';
 import 'screens/accounts/login_screen.dart';
 import 'screens/accounts/userdata_screen.dart';
@@ -34,49 +33,19 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseApi().initNotifications();
   WidgetsFlutterBinding.ensureInitialized();
   final DataService dataService = DataService();
   await dataService.fetchAndCacheBankData();
   final NotificationService notificationService = NotificationService();
   await notificationService.initNotification();
   WidgetsFlutterBinding.ensureInitialized();
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  // Requesting permissions
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-
-  debugPrint('User granted permission: ${settings.authorizationStatus}');
-
-  // Get the FCM token
-  String? token = await messaging.getToken();
-  debugPrint("FCM Token: $token");
-
-  // Subscribe to the topic for notifications
-  await messaging.subscribeToTopic('urgent_requests');
-
-  // Initialize message listener
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    debugPrint('Got a message whilst in the foreground!');
-    debugPrint('Message data: ${message.data}');
-
-    if (message.notification != null) {
-      debugPrint(
-          'Message also contained a notification: ${message.notification}');
-    }
-  });
   // تقييد التوجه على الوضع العمودي فقط
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
   runApp(const MyApp());
 }
 
@@ -139,13 +108,13 @@ class MyApp extends StatelessWidget {
         '/myappointment': (context) => const MyAppointmentScreen(),
         '/personalinfo': (context) =>
             UserinfoDataScreen(userinfo: FirebaseAuth.instance.currentUser!),
-        '/myrequests': (context) => const MyRequests(),
+        '/MyRequests': (context) => const MyRequests(),
         '/myrequest': (context) => const MyRequestScreen(),
         '/mydonations': (context) => const MyDonationsScreen(),
         '/bloodbankadmin': (context) => const BloodbankAdminScreen(),
         '/contactus': (context) => const ContactWithus(),
         '/admin': (context) => const BloodbankAdminScreen(),
-        '/adminscreen': (context) => const AdminHomescreen(),
+        '/adminscreen': (context) => const AdminHomescreen()
       },
     );
   }
