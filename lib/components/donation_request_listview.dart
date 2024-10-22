@@ -138,7 +138,7 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                                     Text(
                                       bankName, // Display the blood bank name instead of location
                                       style: const TextStyle(
-                                          fontFamily: 'BAHIJ', fontSize: 14),
+                                          fontFamily: 'BAHIJ', fontSize: 12),
                                     ),
                                     Text(
                                       'الهاتف: ${donationRequest.phone}',

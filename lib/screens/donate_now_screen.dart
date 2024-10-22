@@ -136,10 +136,36 @@ void _confirmDonation(BuildContext context, DonationRequest donationRequest,
   final User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
     String userId = user.uid;
+
+    // Check the last appointment date
+    QuerySnapshot appointmentSnapshot = await FirebaseFirestore.instance
+        .collection('appointments')
+        .where('userId', isEqualTo: userId)
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .get();
+
+    if (appointmentSnapshot.docs.isNotEmpty) {
+      Map<String, dynamic> lastAppointmentData =
+          appointmentSnapshot.docs.first.data() as Map<String, dynamic>;
+      DateTime lastAppointmentDate = lastAppointmentData['timestamp']
+          .toDate(); // Use Firestore timestamp directly
+
+      // Check if the last appointment was within the last month
+      DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 30));
+      if (lastAppointmentDate.isAfter(oneMonthAgo)) {
+        _showErrorDialog(
+            context, 'لا يمكنك قبول الطلب. لقد قمت بالتبرع خلال الشهر الماضي.');
+        return;
+      }
+    }
+
+    // Proceed with the donation acceptance process
     Map<String, dynamic> updatedData = {
       'state': '1',
       'acceptedUserId': userId,
     };
+
     try {
       await FirebaseFirestore.instance
           .collection('requests')
@@ -154,6 +180,39 @@ void _confirmDonation(BuildContext context, DonationRequest donationRequest,
       }
     }
   }
+}
+
+void _showErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Text(
+          'تنبيه',
+          textAlign: TextAlign.center,
+          style:
+              TextStyle(fontSize: 25, fontFamily: 'BAHIJ', color: Colors.black),
+        ),
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontSize: 18, fontFamily: 'BAHIJ', color: Colors.black),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('موافق',
+                style: TextStyle(
+                    fontSize: 15, fontFamily: 'BAHIJ', color: Colors.black)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
 
 void _showConfirmationDialog(BuildContext context) {
@@ -211,6 +270,7 @@ class UserInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // Find the bank name using bankId
     String bankName = _getBankName(donationRequest.bankId);
+    debugPrint('$timeLeft');
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -291,6 +351,8 @@ class UserInfoCard extends StatelessWidget {
     }
     if (duration.inHours.remainder(24) > 0) {
       buffer.write('${duration.inHours.remainder(24)} ساعة');
+    } else if (duration.inMinutes.remainder(24) > 0) {
+      buffer.write('${duration.inHours.remainder(24)} دقيقة');
     }
     return buffer.toString();
   }

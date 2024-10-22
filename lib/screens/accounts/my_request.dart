@@ -3,7 +3,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iithar/models/blood_bank.dart';
 import 'package:iithar/services/data_service.dart';
 import 'package:latlong2/latlong.dart';
@@ -21,13 +20,17 @@ class MyRequestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BloodDonationRequestScreen(),
+      home: BloodDonationRequestScreen(
+        id: '',
+      ),
     );
   }
 }
 
 class BloodDonationRequestScreen extends StatefulWidget {
-  const BloodDonationRequestScreen({super.key});
+  final String id; // Update this line to hold the request ID
+
+  const BloodDonationRequestScreen({super.key, required this.id});
 
   @override
   BloodDonationRequestScreenState createState() =>
@@ -49,23 +52,12 @@ class BloodDonationRequestScreenState
     bloodBanks = await dataService.loadBankData();
   }
 
-  Future<Map<String, dynamic>?> fetchLastRequest() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      return null;
-    }
+  Future<Map<String, dynamic>?> fetchRequestById(String id) async {
+    final requestDoc =
+        await FirebaseFirestore.instance.collection('requests').doc('id').get();
 
-    final userId = user.uid;
-
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('requests')
-        .where('userId', isEqualTo: userId)
-        .orderBy('dateTime', descending: true)
-        .get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      final requestDoc = querySnapshot.docs.first;
-      final requestData = requestDoc.data();
+    if (requestDoc.exists) {
+      final requestData = requestDoc.data()!;
 
       // أضف الـ requestId إلى البيانات
       requestData['id'] = requestDoc.id;
@@ -75,33 +67,35 @@ class BloodDonationRequestScreenState
     return null;
   }
 
-  Future<void> deleteRequest(String requestId) async {
+  Future<void> deleteRequest(
+      String id, String requestDateTime, String requestState) async {
     try {
-      // Fetch the request document to check for acceptedUserId
-      final requestDoc = await FirebaseFirestore.instance
-          .collection('requests')
-          .doc(requestId)
-          .get();
+      // التحقق إذا كان الطلب مقبول (state == "1") أو أن التاريخ في الماضي
+      DateTime requestDate = DateTime.parse(requestDateTime);
+      DateTime now = DateTime.now();
 
-      if (requestDoc.exists) {
-        final requestData = requestDoc.data();
-        // Check if acceptedUserId exists
-        if (requestData?['acceptedUserId'] != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('هذا الطلب تم الرد عليه ولا يمكن حذفه')),
-          );
-        } else {
-          // Proceed to delete if acceptedUserId is not present
-          await FirebaseFirestore.instance
-              .collection('requests')
-              .doc(requestId)
-              .delete();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم حذف الطلب بنجاح')),
-          );
-        }
+      if (requestState == "1") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('لا يمكن حذف الطلب لأنه تم قبوله')),
+        );
+        return;
       }
+
+      if (requestDate.isBefore(now)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('لا يمكن حذف الطلب لأنه في تاريخ سابق')),
+        );
+        return;
+      }
+
+      // إذا كانت الشروط مستوفاة، يتم حذف الطلب
+      await FirebaseFirestore.instance.collection('requests').doc(id).delete();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تم حذف الطلب بنجاح')),
+      );
+      Navigator.pushNamed(
+          context, '/myrequests'); // Navigate back after deletion
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('فشل في حذف الطلب')),
@@ -121,7 +115,8 @@ class BloodDonationRequestScreenState
         elevation: 0,
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
-        future: fetchLastRequest(),
+        // Fetch last request data
+        future: fetchRequestById(widget.id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -159,10 +154,12 @@ class BloodDonationRequestScreenState
                   note: requestData['note'] ?? 'غير معروف',
                   onDelete: () {
                     deleteRequest(
-                        requestData['id']); // تمرير الـ requestId المحفوظ الآن
-                    Navigator.pushNamed(context, '/myrequests');
+                      requestData['id'], // تمرير الـ requestId
+                      requestData['dateTime'], // تمرير تاريخ الطلب
+                      requestData['state'], // تمرير حالة الطلب
+                    );
                   },
-                )
+                ),
               ],
             );
           } else {
@@ -293,8 +290,10 @@ class BloodDonationRequestCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: const [
             BoxShadow(
-              color: Color.fromRGBO(112, 112, 112, 0.2),
-              blurRadius: 5,
+              color: Colors.grey,
+              blurRadius: 5.0,
+              spreadRadius: 0.0,
+              offset: Offset(0, 3),
             ),
           ],
         ),
@@ -303,11 +302,9 @@ class BloodDonationRequestCard extends StatelessWidget {
           children: [
             Text(
               title,
-              textAlign: TextAlign.right,
               style: const TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 30,
-                color: Colors.black,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 16.0),
@@ -335,14 +332,12 @@ class InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 20.0, color: const Color(0xFFAE0E03)),
+        Icon(icon, size: 24.0, color: Colors.grey),
         const SizedBox(width: 8.0),
-        Text(
-          '$label: $value',
-          style: const TextStyle(
-            fontFamily: 'HSI',
-            fontSize: 15,
-            color: Colors.black,
+        Expanded(
+          child: Text(
+            '$label: $value',
+            style: const TextStyle(fontSize: 16),
           ),
         ),
       ],

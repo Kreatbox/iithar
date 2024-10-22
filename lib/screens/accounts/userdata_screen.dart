@@ -161,7 +161,7 @@ class UserDataScreen extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       Navigator.pushNamed(
-                                          context, '/MyRequests');
+                                          context, '/myrequests');
                                     }),
                                 const Spacer(),
                               ],
@@ -207,7 +207,7 @@ class UserDataScreen extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       Navigator.pushNamed(
-                                          context, '/contactus' );
+                                          context, '/contactus');
                                     }),
                                 const Spacer(),
                               ],

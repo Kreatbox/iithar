@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:iithar/models/blood_bank.dart';
 import 'package:iithar/services/data_service.dart'; // استيراد DataService
-
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -121,7 +120,11 @@ class _MyRequestsState extends State<MyRequests> {
                                 ),
                               ),
                               onPressed: () {
-                                Navigator.pushNamed(context, '/myrequest');
+                                Navigator.pushNamed(
+                                  context,
+                                  '/myrequest',
+                                  arguments: items[index]['id'],
+                                );
                               },
                               child: const Text(
                                 'عرض التفاصيل',

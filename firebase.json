@@ -1,1 +1,26 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"iithar-project","appId":"1:669523429077:android:1dba989a8a71ae3775445c","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"iithar-project","configurations":{"android":"1:669523429077:android:1dba989a8a71ae3775445c","ios":"1:669523429077:ios:8638087eedff9ea175445c","web":"1:669523429077:web:7e3961f2f54dea9175445c"}}}}}}
+{
+  "functions": {
+    "source": "functions"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "iithar-project",
+          "appId": "1:669523429077:android:1dba989a8a71ae3775445c",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "iithar-project",
+          "configurations": {
+            "android": "1:669523429077:android:1dba989a8a71ae3775445c",
+            "ios": "1:669523429077:ios:8638087eedff9ea175445c",
+            "web": "1:669523429077:web:7e3961f2f54dea9175445c"
+          }
+        }
+      }
+    }
+  }
+}

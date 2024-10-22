@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:iithar/models/blood_bank.dart';
 import 'package:iithar/services/data_service.dart';
@@ -26,6 +28,8 @@ class PublishRequestState extends State<PublishRequest> {
   final TextEditingController _otherConditionController =
       TextEditingController();
   final TextEditingController _dateTimeController = TextEditingController();
+
+  DateTime now = DateTime.now();
   @override
   void initState() {
     super.initState();
@@ -202,6 +206,45 @@ class PublishRequestState extends State<PublishRequest> {
         ),
       ),
     );
+  }
+
+  Future<bool> _canPublishRequest() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    String? userId = currentUser?.uid;
+
+    if (userId == null) {
+      return false;
+    }
+
+    // Get the user's last appointment
+    QuerySnapshot appointmentSnapshot = await FirebaseFirestore.instance
+        .collection('appointments')
+        .where('userId', isEqualTo: userId)
+        .orderBy('dateTime', descending: true)
+        .limit(1)
+        .get();
+
+    if (appointmentSnapshot.docs.isNotEmpty) {
+      var lastAppointment = appointmentSnapshot.docs.first;
+      String lastCondition = lastAppointment['medicalCondition'] ?? '';
+      DateTime lastDateTime =
+          (lastAppointment['dateTime'] as Timestamp).toDate();
+
+      // Check if the medical condition is "مرض مزمن"
+      if (lastCondition == 'مرض مزمن') {
+        return true;
+      }
+
+      // Check if the last appointment was more than 30 days ago
+      DateTime now = DateTime.now();
+      if (now.difference(lastDateTime).inDays > 1) {
+        return true;
+      }
+    } else {
+      return true;
+    }
+
+    return false;
   }
 
   void _showBloodTypeDialog() {
@@ -626,11 +669,8 @@ class PublishRequestState extends State<PublishRequest> {
                   'حسناً',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontFamily: 'HSI',
-                      fontSize: 20,
-                      color: Colors.black),
+                      fontFamily: 'HSI', fontSize: 20, color: Colors.black),
                 ),
-
               ),
             ],
           );
@@ -639,6 +679,29 @@ class PublishRequestState extends State<PublishRequest> {
       return;
     }
 
+    bool canPublish = await _canPublishRequest();
+
+    if (!canPublish) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('خطأ'),
+            content: const Text(
+                'لا يمكنك نشر الطلب. يجب أن يكون لديك حالة "مرض مزمن" أو أن يكون قد مضى أكثر من 30 يومًا على آخر موعد.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('حسناً'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
     // Retrieve user information
     User? currentUser = FirebaseAuth.instance.currentUser;
     String? userId = currentUser?.uid;
@@ -706,6 +769,13 @@ class PublishRequestState extends State<PublishRequest> {
           );
         },
       );
+
+      Duration difference = DateTime.parse(dateTime).difference(now);
+
+      if (difference.inHours <= 24 && difference.isNegative == false) {
+        // هذا الطلب في غضون الـ 24 ساعة القادمة
+        sendUrgentNotification(requestData); // إرسال إشعار
+      }
     } catch (e) {
       showDialog(
         context: context,
@@ -724,6 +794,38 @@ class PublishRequestState extends State<PublishRequest> {
           );
         },
       );
+    }
+  }
+
+  Future<void> sendUrgentNotification(Map<String, dynamic> requestData) async {
+    final url = Uri.parse(
+        'YOUR_CLOUD_FUNCTION_URL'); // Replace with your deployed Cloud Function URL
+
+    final messageData = {
+      "title": "طلب تبرع عاجل!",
+      "body":
+          "طلب تبرع عاجل للدم من نوع ${requestData['bloodType']} في الموقع ${requestData['location']}.",
+      "data": {"requestId": requestData['id']},
+      "topic": "urgent_requests", // تحديد الموضوع
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(messageData),
+      );
+
+      if (response.statusCode == 200) {
+        debugPrint('Notification sent successfully!');
+      } else {
+        debugPrint(
+            'Failed to send notification: ${response.statusCode} ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error sending notification: $e');
     }
   }
 
