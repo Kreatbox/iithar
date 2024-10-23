@@ -15,7 +15,7 @@ class DonationRequestScreen extends StatelessWidget {
           child: Align(
             alignment: Alignment.centerRight,
             child: Text(
-              'طلبات التبرع',
+              'طلبات الطوارئ',
               textAlign: TextAlign.right,
               style: TextStyle(
                 fontFamily: 'HSI',
