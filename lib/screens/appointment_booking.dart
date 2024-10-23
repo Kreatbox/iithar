@@ -21,6 +21,7 @@ class AppointmentBookingScreen extends StatefulWidget {
 class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   bool _isButtonDisabled = false;
   String? _selectedCenter;
+  String? _selectedBank;
   String? _selectedDonationType;
   String? _selectedDate;
   String? _selectedTimeSlot;
@@ -75,6 +76,17 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     });
   }
 
+  Future<void> updateFavouriteBank(String userId, String bankId) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'favouriteBank': bankId,
+      });
+      debugPrint("Favourite bank updated successfully");
+    } catch (e) {
+      debugPrint("Failed to update favourite bank: $e");
+    }
+  }
+
   Future<void> _fetchBloodBanks(String? defaultBankId, String? hours) async {
     final dataService = DataService();
     List<BloodBank> fetchedBanks = await dataService.loadBankData();
@@ -92,7 +104,6 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     setState(() {
       _bloodBanks = fetchedBanks;
       _bankHours = bankHours;
-
       if (fetchedBanks.isNotEmpty) {
         final defaultBank = (defaultBankId != null)
             ? fetchedBanks.firstWhere(
@@ -101,6 +112,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
               )
             : fetchedBanks[0];
         _selectedCenter = defaultBank.name;
+        _selectedBank = defaultBank.bankId;
         final hours = _bankHours[defaultBank.bankId] ?? '';
         _updateTimeSlots(hours);
       }
@@ -161,6 +173,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   void _resetSelections() {
     setState(() {
       _selectedCenter = _bloodBanks.isNotEmpty ? _bloodBanks[0].name : null;
+      _selectedBank = null;
       _selectedDonationType = null;
       _selectedDate = null;
       _selectedTimeSlot = null;
@@ -183,7 +196,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       final fullDateTimeString = '$englishDate $_selectedTimeSlot';
       final DateTime selectedDateTime =
           DateFormat('d MMMM yyyy hh:mm a').parse(fullDateTimeString);
-      final oneMonthAgo = selectedDateTime.subtract(const Duration(days: 30));
+      final oneMonthAgo = selectedDateTime.subtract(const Duration(days: 1));
       final querySnapshot = await FirebaseFirestore.instance
           .collection('appointments')
           .where('userId', isEqualTo: user.uid)
@@ -217,14 +230,17 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         'timestamp': FieldValue.serverTimestamp(),
         'done': false,
       });
+      updateFavouriteBank(user.uid, _selectedBank!);
       final englishDate = convertArabicDateToEnglish('$_selectedDate');
       final fullDateTimeString = '$englishDate $_selectedTimeSlot';
       final DateTime selectedDateTime =
           DateFormat('d MMMM yyyy hh:mm a').parse(fullDateTimeString);
       final DateTime reminderTime =
           selectedDateTime.subtract(const Duration(hours: 1));
-      final int notificationId =
-          DateTime.now().month + DateTime.now().day + DateTime.now().hour;
+      final int notificationId = DateTime.now().month +
+          DateTime.now().day +
+          DateTime.now().hour +
+          DateTime.now().minute;
       debugPrint(notificationId.toString());
       final NotificationService notificationService = NotificationService();
       await notificationService.scheduleNotification(
@@ -298,6 +314,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                                   onTap: () {
                                     setState(() {
                                       _selectedCenter = bank.name;
+                                      _selectedBank = bank.bankId;
                                       _updateTimeSlots(
                                           _bankHours[bank.bankId] ?? '');
                                     });

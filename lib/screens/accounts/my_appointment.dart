@@ -56,35 +56,54 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
     return null;
   }
 
-  Future<void> _deleteAppointment(String appointmentId) async {
+  Future<void> decreasePoints() async {
+    try {
+      // الحصول على المستخدم الحالي
+      final User? user = FirebaseAuth.instance.currentUser;
+
+      // التحقق من أن المستخدم مسجل الدخول
+      if (user == null) {
+        debugPrint("No user is currently logged in.");
+        return;
+      }
+      String userId = user.uid;
+      // الحصول على المستند الخاص بالمستخدم
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      // الحصول على النقاط الحالية، إذا لم يكن الحقل موجودًا يتم اعتباره 0
+      int currentPoints = userDoc.data()?['points'] ?? 0;
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'points': currentPoints - 1, // تقليل النقاط بمقدار واحد
+      });
+    } catch (e) {
+      debugPrint("Failed to update points: $e");
+    }
+  }
+
+  Future<String?> _deleteAppointment(String appointmentId) async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       // Check if the user has accepted any request associated with this appointment
       final requestsSnapshot = await FirebaseFirestore.instance
           .collection('requests')
-          .where('acceptedUserId', isEqualTo: user.uid)
+          .where('acceptedDonation', isEqualTo: appointmentId)
           .get();
 
       if (requestsSnapshot.docs.isNotEmpty) {
-        // User has accepted at least one request, prevent deletion
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('لا يمكنك حذف هذا الموعد بعد قبول طلب سابق.')),
-        );
-        return; // Exit the method to prevent deletion
+        return 'لا يمكنك حذف هذا الموعد بعد قبول هذا الطلب.';
       }
-
+      decreasePoints();
       // Proceed with deletion if no matching acceptedUserId found
       await FirebaseFirestore.instance
           .collection('appointments')
           .doc(appointmentId)
           .delete();
-
-      // Optionally, show a success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حذف الموعد بنجاح.')),
-      );
+      return 'تم حذف الموعد بنجاح.';
     }
+    return null;
   }
 
   @override
@@ -158,11 +177,13 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
                         onPressed: _isButtonDisabled
                             ? null
                             : () async {
+                                String? message;
                                 if (appointmentId != null) {
                                   setState(() {
                                     _isButtonDisabled = true;
                                   });
-                                  await _deleteAppointment(appointmentId);
+                                  message =
+                                      await _deleteAppointment(appointmentId);
                                   setState(() {
                                     _appointmentData = _fetchAppointmentData();
                                   });
@@ -182,9 +203,9 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
-                                      content: const Text(
-                                        'تم معالجة طلب إلغاء الموعد أغلق لمعرفة النتيجة.',
-                                        style: TextStyle(
+                                      content: Text(
+                                        '$message',
+                                        style: const TextStyle(
                                           fontFamily: 'HSI',
                                           fontSize: 20,
                                           color: Colors.black,
@@ -195,6 +216,8 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
                                         TextButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
+                                            Navigator.pushReplacementNamed(
+                                                context, '/home');
                                           },
                                           child: const Text(
                                             'إغلاق',

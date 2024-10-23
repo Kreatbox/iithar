@@ -1,29 +1,20 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iithar/models/blood_bank.dart';
 import 'package:iithar/services/data_service.dart';
 import 'package:latlong2/latlong.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Ensure Firebase is initialized
-  runApp(const MyRequestScreen());
-}
-
 class MyRequestScreen extends StatelessWidget {
   const MyRequestScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BloodDonationRequestScreen(
-        id: '',
-      ),
-    );
+    final String id = ModalRoute.of(context)?.settings.arguments as String;
+
+    return BloodDonationRequestScreen(id: id);
   }
 }
 
@@ -47,6 +38,33 @@ class BloodDonationRequestScreenState
     fetchBloodBanks();
   }
 
+  Future<void> decreasePoints() async {
+    try {
+      // الحصول على المستخدم الحالي
+      final User? user = FirebaseAuth.instance.currentUser;
+
+      // التحقق من أن المستخدم مسجل الدخول
+      if (user == null) {
+        debugPrint("No user is currently logged in.");
+        return;
+      }
+      String userId = user.uid;
+      // الحصول على المستند الخاص بالمستخدم
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      // الحصول على النقاط الحالية، إذا لم يكن الحقل موجودًا يتم اعتباره 0
+      int currentPoints = userDoc.data()?['points'] ?? 0;
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'points': currentPoints - 1, // تقليل النقاط بمقدار واحد
+      });
+    } catch (e) {
+      debugPrint("Failed to update points: $e");
+    }
+  }
+
   Future<void> fetchBloodBanks() async {
     final DataService dataService = DataService();
     bloodBanks = await dataService.loadBankData();
@@ -54,7 +72,7 @@ class BloodDonationRequestScreenState
 
   Future<Map<String, dynamic>?> fetchRequestById(String id) async {
     final requestDoc =
-        await FirebaseFirestore.instance.collection('requests').doc('id').get();
+        await FirebaseFirestore.instance.collection('requests').doc(id).get();
 
     if (requestDoc.exists) {
       final requestData = requestDoc.data()!;
@@ -87,16 +105,16 @@ class BloodDonationRequestScreenState
         );
         return;
       }
-
       // إذا كانت الشروط مستوفاة، يتم حذف الطلب
       await FirebaseFirestore.instance.collection('requests').doc(id).delete();
-
+      decreasePoints();
+      Navigator.pushReplacementNamed(
+          context, '/myrequests'); // Navigate back after deletion
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم حذف الطلب بنجاح')),
       );
-      Navigator.pushNamed(
-          context, '/myrequests'); // Navigate back after deletion
     } catch (e) {
+      debugPrint("Failed to delete request: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('فشل في حذف الطلب')),
       );

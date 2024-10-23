@@ -43,13 +43,18 @@ class _MyRequestsState extends State<MyRequests> {
     List<Map<String, dynamic>> tempList = [];
     if (querySnapshot.docs.isNotEmpty) {
       for (var element in querySnapshot.docs) {
-        tempList.add(element.data());
+        Map<String, dynamic> requestData = element.data();
+
+        // Add the document ID to the data map
+        requestData['id'] = element.id;
+
+        tempList.add(requestData);
       }
     }
 
-    // ضبط الحالة حتى إذا لم تكن هناك بيانات
+// ضبط الحالة حتى إذا لم تكن هناك بيانات
     setState(() {
-      items = tempList;
+      items = tempList; // Now items contains both data and doc.id
       isLoaded = true;
     });
   }
@@ -123,7 +128,7 @@ class _MyRequestsState extends State<MyRequests> {
                                 Navigator.pushNamed(
                                   context,
                                   '/myrequest',
-                                  arguments: items[index]['id'],
+                                  arguments: items[index]["id"],
                                 );
                               },
                               child: const Text(
@@ -156,7 +161,7 @@ class _MyRequestsState extends State<MyRequests> {
                                     Text(
                                       bankName, // عرض اسم بنك الدم
                                       style: const TextStyle(
-                                          fontFamily: 'BAHIJ', fontSize: 14),
+                                          fontFamily: 'BAHIJ', fontSize: 12),
                                     ),
                                   ],
                                 ),

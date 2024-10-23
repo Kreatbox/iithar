@@ -60,7 +60,18 @@ class DonateNowScreen extends StatelessWidget {
                     onPressed: () {
                       _confirmDonation(context, donationRequest, bankData);
                     },
-                    child: const Text('قبول الطلب'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFAE0E03),
+                    ),
+                    child: const Text(
+                      'قبول الطلب',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'HSI',
+                        fontSize: 25,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ],
               );
@@ -72,8 +83,8 @@ class DonateNowScreen extends StatelessWidget {
   }
 }
 
-Future<void> _createAppointment(String userId, DonationRequest donationRequest,
-    List<BloodBank> bankData) async {
+Future<String?> _createAppointment(String userId,
+    DonationRequest donationRequest, List<BloodBank> bankData) async {
   DateTime requestDateTime = DateTime.parse(donationRequest.dateTime);
   final bank =
       bankData.firstWhere((bank) => bank.bankId == donationRequest.bankId);
@@ -94,9 +105,18 @@ Future<void> _createAppointment(String userId, DonationRequest donationRequest,
     'userId': userId,
   };
 
-  await FirebaseFirestore.instance
-      .collection('appointments')
-      .add(appointmentData);
+  try {
+    // إضافة البيانات إلى Firestore والحصول على مرجع المستند
+    DocumentReference docRef = await FirebaseFirestore.instance
+        .collection('appointments')
+        .add(appointmentData);
+
+    // استرجاع وإرجاع doc.id الخاص بالمستند الذي تم إنشاؤه
+    return docRef.id;
+  } catch (e) {
+    debugPrint("Failed to create appointment: $e");
+    return null;
+  }
 }
 
 String _getMonthName(int month) {
@@ -152,7 +172,7 @@ void _confirmDonation(BuildContext context, DonationRequest donationRequest,
           .toDate(); // Use Firestore timestamp directly
 
       // Check if the last appointment was within the last month
-      DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 30));
+      DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 0));
       if (lastAppointmentDate.isAfter(oneMonthAgo)) {
         _showErrorDialog(
             context, 'لا يمكنك قبول الطلب. لقد قمت بالتبرع خلال الشهر الماضي.');
@@ -161,17 +181,19 @@ void _confirmDonation(BuildContext context, DonationRequest donationRequest,
     }
 
     // Proceed with the donation acceptance process
-    Map<String, dynamic> updatedData = {
-      'state': '1',
-      'acceptedUserId': userId,
-    };
 
     try {
+      String? acceptedDonation =
+          await _createAppointment(userId, donationRequest, bankData);
+      Map<String, dynamic> updatedData = {
+        'state': '1',
+        'acceptedDonation': acceptedDonation,
+      };
       await FirebaseFirestore.instance
           .collection('requests')
           .doc(donationRequest.id)
           .update(updatedData);
-      await _createAppointment(userId, donationRequest, bankData);
+
       await _scheduleDonationReminder(donationRequest);
       _showConfirmationDialog(context);
     } catch (e) {

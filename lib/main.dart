@@ -108,7 +108,7 @@ class MyApp extends StatelessWidget {
         '/myappointment': (context) => const MyAppointmentScreen(),
         '/personalinfo': (context) =>
             UserinfoDataScreen(userinfo: FirebaseAuth.instance.currentUser!),
-        '/MyRequests': (context) => const MyRequests(),
+        '/myrequests': (context) => const MyRequests(),
         '/myrequest': (context) => const MyRequestScreen(),
         '/mydonations': (context) => const MyDonationsScreen(),
         '/bloodbankadmin': (context) => const BloodbankAdminScreen(),

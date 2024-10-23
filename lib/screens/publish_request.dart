@@ -216,19 +216,36 @@ class PublishRequestState extends State<PublishRequest> {
       return false;
     }
 
-    // Get the user's last appointment
-    QuerySnapshot appointmentSnapshot = await FirebaseFirestore.instance
-        .collection('appointments')
+    // Get the user's last request
+    QuerySnapshot requestSnapshot = await FirebaseFirestore.instance
+        .collection('requests')
         .where('userId', isEqualTo: userId)
         .orderBy('dateTime', descending: true)
         .limit(1)
         .get();
+    debugPrint('${requestSnapshot.docs}');
+    if (requestSnapshot.docs.isNotEmpty) {
+      var lastRequest = requestSnapshot.docs.first;
+      String lastCondition = lastRequest['medicalCondition'] ?? '';
+      String? dateTimeString = lastRequest['dateTime'];
+      DateTime lastDateTime = DateTime.parse(dateTimeString!);
 
-    if (appointmentSnapshot.docs.isNotEmpty) {
-      var lastAppointment = appointmentSnapshot.docs.first;
-      String lastCondition = lastAppointment['medicalCondition'] ?? '';
-      DateTime lastDateTime =
-          (lastAppointment['dateTime'] as Timestamp).toDate();
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .get();
+
+      // Check if the 'role' field exists
+      if (userDoc.exists && userDoc.data() != null) {
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        if (userData.containsKey('points')) {
+          int points = userData['points'];
+          debugPrint('$points');
+          if (points < -10) {
+            return false;
+          }
+        }
+      }
 
       // Check if the medical condition is "مرض مزمن"
       if (lastCondition == 'مرض مزمن') {
@@ -241,7 +258,7 @@ class PublishRequestState extends State<PublishRequest> {
         return true;
       }
     } else {
-      return true;
+      return false;
     }
 
     return false;
@@ -688,7 +705,7 @@ class PublishRequestState extends State<PublishRequest> {
           return AlertDialog(
             title: const Text('خطأ'),
             content: const Text(
-                'لا يمكنك نشر الطلب. يجب أن يكون لديك حالة "مرض مزمن" أو أن يكون قد مضى أكثر من 30 يومًا على آخر موعد.'),
+                'لا يمكنك نشر الطلب. لم تقم بتوثيق حاجتك للدم منذ آخر فترة'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -799,7 +816,7 @@ class PublishRequestState extends State<PublishRequest> {
 
   Future<void> sendUrgentNotification(Map<String, dynamic> requestData) async {
     final url = Uri.parse(
-        'YOUR_CLOUD_FUNCTION_URL'); // Replace with your deployed Cloud Function URL
+        'YOUR_CLOUD_FUNCTION_URL'); // Replace with your deployed Cloud Function URL after activation
 
     final messageData = {
       "title": "طلب تبرع عاجل!",
