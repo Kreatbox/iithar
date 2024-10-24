@@ -8,10 +8,10 @@ class BloodAmount extends StatefulWidget {
 }
 
 class _BloodAmountState extends State<BloodAmount> {
-  // قائمة الزمر الدموية
+
   final List<String> bloodTypes = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
-  // قائمة قيم كل زمرة
+
   final Map<String, int> bloodTypeQuantities = {
     'A+': 0,
     'A-': 0,
@@ -46,25 +46,25 @@ class _BloodAmountState extends State<BloodAmount> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  "تصفير",
+                  "إعادة تعيين",
                   textAlign: TextAlign.right,
                   style: const TextStyle(
                     fontFamily: 'HSI',
                     fontSize: 22,
                     color: Colors.black,
                   ),
-                ),SizedBox(width: 45,),
+                ),SizedBox(width:40,),
                 Text(
-                  "التعديل",
+                  "تعديل",
                   textAlign: TextAlign.right,
                   style: const TextStyle(
                     fontFamily: 'HSI',
                     fontSize: 22,
                     color: Colors.black,
                   ),
-                ),SizedBox(width: 60,),
+                ),SizedBox(width: 45),
                 Text(
-                  "الزمرة",
+                  "الكمية الحالية",
                   textAlign: TextAlign.right,
                   style: const TextStyle(
                     fontFamily: 'HSI',
@@ -72,9 +72,9 @@ class _BloodAmountState extends State<BloodAmount> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(width:40,),
+                SizedBox(width:25,),
                 Text(
-                  "الكمية الحالية",
+                  "الزمرة",
                   textAlign: TextAlign.right,
                   style: const TextStyle(
                     fontFamily: 'HSI',
@@ -85,17 +85,17 @@ class _BloodAmountState extends State<BloodAmount> {
               ],
             ),
             const Divider(color:Color(0xFFAE0E03),
-            thickness: 5,),
+              thickness: 5,),
             Expanded(
               child: ListView.builder(
-                itemCount: bloodTypes.length, // عدد العناصر في القائمة
+                itemCount: bloodTypes.length,
                 itemBuilder: (context, index) {
-                  String bloodType = bloodTypes[index]; // كل زمرة دموية
-                  int currentQuantity = bloodTypeQuantities[bloodType]!; // الكمية الحالية
+                  String bloodType = bloodTypes[index];
+                  int currentQuantity = bloodTypeQuantities[bloodType]!;
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
                           icon: const Icon(Icons.refresh, color: Color(0xFFAE0E03),size: 30,),
@@ -109,11 +109,11 @@ class _BloodAmountState extends State<BloodAmount> {
                           initialCount: currentQuantity,
                           onChanged: (newQuantity) {
                             setState(() {
-                              bloodTypeQuantities[bloodType] = newQuantity; // تحديث الكمية
+                              bloodTypeQuantities[bloodType] = newQuantity;
                             });
                           },
                         ),
-                        SizedBox(width: 20,),
+                        SizedBox(width: 5,),
                         Text(
                           "$currentQuantity",
                           textAlign: TextAlign.left,
@@ -123,7 +123,7 @@ class _BloodAmountState extends State<BloodAmount> {
                             color: Colors.black,
                           ),
                         ),
-                        SizedBox(width: 75,),
+                        SizedBox(width: 25,),
                         Text(
                           "$bloodType ",
                           textAlign: TextAlign.left,
@@ -133,8 +133,6 @@ class _BloodAmountState extends State<BloodAmount> {
                             color: Colors.black,
                           ),
                         ),
-                        SizedBox(width: 0,),
-
                       ],
                     ),
                   );
@@ -199,7 +197,7 @@ class _BloodAmountState extends State<BloodAmount> {
             },
           ),
           SizedBox(
-            width: 20,
+            width: 15,
             child: TextField(
               controller: controller,
               keyboardType: TextInputType.number,
