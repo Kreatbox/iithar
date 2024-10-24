@@ -1,4 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iithar/models/blood_bank.dart';
+import 'package:iithar/services/data_service.dart';
+import 'package:intl/intl.dart';
 
 class BankAppintment extends StatefulWidget {
   const BankAppintment({super.key});
@@ -8,28 +15,124 @@ class BankAppintment extends StatefulWidget {
 }
 
 class _BankAppintmentState extends State<BankAppintment> {
-  bool isMonthSelecte = false;
-  bool isDayliSelect = false;
-  bool isWeekSelect = false;
+  List<BloodBank> _bloodBanks = [];
+  bool isOldDonations = false;
+  bool isNewDonations = true;
+  List<DonationRequest> newDonations = [];
+  List<DonationRequest> oldDonations = [];
+  List<DonationRequest> donationRequests = [];
 
-  List<DonationRequest> donationRequests = [
-    DonationRequest(
-      firstName: 'أحمد ',
-      lastName: '',
-      bloodType: 'O+',
-      ssid: '123456789',
-      dateTime: DateTime.now(),
-      status: 'قيد الانتظار', 
-    ),
-    DonationRequest(
-      firstName: 'سارة ',
-      lastName: '',
-      bloodType: 'A-',
-      ssid: '987654321',
-      dateTime: DateTime.now(),
-      status: 'قيد الانتظار', 
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadAppointments();
+    _loadBloodBanks();
+  }
+
+  Future<void> _loadBloodBanks() async {
+    DataService dataService = DataService();
+    List<BloodBank> banks = await dataService.loadBankData();
+    setState(() {
+      _bloodBanks = banks;
+    });
+  }
+
+  final Map<String, String> arabicToEnglishMonths = {
+    'كانون الثاني': 'January',
+    'شباط': 'February',
+    'آذار': 'March',
+    'نيسان': 'April',
+    'أيار': 'May',
+    'حزيران': 'June',
+    'تموز': 'July',
+    'آب': 'August',
+    'أيلول': 'September',
+    'تشرين الأول': 'October',
+    'تشرين الثاني': 'November',
+    'كانون الأول': 'December',
+  };
+
+  String convertArabicDateToEnglish(String arabicDate) {
+    arabicToEnglishMonths.forEach((arabicMonth, englishMonth) {
+      arabicDate = arabicDate.replaceAll(arabicMonth, englishMonth);
+    });
+    return arabicDate;
+  }
+
+  // Function to load appointments and corresponding user data
+  Future<void> _loadAppointments() async {
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .get();
+
+      final id =
+          userDoc.data()!['role']; // Access the 'role' field from Firestore
+
+      // Get all appointments from Firestore
+      String bankName =
+          _bloodBanks.firstWhere((bank) => bank.bankId == id).name;
+      final appointmentSnapshot = await FirebaseFirestore.instance
+          .collection('appointments')
+          .where('center', isEqualTo: bankName)
+          .where('done', isEqualTo: false)
+          .get();
+
+      // Iterate through each appointment
+      for (var doc in appointmentSnapshot.docs) {
+        var data = doc.data();
+        String userId = data['userId']; // Extract userId from appointment
+        // Fetch user data from Firestore based on userId
+        final userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get();
+        if (userSnapshot.exists) {
+          var userData = userSnapshot.data()!;
+          String englishDate = convertArabicDateToEnglish(data['date']);
+          String fullDateTimeString = '$englishDate ${data['timeSlot']}}';
+          DateTime selectedDateTime =
+              DateFormat('d MMMM yyyy hh:mm a').parse(fullDateTimeString);
+          final oneHourAgo = DateTime.now().subtract(const Duration(hours: 1));
+          if (selectedDateTime.isAfter(oneHourAgo)) {
+            newDonations.add(
+              DonationRequest(
+                firstName: userData['firstName'],
+                lastName: userData['lastName'],
+                bloodType: userData['bloodType'],
+                ssid: userData['ssid'],
+                date: selectedDateTime,
+                status: data['done'],
+                userId: data['userId'],
+                appointmentId: doc.id,
+              ),
+            );
+          } else {
+            oldDonations.add(
+              DonationRequest(
+                firstName: userData['firstName'],
+                lastName: userData['lastName'],
+                bloodType: userData['bloodType'],
+                ssid: userData['ssid'],
+                date: selectedDateTime,
+                status: data['done'],
+                userId: data['userId'],
+                appointmentId: doc.id,
+              ),
+            );
+          }
+        }
+      }
+      newDonations.sort((a, b) => a.date.compareTo(b.date));
+      oldDonations.sort((a, b) => a.date.compareTo(b.date));
+    } catch (e) {
+      // Handle any errors
+      debugPrint("Error loading appointments: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,33 +164,30 @@ class _BankAppintmentState extends State<BankAppintment> {
                 children: [
                   _filterChip(
                     context,
-                    label: 'مواعيد الشهر',
-                    isSelected: isMonthSelecte,
+                    label: 'المواعيد القديمة',
+                    isSelected: isOldDonations,
                     onSelected: (value) {
                       setState(() {
-                        isMonthSelecte = value; // تحديث حالة الزر الأول
+                        isOldDonations = true; // تحديث حالة الزر الأول
+                        isNewDonations = false;
+                        if (isOldDonations) {
+                          donationRequests = oldDonations;
+                        }
                       });
                     },
                   ),
                   const SizedBox(width: 15),
                   _filterChip(
                     context,
-                    label: 'مواعيد اليوم',
-                    isSelected: isDayliSelect,
+                    label: 'المواعيد الجديدة',
+                    isSelected: isNewDonations,
                     onSelected: (value) {
                       setState(() {
-                        isDayliSelect = value; // تحديث حالة الزر الثاني
-                      });
-                    },
-                  ),
-                  const SizedBox(width: 15),
-                  _filterChip(
-                    context,
-                    label: 'مواعيد الاسبوع',
-                    isSelected: isWeekSelect,
-                    onSelected: (value) {
-                      setState(() {
-                        isWeekSelect = value; // تحديث حالة الزر الثالث
+                        isNewDonations = true; // تحديث حالة الزر الثاني
+                        isOldDonations = false;
+                        if (isNewDonations) {
+                          donationRequests = newDonations;
+                        }
                       });
                     },
                   ),
@@ -95,7 +195,7 @@ class _BankAppintmentState extends State<BankAppintment> {
               ),
             ),
           ),
-          const SizedBox(height: 20), 
+          const SizedBox(height: 20),
           Expanded(
             child: ListView.builder(
               itemCount: donationRequests.length,
@@ -110,60 +210,68 @@ class _BankAppintmentState extends State<BankAppintment> {
                     ),
                     title: Row(
                       children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shadowColor: const Color.fromRGBO(112, 112, 112, 0.4),
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                        if (isNewDonations)
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shadowColor:
+                                  const Color.fromRGBO(112, 112, 112, 0.4),
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            onPressed: () {
+                              _confirmDonation(request);
+                            },
+                            child: const Text(
+                              'تأكيد التبرع',
+                              style: TextStyle(
+                                fontFamily: 'BAHIJ',
+                                fontSize: 18,
+                                color: Color(0xFFAE0E03),
+                              ),
                             ),
                           ),
-                          onPressed: () {
-                            _confirmDonation(request); 
-                          },
-                          child: const Text(
-                            'تأكيد التبرع',
-                            style: TextStyle(
-                              fontFamily: 'BAHIJ',
-                              fontSize: 18,
-                              color: Color(0xFFAE0E03),
-                            ),
-                          ),
-                        ),
                         const SizedBox(width: 10.0),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'اسم المتبرع: ${request.firstName+request.firstName}',
+                                'اسم المتبرع: ${request.firstName + request.lastName}',
                                 style: const TextStyle(
                                   fontFamily: 'HSI',
                                   fontSize: 18,
                                   color: Colors.black,
                                 ),
                               ),
-                              Text('زمرة الدم: ${request.bloodType}', style: const TextStyle(
-                                fontFamily: 'HSI',
-                                fontSize: 18,
-                                color: Colors.black,
-                              )),
-                              Text('الرقم الوطني: ${request.ssid}', style: const TextStyle(
-                                fontFamily: 'HSI',
-                                fontSize: 18,
-                                color: Colors.black,
-                              )),
-                              Text('تاريخ ووقت التبرع: ${request.dateTime.toLocal()}', style: const TextStyle(
-                                fontFamily: 'HSI',
-                                fontSize: 18,
-                                color: Colors.black,
-                              )),
-                              Text('حالة التبرع: ${request.status}', style: const TextStyle(
-                                fontFamily: 'HSI',
-                                fontSize: 18,
-                                color: Colors.black,
-                              )),
+                              Text('زمرة الدم: ${request.bloodType}',
+                                  style: const TextStyle(
+                                    fontFamily: 'HSI',
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  )),
+                              Text('الرقم الوطني: ${request.ssid}',
+                                  style: const TextStyle(
+                                    fontFamily: 'HSI',
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  )),
+                              Text(
+                                  'تاريخ ووقت التبرع: ${request.date.toLocal()}'
+                                      .substring(0, 35),
+                                  style: const TextStyle(
+                                    fontFamily: 'HSI',
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  )),
+                              Text('حالة التبرع: ${request.status}',
+                                  style: const TextStyle(
+                                    fontFamily: 'HSI',
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  )),
                             ],
                           ),
                         ),
@@ -179,94 +287,94 @@ class _BankAppintmentState extends State<BankAppintment> {
     );
   }
 
-  void _confirmDonation(DonationRequest request) {
-  setState(() {
-    request.status = 'تم التبرع'; 
-  });
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              'تأكيد التبرع',
-              style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 25,
-                color: Colors.black,
-              ),
+  void _confirmDonation(DonationRequest request) async {
+    setState(() {
+      request.status = true; // Update the local status to true
+    });
+    try {
+      // Update the user's validated field
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(request.userId)
+          .update({'validated': true});
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(request.userId) // Get the user's document
+          .get();
+      int currentPoints =
+          userDoc.data()?['points'] ?? 0; // Get current points or default to 0
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(request.userId)
+          .update({'points': currentPoints + 1}); // Increment points by 1
+      await FirebaseFirestore.instance
+          .collection('appointments')
+          .doc(request.appointmentId) // Use the appointmentId from the request
+          .update({'done': true}); // Mark it as done
+      newDonations.removeWhere(
+          (donation) => donation.appointmentId == request.appointmentId);
+      donationRequests = newDonations;
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'تأكيد التبرع',
+                  style: TextStyle(
+                    fontFamily: 'HSI',
+                    fontSize: 25,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            SizedBox(height: 16), 
-            Text(
-              'تم تأكيد التبرع بنجاح',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 25,
-                color: Colors.black,
-              ),
+            content: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 16),
+                Text(
+                  'تم تأكيد التبرع بنجاح',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'HSI',
+                    fontSize: 25,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        actions: <Widget>[
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFAE0E03),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+            actions: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFAE0E03),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                child: const Text(
+                  'موافق',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'HSI',
+                    fontSize: 25,
+                    color: Colors.white,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-            ),
-            child: const Text(
-              'موافق',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 25,
-                color: Colors.white,
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          const SizedBox(width: 10),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFAE0E03),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-            child: const Text(
-              'إلغاء',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 25,
-                color: Colors.white,
-              ),
-            ),
-            onPressed: () {
-              setState(() {
-                request.status = 'قيد الانتظار';
-              });
-              Navigator.of(context).pop(); 
-            },
-          ),
-        ],
+            ],
+          );
+        },
       );
-    },
-  );
-}
-
+    } catch (e) {
+      debugPrint("Error confirming donation: $e");
+    }
+  }
 
   Widget _filterChip(
     BuildContext context, {
@@ -278,24 +386,26 @@ class _BankAppintmentState extends State<BankAppintment> {
       labelPadding: const EdgeInsets.all(0),
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(20.0),
+        side: BorderSide(
+          color: isSelected
+              ? const Color(0xFFAE0E03)
+              : const Color.fromRGBO(112, 112, 112, 1),
+        ),
       ),
-      label: SizedBox(
-        width: 100,
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontFamily: 'HSI',
-            fontSize: 18,
-          ),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontFamily: 'HSI',
+          fontSize: 18,
+          color: isSelected
+              ? const Color(0xFFAE0E03)
+              : const Color.fromRGBO(112, 112, 112, 1),
         ),
       ),
       selected: isSelected,
-      labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
-      checkmarkColor: Colors.white,
-      selectedColor: const Color(0xFFAE0E03),
       onSelected: onSelected,
+      selectedColor: Colors.white,
     );
   }
 }
@@ -305,15 +415,19 @@ class DonationRequest {
   final String lastName;
   final String bloodType;
   final String ssid;
-  final DateTime dateTime;
-  String status; 
+  final DateTime date;
+  bool status;
+  final String userId;
+  final String appointmentId;
 
   DonationRequest({
     required this.firstName,
     required this.lastName,
     required this.bloodType,
     required this.ssid,
-    required this.dateTime,
-    this.status = 'قيد الانتظار', 
+    required this.date,
+    required this.status,
+    required this.userId,
+    required this.appointmentId,
   });
 }

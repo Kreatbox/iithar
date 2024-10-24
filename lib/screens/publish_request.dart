@@ -1,12 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:iithar/models/blood_bank.dart';
 import 'package:iithar/services/data_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:latlong2/latlong.dart';
 
 class PublishRequest extends StatefulWidget {
   const PublishRequest({super.key});
@@ -16,6 +17,7 @@ class PublishRequest extends StatefulWidget {
 }
 
 class PublishRequestState extends State<PublishRequest> {
+  bool _isButtonDisabled = false;
   List<BloodBank> _bloodBanks = [];
   bool _isLoadingBloodBanks = true;
   final TextEditingController _nameController = TextEditingController();
@@ -34,6 +36,30 @@ class PublishRequestState extends State<PublishRequest> {
   void initState() {
     super.initState();
     _loadBloodBanks();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // قم بجلب بيانات المستخدم من Firestore
+      final userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (userData.exists) {
+        // استخدام بيانات المستخدم لتعبئة الحقول
+        final data = userData.data()!;
+        setState(() {
+          _nameController.text = "${data['firstName']} ${data['lastName']}";
+          _phoneController.text = data['phoneNumber'] ?? '';
+          _selectedBloodType = data['bloodType'] ?? '';
+          _selectedBloodBankId = data['favouriteBank'] ?? '';
+          _setSelectedBloodBank();
+        });
+      }
+    }
   }
 
   Future<void> _loadBloodBanks() async {
@@ -43,6 +69,25 @@ class PublishRequestState extends State<PublishRequest> {
       _bloodBanks = banks;
       _isLoadingBloodBanks = false;
     });
+  }
+
+  void _setSelectedBloodBank() {
+    if (_selectedBloodBankId != null && _bloodBanks.isNotEmpty) {
+      // البحث عن البنك الذي يتطابق مع _selectedBloodBankId
+      final selectedBank = _bloodBanks.firstWhere(
+        (bank) => bank.bankId == _selectedBloodBankId,
+        orElse: () => BloodBank(
+            bankId: '',
+            name: 'Unknown Bank',
+            hours: '',
+            phoneNumber: '',
+            location: const LatLng(0, 0),
+            place: ''),
+      );
+      setState(() {
+        _selectedBloodBank = selectedBank.name;
+      });
+    }
   }
 
   @override
@@ -83,7 +128,14 @@ class PublishRequestState extends State<PublishRequest> {
                       right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
                   alignment: Alignment.center,
                 ),
-                onPressed: _saveRequest,
+                onPressed: _isButtonDisabled
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isButtonDisabled = true;
+                          _saveRequest();
+                        });
+                      },
                 child: const Text(
                   'نشر الطلب ',
                   textAlign: TextAlign.center,
@@ -134,27 +186,27 @@ class PublishRequestState extends State<PublishRequest> {
     );
   }
 
-void _showBloodBankDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return SimpleDialog(
-        backgroundColor: Colors.white,
-        title: Column(
-          children: [
-            const Text(
-              'اختر موقع التبرع',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 25,
-                color: Colors.black,
+  void _showBloodBankDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          backgroundColor: Colors.white,
+          title: const Column(
+            children: [
+              Text(
+                'اختر موقع التبرع',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'HSI',
+                  fontSize: 25,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            const SizedBox(height: 10), 
-            const Divider(color: Colors.grey), 
-          ],
-        ),
+              SizedBox(height: 10),
+              Divider(color: Colors.grey),
+            ],
+          ),
           children: _isLoadingBloodBanks
               ? [const Center(child: CircularProgressIndicator())]
               : _bloodBanks.map((bloodBank) {
@@ -260,7 +312,7 @@ void _showBloodBankDialog() {
 
       // Check if the last appointment was more than 30 days ago
       DateTime now = DateTime.now();
-      if (now.difference(lastDateTime).inDays > 1) {
+      if (now.difference(lastDateTime).inDays > 30) {
         return true;
       }
     } else {
@@ -271,183 +323,189 @@ void _showBloodBankDialog() {
   }
 
   void _showBloodTypeDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        backgroundColor: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'اختر زمرة الدم',
-               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 25,
-                color: Colors.black,
-              ),
-            ),
-              
-              SizedBox(height: 20), 
-              Divider(color: Colors.grey), 
-              ListTile(
-                title: Text(
-                  'A+',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedBloodType = 'A+';
-                  });
-                  Navigator.pop(context);
-                },
-                leading: Icon(Icons.water_drop,   color: Color(0xFFAE0E03)),
-              ),
-              ListTile(
-                title: Text(
-                  'A-',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedBloodType = 'A-';
-                  });
-                  Navigator.pop(context);
-                },
-                leading: Icon(Icons.water_drop,   color: Color(0xFFAE0E03)),
-              ),
-              ListTile(
-                title: Text(
-                  'B+',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedBloodType = 'B+';
-                  });
-                  Navigator.pop(context);
-                },
-                leading: Icon(Icons.water_drop,   color: Color(0xFFAE0E03)),
-              ),
-              ListTile(
-                title: Text(
-                  'B-',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedBloodType = 'B-';
-                  });
-                  Navigator.pop(context);
-                },
-                leading: Icon(Icons.water_drop,   color: Color(0xFFAE0E03)),
-              ),
-              ListTile(
-                title: Text(
-                  'O+',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedBloodType = 'O+';
-                  });
-                  Navigator.pop(context);
-                },
-                leading: Icon(Icons.water_drop,   color: Color(0xFFAE0E03)),
-              ),
-              ListTile(
-                title: Text(
-                  'O-',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedBloodType = 'O-';
-                  });
-                  Navigator.pop(context);
-                },
-                leading: Icon(Icons.water_drop,   color: Color(0xFFAE0E03)),
-              ),
-              ListTile(
-                title: Text(
-                  'AB+',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedBloodType = 'AB+';
-                  });
-                  Navigator.pop(context);
-                },
-                leading: Icon(Icons.water_drop,   color: Color(0xFFAE0E03)),
-              ),
-              ListTile(
-                title: Text(
-                  'AB-',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedBloodType = 'AB-';
-                  });
-                  Navigator.pop(context);
-                },
-                leading: Icon(Icons.water_drop,   color: Color(0xFFAE0E03)),
-              ),
-            ],
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
           ),
-        ),
-      );
-    },
-  );
-}
-
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'اختر زمرة الدم',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'HSI',
+                    fontSize: 25,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Divider(color: Colors.grey),
+                ListTile(
+                  title: const Text(
+                    'A+',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedBloodType = 'A+';
+                    });
+                    Navigator.pop(context);
+                  },
+                  leading:
+                      const Icon(Icons.water_drop, color: Color(0xFFAE0E03)),
+                ),
+                ListTile(
+                  title: const Text(
+                    'A-',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedBloodType = 'A-';
+                    });
+                    Navigator.pop(context);
+                  },
+                  leading:
+                      const Icon(Icons.water_drop, color: Color(0xFFAE0E03)),
+                ),
+                ListTile(
+                  title: const Text(
+                    'B+',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedBloodType = 'B+';
+                    });
+                    Navigator.pop(context);
+                  },
+                  leading:
+                      const Icon(Icons.water_drop, color: Color(0xFFAE0E03)),
+                ),
+                ListTile(
+                  title: const Text(
+                    'B-',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedBloodType = 'B-';
+                    });
+                    Navigator.pop(context);
+                  },
+                  leading:
+                      const Icon(Icons.water_drop, color: Color(0xFFAE0E03)),
+                ),
+                ListTile(
+                  title: const Text(
+                    'O+',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedBloodType = 'O+';
+                    });
+                    Navigator.pop(context);
+                  },
+                  leading:
+                      const Icon(Icons.water_drop, color: Color(0xFFAE0E03)),
+                ),
+                ListTile(
+                  title: const Text(
+                    'O-',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedBloodType = 'O-';
+                    });
+                    Navigator.pop(context);
+                  },
+                  leading:
+                      const Icon(Icons.water_drop, color: Color(0xFFAE0E03)),
+                ),
+                ListTile(
+                  title: const Text(
+                    'AB+',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedBloodType = 'AB+';
+                    });
+                    Navigator.pop(context);
+                  },
+                  leading:
+                      const Icon(Icons.water_drop, color: Color(0xFFAE0E03)),
+                ),
+                ListTile(
+                  title: const Text(
+                    'AB-',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedBloodType = 'AB-';
+                    });
+                    Navigator.pop(context);
+                  },
+                  leading:
+                      const Icon(Icons.water_drop, color: Color(0xFFAE0E03)),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildMedicalConditionDialog() {
     return Padding(
@@ -497,140 +555,137 @@ void _showBloodBankDialog() {
                       fontSize: 18,
                       color: Colors.grey,
                     ),
-                    
                     contentPadding: const EdgeInsets.symmetric(vertical: 16),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
                   textAlign: TextAlign.right,
-
-                  
                 ),
               ),
-            ),   
+            ),
         ],
       ),
     );
   }
-void _showMedicalConditionDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        backgroundColor: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'اختر الحالة الطبية',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 25,
-                color: Colors.black,
-              ),
-            ),
-              SizedBox(height: 20), 
-              Divider(color: Colors.grey),
-              ListTile(
-                title: Text(
-                  'حادث',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedMedicalCondition = 'حادث';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'مرض مزمن',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedMedicalCondition = 'مرض مزمن';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'عملية جراحية',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedMedicalCondition = 'عملية جراحية';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'ولادة',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedMedicalCondition = 'ولادة';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: Text(
-                  'أخرى',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontFamily: 'HSI',
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    _selectedMedicalCondition = 'أخرى';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
 
+  void _showMedicalConditionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'اختر الحالة الطبية',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'HSI',
+                    fontSize: 25,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Divider(color: Colors.grey),
+                ListTile(
+                  title: const Text(
+                    'حادث',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedMedicalCondition = 'حادث';
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: const Text(
+                    'مرض مزمن',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedMedicalCondition = 'مرض مزمن';
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: const Text(
+                    'عملية جراحية',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedMedicalCondition = 'عملية جراحية';
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: const Text(
+                    'ولادة',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedMedicalCondition = 'ولادة';
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: const Text(
+                    'أخرى',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _selectedMedicalCondition = 'أخرى';
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildRequestField(
       IconData icon, String label, TextEditingController controller) {
@@ -692,6 +747,7 @@ void _showMedicalConditionDialog() {
   }
 
   Future<void> _saveRequest() async {
+    debugPrint('its working I swear');
     // Ensure all required fields are filled
     if (_selectedBloodType == null ||
         _selectedBloodBank == null ||
@@ -717,6 +773,9 @@ void _showMedicalConditionDialog() {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
+                  setState(() {
+                    _isButtonDisabled = false;
+                  });
                 },
                 child: const Text(
                   'حسناً',
@@ -741,12 +800,17 @@ void _showMedicalConditionDialog() {
           return AlertDialog(
             title: const Text('خطأ'),
             content: const Text(
-                'لا يمكنك نشر الطلب. لم تقم بتوثيق حاجتك للدم منذ آخر فترة', style: TextStyle(
-                      fontFamily: 'HSI', fontSize: 20, color: Colors.black),),
+              'لا يمكنك نشر الطلب. لم تقم بتوثيق حاجتك للدم منذ آخر فترة',
+              style: TextStyle(
+                  fontFamily: 'HSI', fontSize: 20, color: Colors.black),
+            ),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
+                  setState(() {
+                    _isButtonDisabled = false;
+                  });
                 },
                 child: const Text('حسناً'),
               ),
@@ -759,29 +823,6 @@ void _showMedicalConditionDialog() {
     // Retrieve user information
     User? currentUser = FirebaseAuth.instance.currentUser;
     String? userId = currentUser?.uid;
-
-    if (userId == null) {
-      // If userId is null, show error
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('خطأ'),
-            content: const Text('تعذر العثور على معرف المستخدم', style: TextStyle(
-                      fontFamily: 'HSI', fontSize: 20, color: Colors.black),),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('حسناً'),
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
 
     String name = _nameController.text.trim();
     String phone = _phoneController.text.trim();
@@ -806,6 +847,9 @@ void _showMedicalConditionDialog() {
     };
 
     try {
+      setState(() {
+        _isButtonDisabled = true;
+      });
       await FirebaseFirestore.instance.collection('requests').add(requestData);
       showDialog(
         context: context,
@@ -817,6 +861,9 @@ void _showMedicalConditionDialog() {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
+                  setState(() {
+                    _isButtonDisabled = false;
+                  });
                 },
                 child: const Text('حسناً'),
               ),
@@ -825,12 +872,12 @@ void _showMedicalConditionDialog() {
         },
       );
 
-      Duration difference = DateTime.parse(dateTime).difference(now);
+      // Duration difference = DateTime.parse(dateTime).difference(now);
 
-      if (difference.inHours <= 24 && difference.isNegative == false) {
-        // هذا الطلب في غضون الـ 24 ساعة القادمة
-        sendUrgentNotification(requestData); // إرسال إشعار
-      }
+      // if (difference.inHours <= 24 && difference.isNegative == false) {
+      //   // هذا الطلب في غضون الـ 24 ساعة القادمة
+      //   sendUrgentNotification(requestData); // إرسال إشعار
+      // }
     } catch (e) {
       showDialog(
         context: context,
@@ -842,6 +889,9 @@ void _showMedicalConditionDialog() {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
+                  setState(() {
+                    _isButtonDisabled = false;
+                  });
                 },
                 child: const Text('حسناً'),
               ),
@@ -852,37 +902,37 @@ void _showMedicalConditionDialog() {
     }
   }
 
-  Future<void> sendUrgentNotification(Map<String, dynamic> requestData) async {
-    final url = Uri.parse(
-        'YOUR_CLOUD_FUNCTION_URL'); // Replace with your deployed Cloud Function URL after activation
+  // Future<void> sendUrgentNotification(Map<String, dynamic> requestData) async {
+  //   final url = Uri.parse(
+  //       'YOUR_CLOUD_FUNCTION_URL'); // Replace with your deployed Cloud Function URL after activation
 
-    final messageData = {
-      "title": "طلب تبرع عاجل!",
-      "body":
-          "طلب تبرع عاجل للدم من نوع ${requestData['bloodType']} في الموقع ${requestData['location']}.",
-      "data": {"requestId": requestData['id']},
-      "topic": "urgent_requests", // تحديد الموضوع
-    };
+  //   final messageData = {
+  //     "title": "طلب تبرع عاجل!",
+  //     "body":
+  //         "طلب تبرع عاجل للدم من نوع ${requestData['bloodType']} في الموقع ${requestData['location']}.",
+  //     "data": {"requestId": requestData['id']},
+  //     "topic": "urgent_requests", // تحديد الموضوع
+  //   };
 
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(messageData),
-      );
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: json.encode(messageData),
+  //     );
 
-      if (response.statusCode == 200) {
-        debugPrint('Notification sent successfully!');
-      } else {
-        debugPrint(
-            'Failed to send notification: ${response.statusCode} ${response.body}');
-      }
-    } catch (e) {
-      debugPrint('Error sending notification: $e');
-    }
-  }
+  //     if (response.statusCode == 200) {
+  //       debugPrint('Notification sent successfully!');
+  //     } else {
+  //       debugPrint(
+  //           'Failed to send notification: ${response.statusCode} ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Error sending notification: $e');
+  //   }
+  // }
 
   Future<void> _selectDateTime() async {
     final DateTime? pickedDate = await showDatePicker(

@@ -218,6 +218,24 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     return false;
   }
 
+  Future<bool> _requestExists() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('appointments')
+          .where('center', isEqualTo: _selectedCenter)
+          .where('date', isEqualTo: "$_selectedDate")
+          .where('timeSlot', isEqualTo: _selectedTimeSlot)
+          .get();
+
+      // Check if any document exists in the snapshot
+      if (querySnapshot.docs.isNotEmpty) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Future<void> _saveBooking() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -519,6 +537,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                             });
                             final hasBooking =
                                 await _hasExistingBookingForCurrentMonth();
+                            final hasAnotherConflict = await _requestExists();
                             if (hasBooking) {
                               showDialog(
                                 context: context,
@@ -528,17 +547,19 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                                       'تحذير',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontFamily: 'HSI',
-                                          fontSize: 25,
-                                          color: Colors.black),
+                                        fontFamily: 'HSI',
+                                        fontSize: 25,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                     content: const Text(
                                       'لا يمكنك حجز موعد أكثر من مرة في الشهر',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontFamily: 'HSI',
-                                          fontSize: 15,
-                                          color: Colors.black),
+                                        fontFamily: 'HSI',
+                                        fontSize: 15,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                     actions: [
                                       ElevatedButton(
@@ -556,9 +577,60 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                                           'موافق',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                              fontFamily: 'HSI',
-                                              fontSize: 15,
-                                              color: Colors.white),
+                                            fontFamily: 'HSI',
+                                            fontSize: 15,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              return;
+                            } else if (hasAnotherConflict) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text(
+                                      'تحذير',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'HSI',
+                                        fontSize: 25,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    content: const Text(
+                                      ' لا يمكنك حجز موعد في هذا الوقت المحدد هناك موعد موجود في هذا الوقت',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'HSI',
+                                        fontSize: 15,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    actions: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xFFAE0E03),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          setState(() {
+                                            _isButtonDisabled = false;
+                                          });
+                                        },
+                                        child: const Text(
+                                          'موافق',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontFamily: 'HSI',
+                                            fontSize: 15,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -567,6 +639,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                               );
                               return;
                             }
+
                             await _saveBooking();
                             showDialog(
                               context: context,
