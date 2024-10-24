@@ -95,7 +95,7 @@ class LoginScreenState extends State<LoginScreen> {
                                     Navigator.pushReplacementNamed(
                                         context, '/nav');
                                   } else {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.popAndPushNamed(
                                         context, '/bloodbankadmin',
                                         arguments: role);
                                   }

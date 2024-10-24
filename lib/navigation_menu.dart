@@ -41,26 +41,26 @@ class NavigationMenu extends StatelessWidget {
                     'assets/icons/icon1.png',
                     height: 20,
                   ),
-                  label: 'الرئيسية',
+                  label: '',
                 ),
                 const NavigationDestination(
                   icon: Icon(Icons.bloodtype_outlined,
                       color: Color(
                         0xFFAE0E03,
                       )),
-                  label: 'نشر',
+                  label: '',
                 ),
                 NavigationDestination(
                   icon: Image.asset(
                     'assets/icons/icon2.png',
                     height: 20,
                   ),
-                  label: 'الحساب',
+                  label: '',
                 ),
               ],
               indicatorColor: Colors.black12, // لون المؤشر المحدد
               backgroundColor: Colors.white,
-              height: 20, surfaceTintColor: Colors.white,
+              height: 10, surfaceTintColor: Colors.white,
               shadowColor: Colors.cyan,
               // ارتفاع شريط التنقل
             ),

@@ -94,6 +94,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/signup': (context) => const SignupScreen(),
         '/login': (context) => const LoginScreen(),
+        '/admin': (context) => const BloodbankAdminScreen(),
+        '/adminscreen': (context) => const AdminHomescreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
         '/notifications': (context) => NotificationsScreen(),
@@ -113,8 +115,7 @@ class MyApp extends StatelessWidget {
         '/mydonations': (context) => const MyDonationsScreen(),
         '/bloodbankadmin': (context) => const BloodbankAdminScreen(),
         '/contactus': (context) => const ContactWithus(),
-        '/admin': (context) => const BloodbankAdminScreen(),
-        '/adminscreen': (context) => const AdminHomescreen()
+
       },
     );
   }

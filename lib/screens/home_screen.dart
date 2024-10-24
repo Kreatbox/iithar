@@ -4,7 +4,6 @@ import 'package:iithar/screens/appointment_booking.dart';
 import 'package:iithar/screens/donation_requests.dart';
 import 'package:iithar/screens/map_screen.dart';
 
-import 'admin/admin_homescreen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -130,24 +129,7 @@ class HomeScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return const AdminHomescreen();
-                      }));
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      minimumSize: const Size(5, 5),
-                    ),
-                    child: const Text(
-                      'admin',
-                      style: TextStyle(
-                          fontSize: 14, color: Colors.red, fontFamily: 'BAHIJ'),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
+
                   TextButton(
                     onPressed: () {
                       Navigator.push(context,

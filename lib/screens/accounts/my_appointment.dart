@@ -115,7 +115,8 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
         title: const Align(
           alignment: Alignment.centerRight,
           child: Text(
-            'ملخص الحجز',
+            'ملخص الحجز ',
+            textAlign: TextAlign.right,
             style: TextStyle(
               fontFamily: 'HSI',
               fontSize: 30,
@@ -124,6 +125,7 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
           ),
         ),
       ),
+
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _appointmentData,
         builder: (BuildContext context,
@@ -140,6 +142,7 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   _buildInfoSection(
                     appointmentData['center'] ?? 'Unknown Center',

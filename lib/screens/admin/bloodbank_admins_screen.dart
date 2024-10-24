@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/blood_bank.dart';
 import '../../services/data_service.dart';
 
+
 class BloodbankAdminScreen extends StatelessWidget {
   const BloodbankAdminScreen({super.key});
 
@@ -58,7 +59,8 @@ class BloodbankAdminScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/home');
+                      Navigator.pushNamedAndRemoveUntil(context, '/adminscreen',(routr)=> false);
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFAE0E03),
