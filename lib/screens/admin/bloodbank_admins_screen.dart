@@ -47,6 +47,7 @@ class BloodbankAdminScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
+                  
                   Text(
                     'انت المشرف على ${bloodBank.name}', // Display the bank name
                     style: const TextStyle(
@@ -56,6 +57,17 @@ class BloodbankAdminScreen extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
+                    
+                    const SizedBox(height: 20),
+                    Text(
+                      'مرحباً بك في لوحة التحكم الخاصة بإدارة بنك الدم\n حافظ على تنظيم وتدفق التبرعات لضمان حياة أفضل للجميع',
+                      style: const TextStyle(
+                        fontFamily: 'HSI',
+                        fontSize: 20,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
