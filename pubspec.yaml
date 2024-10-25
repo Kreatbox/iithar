@@ -56,6 +56,8 @@ flutter:
     - assets/Images/bg.png
     - assets/icons/logo.png
     - assets/icons/datetime.png
+    - assets/icons/icons8-records-90.png
+    - assets/icons/icons8-emergency-90.png
 
   fonts:
     - family: HSI

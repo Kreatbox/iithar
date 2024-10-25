@@ -382,8 +382,19 @@ class _BloodAmountState extends State<BloodAmount> {
       builder: (BuildContext context) {
         bool exists = requestExists[bloodType] ?? false;
         return AlertDialog(
-          title: const Text('إدارة طلب دم'),
-          content: const Text('انشاء أو إزالة طلب لزمرة دم محددة؟'),
+          backgroundColor: Colors.white,
+          title: const Text('إدارة طلب دم', textAlign: TextAlign.right,
+            style: TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 22,
+              color: Colors.black,
+            ),),
+          content: const Text('انشاء أو إزالة طلب لزمرة دم محددة؟', textAlign: TextAlign.right,
+            style: TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 22,
+              color: Colors.black,
+            ),),
           actions: [
             _buildBloodTypeDialog((selectedType) {
               setState(() {
@@ -391,16 +402,25 @@ class _BloodAmountState extends State<BloodAmount> {
               });
             }),
             TextButton(
-              child: const Text('إلغاء'),
+              child: const Text('إلغاء', textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontFamily: 'HSI',
+                  fontSize: 18,
+                  color: Colors.black,
+                ),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: exists ? Colors.red : Colors.green,
+                backgroundColor: exists ? Color(0xFFAE0E03) : Colors.green,
               ),
-              child: Text(exists ? 'إزالة' : 'إضافة'),
+              child: Text(exists ? 'إزالة' : 'إضافة',style: TextStyle(
+                fontFamily: 'HSI',
+                fontSize: 22,
+                color: Colors.white,
+              ),),
               onPressed: () async {
                 if (exists) {
                   _removeRequest(bloodType);

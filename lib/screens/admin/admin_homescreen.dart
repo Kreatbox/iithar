@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iithar/screens/admin/bank_appointment.dart';
 import 'package:iithar/screens/admin/bank_donation_requests.dart';
 
+import 'bank_records.dart';
 import 'blood_amount.dart';
 
 class AdminHomescreen extends StatefulWidget {
@@ -41,10 +42,10 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
             const SizedBox(height: 5.0),
             GridView.count(
               shrinkWrap: true,
-              crossAxisCount: 3,
-              mainAxisSpacing: 1.0,
-              crossAxisSpacing: 1.0,
-              childAspectRatio: 1, //نسبة العرض للارتفاع للعناصر
+              crossAxisCount: 2,
+              mainAxisSpacing: 1,
+              crossAxisSpacing: 5,
+              childAspectRatio: 1.5, //نسبة العرض للارتفاع للعناصر
               children: [
                 _buildGridItem('assets/icons/datetime.png', 'حجوزات التبرع',
                     () {
@@ -57,9 +58,14 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
                     return const BloodAmount();
                   }));
                 }),
-                _buildGridItem('assets/icons/icon3.png', 'طوارئ', () {
+                _buildGridItem('assets/icons/icons8-emergency-90.png', 'طوارئ', () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const BankDonationRequests();
+                  }));
+                }),
+                _buildGridItem('assets/icons/icons8-records-90.png', 'السجلات', () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const BankRecords();
                   }));
                 }),
               ],
