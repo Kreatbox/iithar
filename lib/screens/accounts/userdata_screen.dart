@@ -89,6 +89,8 @@ class UserDataScreen extends StatelessWidget {
                           ),
                         ]);
                   }
+                  final userData =
+                      snapshot.data!.data() as Map<String, dynamic>?;
                   return Center(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(20.0),
@@ -240,6 +242,33 @@ class UserDataScreen extends StatelessWidget {
                                   color: Colors.white),
                             ),
                           ),
+                          const SizedBox(height: 20),
+                          if (userData!.containsKey('role'))
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(175, 45),
+                                  backgroundColor: const Color(0xFFAE0E03),
+                                  padding: const EdgeInsets.only(
+                                      right: 25.0,
+                                      left: 25.0,
+                                      top: 5.0,
+                                      bottom: 1.0),
+                                  alignment: Alignment.center),
+                              onPressed: () async {
+                                final String role = userData['role'];
+                                Navigator.popAndPushNamed(
+                                    context, '/bloodbankadmin',
+                                    arguments: role);
+                              },
+                              child: const Text(
+                                'انتقال لصفحة المشرف',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontFamily: 'HSI',
+                                    fontSize: 25,
+                                    color: Colors.white),
+                              ),
+                            ),
                         ],
                       ),
                     ),

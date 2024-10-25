@@ -63,60 +63,47 @@ class UserinfoDataScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   _buildInfoSection('المعلومات الشخصية', [
                     _buildInfoRow('الاسم', userData['firstName']),
-                                    const Divider(),
-
+                    const Divider(),
                     _buildInfoRow('اسم العائلة', userData['lastName']),
-                                    const Divider(),
-
+                    const Divider(),
                     _buildInfoRow('تاريخ الميلاد', userData['birthDate']),
-                                    const Divider(),
-
+                    const Divider(),
                     _buildInfoRow('فصيلة الدم', userData['bloodType']),
-                                    const Divider(),
-
+                    const Divider(),
                     _buildInfoRow('الجنس', userData['genderType']),
-                                    const Divider(),
-
+                    const Divider(),
                     _buildInfoRow('رقم الجوال', '${userData['phoneNumber']}'),
-                                    const Divider(),
-
+                    const Divider(),
                     _buildInfoRow('الرقم الوطني', userData['ssid']),
-                                    const Divider(),
-
+                    const Divider(),
                     _buildInfoRow(
                         'قابل للتبرع', isEligibleForDonation ? 'نعم' : 'لا'),
                   ]),
                   const SizedBox(height: 20),
-                  if (!hasFormAnswer) ...[
+                  if (!hasFormAnswer)
                     const Text(
                       'لم تقم بملء استبيان التبرع بعد. يرجى ملء الاستبيان لإكمال بياناتك.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: 'HSI', fontSize: 18, color: Colors.red),
                     ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(160, 45),
-                          backgroundColor: const Color(0xFFAE0E03),
-                          padding: const EdgeInsets.only(
-                              right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
-                          alignment: Alignment.center),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/form');
-                      },
-                      child: const Text(
-                        'ملء استبيان التبرع',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'HSI',
-                            fontSize: 25,
-                            color: Colors.white),
-                      ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFAE0E03),
+                        padding: const EdgeInsets.only(
+                            right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                        alignment: Alignment.center),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/form');
+                    },
+                    child: const Text(
+                      'ملء استبيان التبرع',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: 'HSI', fontSize: 25, color: Colors.white),
                     ),
-                    const SizedBox(height: 20),
-
-                  ],
+                  ),
                   const SizedBox(height: 20),
                 ],
               ),

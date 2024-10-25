@@ -70,7 +70,7 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView1> {
                     final donationRequest = donationRequests[index];
 
                     if (donationRequest == null) {
-                      return const SizedBox(); 
+                      return const SizedBox();
                     }
 
                     // Safely find the bank by its ID

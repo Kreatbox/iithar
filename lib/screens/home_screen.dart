@@ -4,7 +4,6 @@ import 'package:iithar/screens/appointment_booking.dart';
 import 'package:iithar/screens/donation_requests.dart';
 import 'package:iithar/screens/map_screen.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -47,7 +46,6 @@ class HomeScreen extends StatelessWidget {
             children: [
               SizedBox(
                 height: 125,
-                width: 400,
                 child: Padding(
                   padding: const EdgeInsets.only(
                       left: 5.0, right: 5.0, top: 1.0, bottom: 1.0),
@@ -129,7 +127,6 @@ class HomeScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
                   TextButton(
                     onPressed: () {
                       Navigator.push(context,

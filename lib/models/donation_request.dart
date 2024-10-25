@@ -9,12 +9,12 @@ class DonationRequest {
   final String phone;
   final String dateTime;
   final String medicalCondition;
-  final String note;
-  final String otherCondition;
+  final String? note;
+  final String? otherCondition;
   final String state;
   final String userId;
   final String?
-      acceptedUserId; // Optional because it will only exist if accepted
+      acceptedDonation; // Optional because it will only exist if accepted
 
   DonationRequest({
     required this.id, // Include id in constructor
@@ -24,11 +24,11 @@ class DonationRequest {
     required this.phone,
     required this.dateTime,
     required this.medicalCondition,
-    required this.note,
-    required this.otherCondition,
+    this.note,
+    this.otherCondition,
     required this.state,
     required this.userId,
-    this.acceptedUserId,
+    this.acceptedDonation,
   });
 }
 
@@ -81,8 +81,8 @@ Future<List<DonationRequest?>> getDonationRequests() async {
               otherCondition: data['otherCondition'] as String,
               state: data['state'] as String,
               userId: data['userId'] as String,
-              acceptedUserId: data.containsKey('acceptedUserId')
-                  ? data['acceptedUserId'] as String?
+              acceptedDonation: data.containsKey('acceptedDonation')
+                  ? data['acceptedDonation'] as String?
                   : null,
             );
           }
@@ -122,7 +122,7 @@ bool _isCompatibleBloodType(String userBloodType, String requestBloodType) {
           requestBloodType == 'B+' ||
           requestBloodType == 'O+';
     case 'O-':
-      return true; // AB+ can receive from all blood types
+      return true;
     default:
       return false;
   }
