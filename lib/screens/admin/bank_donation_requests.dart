@@ -12,7 +12,9 @@ class BankDonationRequests extends StatefulWidget {
 class _BankDonationRequestsState extends State<BankDonationRequests> {
   bool isOldDonations = true;
   bool isNewDonations = false;
-  String? bankId; // Make bankId nullable
+  String? bankId;
+
+  final TextEditingController _verificationCodeController = TextEditingController();
 
   @override
   void initState() {
@@ -122,9 +124,9 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(
-                            child: Text("No donation requests found"));
+                        return const Center(child: Text("No donation requests found"));
                       }
+
                       final items = snapshot.data!.docs.where((doc) {
                         final data = doc.data() as Map<String, dynamic>;
                         return data['name'] != null;
@@ -134,10 +136,8 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                           "id": doc.id,
                           "bloodType": data["bloodType"] ?? "Unknown",
                           "username": data["name"] ?? "No Name",
-                          "dateTime":
-                              data["dateTime"] ?? DateTime.now().toString(),
-                          "medicalCondition":
-                              data["medicalCondition"] ?? "No Condition",
+                          "dateTime": data["dateTime"] ?? DateTime.now().toString(),
+                          "medicalCondition": data["medicalCondition"] ?? "No Condition",
                         };
                       }).toList();
 
@@ -152,67 +152,115 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                                 side: const BorderSide(width: 0.5),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          'الزمرة: ${items[index]["bloodType"]}',
-                                          style: const TextStyle(
-                                              fontFamily: 'BAHIJ',
-                                              fontSize: 16),
-                                        ),
-                                        Text(
-                                          'الاسم: ${items[index]["username"]}',
-                                          style: const TextStyle(
-                                              fontFamily: 'BAHIJ',
-                                              fontSize: 14),
-                                        ),
-                                        Text(
-                                          'التاريخ: ${(items[index]["dateTime"]).substring(0, 16)}',
-                                          style: const TextStyle(
-                                              fontFamily: 'BAHIJ',
-                                              fontSize: 14),
-                                        ),
-                                        Text(
-                                          'المرض: ${(items[index]["medicalCondition"])}',
-                                          style: const TextStyle(
-                                              fontFamily: 'BAHIJ',
-                                              fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
+                                  Text(
+                                    'الزمرة: ${items[index]["bloodType"]}',
+                                    style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 16),
                                   ),
-                                  const SizedBox(width: 10.0),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      shadowColor: const Color.fromRGBO(
-                                          112, 112, 112, 0.4),
-                                      elevation: 5,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
+                                  Text(
+                                    'الاسم: ${items[index]["username"]}',
+                                    style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
+                                  ),
+                                  Text(
+                                    'التاريخ: ${(items[index]["dateTime"]).substring(0, 16)}',
+                                    style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
+                                  ),
+                                  Text(
+                                    'المرض: ${(items[index]["medicalCondition"])}',
+                                    style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      SizedBox(
+                                        width: 60,
+                                        child: TextField(
+                                          controller: _verificationCodeController,
+                                          decoration: InputDecoration(
+                                            hintText: 'أدخل رقم',
+                                            hintStyle: TextStyle(
+                                              color: Colors.grey,
+                                              fontFamily: 'BAHIJ',
+                                              fontSize: 10,
+                                            ),
+                                            filled: true,
+                                            fillColor: Colors.white.withOpacity(0.5),
+                                            contentPadding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(30.0),
+                                              borderSide: BorderSide(color: Colors.grey),
+                                            ),
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.number,
+                                        ),
                                       ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/myrequest',
-                                        arguments: items[index]["id"],
-                                      );
-                                    },
-                                    child: const Text(
-                                      'توثيق',
-                                      style: TextStyle(
-                                        fontFamily: 'BAHIJ',
-                                        color: Color(0xFFAE0E03),
+                                      const SizedBox(height: 10),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          String code = _verificationCodeController.text;
+                                          if (code.isNotEmpty) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'تم التوثيق بنجاح يمكنه نشر العدد المحدد من الطلبات',
+                                                  style: TextStyle(fontFamily: 'BAHIJ'),
+                                                  textAlign: TextAlign.right,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          shadowColor: const Color.fromRGBO(112, 112, 112, 0.4),
+                                          elevation: 3,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          minimumSize: const Size(50, 30),
+                                        ),
+                                        child: const Text(
+                                          'توثيق',
+                                          style: TextStyle(
+                                            fontFamily: 'BAHIJ',
+                                            color: Color(0xFFAE0E03),
+                                            fontSize: 12,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      const SizedBox(width: 10),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            '/myrequest',
+                                            arguments: items[index]["id"],
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          shadowColor: const Color.fromRGBO(112, 112, 112, 0.4),
+                                          elevation: 3,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          minimumSize: const Size(50, 30),
+                                        ),
+                                        child: const Text(
+                                          'تفاصيل',
+                                          style: TextStyle(
+                                            fontFamily: 'BAHIJ',
+                                            color: Color(0xFFAE0E03),
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                    ],
                                   ),
                                 ],
                               ),
