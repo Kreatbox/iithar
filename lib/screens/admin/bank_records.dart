@@ -18,107 +18,158 @@ class _BankRecordsState extends State<BankRecords> {
     'AB+',
     'AB-'
   ];
+
+  final List<int> bloodTypeCounts = [5, 9, 3, 2, 0, 9, 4, 1];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: const Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              'سجلات البنك',
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                  fontFamily: 'HSI', fontSize: 30, color: Colors.black),
-            ),
-          )),
-      body: Column(
-        children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "التاريخ",
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 22,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(width: 25),
-              Text(
-                "الكمية الحالية",
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 22,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(
-                width: 25,
-              ),
-              Text(
-                "الزمرة",
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'HSI',
-                  fontSize: 22,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-          const Divider(
-            color: Color(0xFFAE0E03),
-            thickness: 5,
-          ),
-          Expanded(
-            child: GridView.builder(
-              itemCount: bloodTypes.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                childAspectRatio: 8.0, // Adjust to fit items properly in a row
-              ),
-              itemBuilder: (context, index) {
-                String bloodType = bloodTypes[index];
-                return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const Text("2024"),
-                          const SizedBox(
-                            width: 30,
-                            child: Text(
-                              '100',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'HSI',
-                                fontSize: 20,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 50,
-                            child: Text(
-                              bloodType,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: 'HSI',
-                                fontSize: 20,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ]));
-              },
+        backgroundColor: Colors.white,
+        title: const Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            'سجلات البنك',
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 30,
+              color: Colors.black,
             ),
           ),
-        ],
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+
+          return Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 10.0,
+                    spreadRadius: 1.0,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("2024"),
+                        SizedBox(width: 10),
+                        Text(
+                          ":التاريخ",
+                          style: const TextStyle(
+                              fontFamily: 'BAHIJ',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "لينة",
+                          style: const TextStyle(
+                              fontFamily: 'BAHIJ', fontSize: 14),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          ":اسم المعدل",
+                          style: const TextStyle(
+                              fontFamily: 'BAHIJ',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+
+                        Text(
+                          ":التعديلات",
+                          style: const TextStyle(
+                              fontFamily: 'BAHIJ',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+
+                      ],
+                    ),     SizedBox(height: 10),
+                    GridView.count(
+                      shrinkWrap: true,
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 5.0,
+                      mainAxisSpacing: 5.0,
+                      physics: const NeverScrollableScrollPhysics(),
+                      childAspectRatio: 3,
+                      children: [
+                        for (int i = 0; i < bloodTypes.length; i++)
+                          if (bloodTypeCounts[i] > 0)
+                            Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    blurRadius: 5.0,
+                                    spreadRadius: 0.0,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    '${bloodTypeCounts[i]}',
+                                    style: const TextStyle(
+                                        fontFamily: 'BAHIJ', fontSize: 14),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    ':${bloodTypes[i]}',
+                                    style: const TextStyle(
+                                        fontFamily: 'BAHIJ',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+
+                                  Icon(
+                                    Icons.bloodtype_outlined,
+                                    color: Color(0xFFAE0E03),
+                                    size: 18,
+                                  ),
+                                ],
+                              ),
+                            ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
