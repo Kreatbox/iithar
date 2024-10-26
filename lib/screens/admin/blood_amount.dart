@@ -339,10 +339,24 @@ class _BloodAmountState extends State<BloodAmount> {
                             "Cannot update $bloodType as the resulting quantity is negative.");
                       }
                     }
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('تم تحديث الكميات بنجاح')),
-                    );
+ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+    content: Text(
+      'تم تحديث الكميات بنجاح',
+      style: TextStyle(
+        fontFamily: 'HSI',
+        fontSize: 20,
+        color: Colors.white, 
+      ),
+      textAlign: TextAlign.center,
+    ),
+       backgroundColor: const Color(0xFFAE0E03),    
+    behavior: SnackBarBehavior.floating, 
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10), 
+    ),
+  ),
+);
                   },
                   child: const Text(
                     'إضافة',
