@@ -15,7 +15,6 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
   String? bankId;
 
   final TextEditingController _verificationCodeController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -126,7 +125,6 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         return const Center(child: Text("No donation requests found"));
                       }
-
                       final items = snapshot.data!.docs.where((doc) {
                         final data = doc.data() as Map<String, dynamic>;
                         return data['name'] != null;
@@ -135,6 +133,7 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                         return {
                           "id": doc.id,
                           "bloodType": data["bloodType"] ?? "Unknown",
+                          "userId": data["userId"] ?? "no username",
                           "username": data["name"] ?? "No Name",
                           "dateTime": data["dateTime"] ?? DateTime.now().toString(),
                           "medicalCondition": data["medicalCondition"] ?? "No Condition",
@@ -146,123 +145,150 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                         itemCount: items.length,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(width: 0.5),
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(20),
-                              ),
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    'الزمرة: ${items[index]["bloodType"]}',
-                                    style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 16),
-                                  ),
-                                  Text(
-                                    'الاسم: ${items[index]["username"]}',
-                                    style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
-                                  ),
-                                  Text(
-                                    'التاريخ: ${(items[index]["dateTime"]).substring(0, 16)}',
-                                    style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
-                                  ),
-                                  Text(
-                                    'المرض: ${(items[index]["medicalCondition"])}',
-                                    style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      SizedBox(
-                                        width: 60,
-                                        child: TextField(
-                                          controller: _verificationCodeController,
-                                          decoration: InputDecoration(
-                                            hintText: 'أدخل رقم',
-                                            hintStyle: TextStyle(
-                                              color: Colors.grey,
-                                              fontFamily: 'BAHIJ',
-                                              fontSize: 10,
-                                            ),
-                                            filled: true,
-                                            fillColor: Colors.white.withOpacity(0.5),
-                                            contentPadding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 6.0),
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(30.0),
-                                              borderSide: BorderSide(color: Colors.grey),
-                                            ),
-                                          ),
-                                          textAlign: TextAlign.center,
-                                          keyboardType: TextInputType.number,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          String code = _verificationCodeController.text;
-                                          if (code.isNotEmpty) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'تم التوثيق بنجاح يمكنه نشر العدد المحدد من الطلبات',
-                                                  style: TextStyle(fontFamily: 'BAHIJ'),
-                                                  textAlign: TextAlign.right,
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          shadowColor: const Color.fromRGBO(112, 112, 112, 0.4),
-                                          elevation: 3,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          minimumSize: const Size(50, 30),
-                                        ),
-                                        child: const Text(
-                                          'توثيق',
-                                          style: TextStyle(
-                                            fontFamily: 'BAHIJ',
-                                            color: Color(0xFFAE0E03),
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/myrequest',
-                                            arguments: items[index]["id"],
-                                          );
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          shadowColor: const Color.fromRGBO(112, 112, 112, 0.4),
-                                          elevation: 3,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          minimumSize: const Size(50, 30),
-                                        ),
-                                        child: const Text(
-                                          'تفاصيل',
-                                          style: TextStyle(
-                                            fontFamily: 'BAHIJ',
-                                            color: Color(0xFFAE0E03),
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                    ],
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 3,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3), // تغير موضع الظل
                                   ),
                                 ],
+                              ),
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(width: 0.5),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '${items[index]["bloodType"]}   :الزمرة',
+                                      style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 16),
+                                    ),
+                                    Text(
+                                      'اسم المستخدم:    ${items[index]["userId"]}',
+                                      style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
+                                    ),
+                                    Text(
+                                      'اسم المريض:    ${items[index]["username"]}',
+                                      style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
+                                    ),
+                                    Text(
+                                      'التاريخ:   ${(items[index]["dateTime"]).substring(0, 16)}',
+                                      style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
+                                    ),
+                                    Text(
+                                      'المرض:   ${(items[index]["medicalCondition"])}', textAlign: TextAlign.right,
+                                      style: const TextStyle(fontFamily: 'BAHIJ', fontSize: 14,),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/myrequest',
+                                              arguments: items[index]["id"],
+                                            );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Color(0xFFAE0E03),
+                                            shadowColor: Colors.grey,
+                                            elevation: 4,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(15),
+                                            ),
+                                            minimumSize: const Size(50, 30),
+                                          ),
+                                          child: const Text(
+                                            'تفاصيل',
+                                            style: TextStyle(
+                                              fontFamily: 'BAHIJ',
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            String code = _verificationCodeController.text;
+                                            if (code.isNotEmpty) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'تم التوثيق بنجاح يمكنه نشر العدد المحدد من الطلبات',
+                                                    style: TextStyle(fontFamily: 'BAHIJ'),
+                                                    textAlign: TextAlign.right,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Color(0xFFAE0E03),
+                                            shadowColor: Colors.grey,
+                                            elevation: 4,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(15),
+                                            ),
+                                            minimumSize: const Size(50, 30),
+                                          ),
+                                          child: const Text(
+                                            'توثيق',
+                                            style: TextStyle(
+                                              fontFamily: 'BAHIJ',
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 80,
+                                          height: 32,
+                                          child: TextField(
+                                            controller: _verificationCodeController,
+                                            decoration: InputDecoration(
+                                              hintText: 'أدخل رقم',
+                                              hintStyle: TextStyle(
+                                                color: Color(0xFFAE0E03),
+                                                fontFamily: 'BAHIJ',
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white.withOpacity(0.5),
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                borderSide: BorderSide(color: Colors.grey),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                borderSide: BorderSide(color: Colors.grey),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(30.0),
+                                                borderSide: BorderSide(color: Color(0xFFAE0E03), width: 2.0),
+                                              ),
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            keyboardType: TextInputType.number,
+                                          ),
+                                        ),
+
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );

@@ -127,10 +127,17 @@ class BloodDonationRequestScreenState
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('طلب التبرع بالدم',
-            style: TextStyle(color: Colors.black)),
-        centerTitle: true,
-        elevation: 0,
+        title: const Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'طلب التبرع بالدم',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  fontFamily: 'HSI', fontSize: 30, color: Colors.black),
+            ),
+          ),
+        ),
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
         // Fetch last request data
@@ -224,7 +231,7 @@ class BloodDonationRequestCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             _buildInfoSection(
-              'تفاصيل طلب التبرع',
+              ' تفاصيل طلب التبرع',
               [
                 InfoRow(
                   icon: Icons.person,
@@ -321,7 +328,8 @@ class BloodDonationRequestCard extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                fontSize: 22,
+                fontSize: 25,
+                fontFamily: 'HSI',
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -350,12 +358,14 @@ class InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 24.0, color: Colors.grey),
+        Icon(icon, size: 24.0, color: Color(0xFFAE0E03)),
         const SizedBox(width: 8.0),
         Expanded(
           child: Text(
-            '$label: $value',
-            style: const TextStyle(fontSize: 16),
+            '$label:    $value',
+            style: const TextStyle(
+    fontFamily: 'HSI',
+    fontSize: 16),
           ),
         ),
       ],
