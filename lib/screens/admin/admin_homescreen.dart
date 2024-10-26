@@ -58,12 +58,14 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
                     return const BloodAmount();
                   }));
                 }),
-                _buildGridItem('assets/icons/icons8-emergency-90.png', 'طوارئ', () {
+                _buildGridItem('assets/icons/icons8-emergency-90.png', 'طوارئ',
+                    () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const BankDonationRequests();
                   }));
                 }),
-                _buildGridItem('assets/icons/icons8-records-90.png', 'السجلات', () {
+                _buildGridItem('assets/icons/icons8-records-90.png', 'السجلات',
+                    () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const BankRecords();
                   }));

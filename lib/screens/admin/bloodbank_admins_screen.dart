@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../models/blood_bank.dart';
 import '../../services/data_service.dart';
 
-
 class BloodbankAdminScreen extends StatelessWidget {
   const BloodbankAdminScreen({super.key});
 
@@ -47,7 +46,6 @@ class BloodbankAdminScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-                  
                   Text(
                     'انت المشرف على ${bloodBank.name}', // Display the bank name
                     style: const TextStyle(
@@ -57,22 +55,21 @@ class BloodbankAdminScreen extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                    
-                    const SizedBox(height: 20),
-                    Text(
-                      'مرحباً بك في لوحة التحكم الخاصة بإدارة بنك الدم\n حافظ على تنظيم وتدفق التبرعات لضمان حياة أفضل للجميع',
-                      style: const TextStyle(
-                        fontFamily: 'HSI',
-                        fontSize: 20,
-                        color: Colors.grey,
-                      ),
-                      textAlign: TextAlign.center,
+                  const SizedBox(height: 20),
+                  const Text(
+                    'مرحباً بك في لوحة التحكم الخاصة بإدارة بنك الدم\n حافظ على تنظيم وتدفق التبرعات لضمان حياة أفضل للجميع',
+                    style: TextStyle(
+                      fontFamily: 'HSI',
+                      fontSize: 20,
+                      color: Colors.grey,
                     ),
+                    textAlign: TextAlign.center,
+                  ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(context, '/adminscreen',(routr)=> false);
-
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/adminscreen', (routr) => false);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFAE0E03),

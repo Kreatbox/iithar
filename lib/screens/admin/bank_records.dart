@@ -5,7 +5,6 @@ class BankRecords extends StatefulWidget {
 
   @override
   State<BankRecords> createState() => _BankRecordsState();
-
 }
 
 class _BankRecordsState extends State<BankRecords> {
@@ -23,18 +22,18 @@ class _BankRecordsState extends State<BankRecords> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar:AppBar(
-        backgroundColor: Colors.white,
-        title: const Align(
-        alignment: Alignment.centerRight,
-        child: Text(
-        'سجلات البنك',
-        textAlign: TextAlign.right,
-        style:
-        TextStyle(fontFamily: 'HSI', fontSize: 30, color: Colors.black),
-    ),
-    )),
-      body:    Column(
+      appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: const Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'سجلات البنك',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  fontFamily: 'HSI', fontSize: 30, color: Colors.black),
+            ),
+          )),
+      body: Column(
         children: [
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -86,47 +85,41 @@ class _BankRecordsState extends State<BankRecords> {
               itemBuilder: (context, index) {
                 String bloodType = bloodTypes[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                       Text("2024"),
-                  SizedBox(
-                      width: 30,
-                      child: Text(
-                        '100',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontFamily: 'HSI',
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
-
-                      ),
-                      SizedBox(
-                        width: 50,
-                        child: Text(
-                          bloodType,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontFamily: 'HSI',
-                            fontSize: 20,
-                            color: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Text("2024"),
+                          const SizedBox(
+                            width: 30,
+                            child: Text(
+                              '100',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'HSI',
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-
-
-
-               ]) );
+                          SizedBox(
+                            width: 50,
+                            child: Text(
+                              bloodType,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: 'HSI',
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ]));
               },
             ),
           ),
         ],
       ),
-
-
-
     );
-  }}
+  }
+}

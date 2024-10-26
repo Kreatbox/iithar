@@ -128,10 +128,14 @@ class _BloodAmountState extends State<BloodAmount> {
       var filteredRequests = requestQuery.docs.where((doc) {
         return !doc.data().containsKey('userId') || doc['userId'] == null;
       }).toList();
-      setState(() {
-        // إذا كان الطلب موجودًا نضع القيمة true، وإلا false
-        requestExists[bloodType] = filteredRequests.isNotEmpty;
-      });
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (mounted) {
+        setState(() {
+          // إذا كان الطلب موجودًا نضع القيمة true، وإلا false
+          requestExists[bloodType] = filteredRequests.isNotEmpty;
+        });
+      }
     }
   }
 
@@ -383,18 +387,24 @@ class _BloodAmountState extends State<BloodAmount> {
         bool exists = requestExists[bloodType] ?? false;
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: const Text('إدارة طلب دم', textAlign: TextAlign.right,
+          title: const Text(
+            'إدارة طلب دم',
+            textAlign: TextAlign.right,
             style: TextStyle(
               fontFamily: 'HSI',
               fontSize: 22,
               color: Colors.black,
-            ),),
-          content: const Text('انشاء أو إزالة طلب لزمرة دم محددة؟', textAlign: TextAlign.right,
+            ),
+          ),
+          content: const Text(
+            'انشاء أو إزالة طلب لزمرة دم محددة؟',
+            textAlign: TextAlign.right,
             style: TextStyle(
               fontFamily: 'HSI',
               fontSize: 22,
               color: Colors.black,
-            ),),
+            ),
+          ),
           actions: [
             _buildBloodTypeDialog((selectedType) {
               setState(() {
@@ -402,25 +412,32 @@ class _BloodAmountState extends State<BloodAmount> {
               });
             }),
             TextButton(
-              child: const Text('إلغاء', textAlign: TextAlign.right,
+              child: const Text(
+                'إلغاء',
+                textAlign: TextAlign.right,
                 style: TextStyle(
                   fontFamily: 'HSI',
                   fontSize: 18,
                   color: Colors.black,
-                ),),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: exists ? Color(0xFFAE0E03) : Colors.green,
+                backgroundColor:
+                    exists ? const Color(0xFFAE0E03) : Colors.green,
               ),
-              child: Text(exists ? 'إزالة' : 'إضافة',style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 22,
-                color: Colors.white,
-              ),),
+              child: Text(
+                exists ? 'إزالة' : 'إضافة',
+                style: const TextStyle(
+                  fontFamily: 'HSI',
+                  fontSize: 22,
+                  color: Colors.white,
+                ),
+              ),
               onPressed: () async {
                 if (exists) {
                   _removeRequest(bloodType);

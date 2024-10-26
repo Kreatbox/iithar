@@ -1,33 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:iithar/screens/admin/donation_request_listview1.dart';
 
 class BankDonationRequests extends StatefulWidget {
-  const BankDonationRequests({Key? key}) : super(key: key);
+  const BankDonationRequests({super.key});
 
   @override
   State<BankDonationRequests> createState() => _BankDonationRequestsState();
 }
 
 class _BankDonationRequestsState extends State<BankDonationRequests> {
-  bool isOldDonations = true; // حالة التبرعات القديمة
-  bool isNewDonations = false; // حالة التبرعات الجديدة
+  bool isOldDonations = true;
+  bool isNewDonations = false;
+  String? bankId; // Make bankId nullable
 
-  final List<Map<String, dynamic>> items = [
-    {
-      "id": 1,
-      "bloodType": "O+",
-      "phone": "123456789",
-      "dateTime": DateTime.now().toString(),
-    },
-    {
-      "id": 2,
-      "bloodType": "A-",
-      "phone": "987654321",
-      "dateTime": DateTime.now().toString(),
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadId();
+  }
 
-  Widget _filterChip(BuildContext context, {
+  Future<void> _loadId() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        bankId = userDoc.data()?['role'];
+      });
+    }
+  }
+
+  Widget _filterChip(
+    BuildContext context, {
     required String label,
     required bool isSelected,
     required ValueChanged<bool> onSelected,
@@ -102,73 +109,119 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(15.0),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(width: 0.5),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'الزمرة: ${items[index]["bloodType"]}',
-                                style: const TextStyle(
-                                    fontFamily: 'BAHIJ', fontSize: 16),
+            child: bankId == null
+                ? const Center(child: CircularProgressIndicator())
+                : StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('requests')
+                        .where('bankId', isEqualTo: bankId)
+                        .orderBy('dateTime', descending: false)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Center(
+                            child: Text("No donation requests found"));
+                      }
+                      final items = snapshot.data!.docs.where((doc) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        return data['name'] != null;
+                      }).map((doc) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        return {
+                          "id": doc.id,
+                          "bloodType": data["bloodType"] ?? "Unknown",
+                          "username": data["name"] ?? "No Name",
+                          "dateTime":
+                              data["dateTime"] ?? DateTime.now().toString(),
+                          "medicalCondition":
+                              data["medicalCondition"] ?? "No Condition",
+                        };
+                      }).toList();
+
+                      return ListView.builder(
+                        padding: const EdgeInsets.all(15.0),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(width: 0.5),
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                              Text(
-                                'الهاتف: ${items[index]["phone"]}',
-                                style: const TextStyle(
-                                    fontFamily: 'BAHIJ', fontSize: 14),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          'الزمرة: ${items[index]["bloodType"]}',
+                                          style: const TextStyle(
+                                              fontFamily: 'BAHIJ',
+                                              fontSize: 16),
+                                        ),
+                                        Text(
+                                          'الاسم: ${items[index]["username"]}',
+                                          style: const TextStyle(
+                                              fontFamily: 'BAHIJ',
+                                              fontSize: 14),
+                                        ),
+                                        Text(
+                                          'التاريخ: ${(items[index]["dateTime"]).substring(0, 16)}',
+                                          style: const TextStyle(
+                                              fontFamily: 'BAHIJ',
+                                              fontSize: 14),
+                                        ),
+                                        Text(
+                                          'المرض: ${(items[index]["medicalCondition"])}',
+                                          style: const TextStyle(
+                                              fontFamily: 'BAHIJ',
+                                              fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10.0),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      shadowColor: const Color.fromRGBO(
+                                          112, 112, 112, 0.4),
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/myrequest',
+                                        arguments: items[index]["id"],
+                                      );
+                                    },
+                                    child: const Text(
+                                      'توثيق',
+                                      style: TextStyle(
+                                        fontFamily: 'BAHIJ',
+                                        color: Color(0xFFAE0E03),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'التاريخ: ${(items[index]["dateTime"]).substring(0, 16)}',
-                                style: const TextStyle(
-                                    fontFamily: 'BAHIJ', fontSize: 14),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10.0),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shadowColor: const Color.fromRGBO(112, 112, 112, 0.4),
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
                             ),
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/myrequest',
-                              arguments: items[index]["id"],
-                            );
-                          },
-                          child: const Text(
-                            'توثيق',
-                            style: TextStyle(
-                              fontFamily: 'BAHIJ',
-                              color: Color(0xFFAE0E03),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                          );
+                        },
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
