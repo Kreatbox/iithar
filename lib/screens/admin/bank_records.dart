@@ -43,7 +43,6 @@ class _BankRecordsState extends State<BankRecords> {
       body: ListView.builder(
         itemCount: 10,
         itemBuilder: (context, index) {
-
           return Padding(
             padding: const EdgeInsets.all(15.0),
             child: Container(
@@ -67,52 +66,50 @@ class _BankRecordsState extends State<BankRecords> {
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text("2024"),
                         SizedBox(width: 10),
                         Text(
                           ":التاريخ",
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontFamily: 'BAHIJ',
                               fontSize: 16,
                               fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
                           "لينة",
-                          style: const TextStyle(
-                              fontFamily: 'BAHIJ', fontSize: 14),
+                          style: TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
                         ),
                         SizedBox(width: 10),
                         Text(
                           ":اسم المعدل",
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontFamily: 'BAHIJ',
                               fontSize: 16,
                               fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-
                         Text(
                           ":التعديلات",
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontFamily: 'BAHIJ',
                               fontSize: 16,
                               fontWeight: FontWeight.bold),
                         ),
-
                       ],
-                    ),     SizedBox(height: 10),
+                    ),
+                    const SizedBox(height: 10),
                     GridView.count(
                       shrinkWrap: true,
                       crossAxisCount: 3,
@@ -138,14 +135,15 @@ class _BankRecordsState extends State<BankRecords> {
                                 ],
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
                                     '${bloodTypeCounts[i]}',
                                     style: const TextStyle(
                                         fontFamily: 'BAHIJ', fontSize: 14),
                                   ),
-                                  SizedBox(width: 8),
+                                  const SizedBox(width: 8),
                                   Text(
                                     ':${bloodTypes[i]}',
                                     style: const TextStyle(
@@ -153,8 +151,7 @@ class _BankRecordsState extends State<BankRecords> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
-
-                                  Icon(
+                                  const Icon(
                                     Icons.bloodtype_outlined,
                                     color: Color(0xFFAE0E03),
                                     size: 18,

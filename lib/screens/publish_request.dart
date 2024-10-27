@@ -281,10 +281,12 @@ class PublishRequestState extends State<PublishRequest> {
         .orderBy('dateTime', descending: true)
         .limit(1)
         .get();
-    debugPrint('${requestSnapshot.docs}');
     if (requestSnapshot.docs.isNotEmpty) {
       var lastRequest = requestSnapshot.docs.first;
-      String lastCondition = lastRequest['medicalCondition'] ?? '';
+      Map<String, dynamic>? data = lastRequest.data() as Map<String, dynamic>?;
+      String lastTrust = data != null && data.containsKey('trusted')
+          ? data['trusted'].toString()
+          : '720'; // Default value if 'trusted' doesn't exist
       String? dateTimeString = lastRequest['dateTime'];
       DateTime lastDateTime = DateTime.parse(dateTimeString!);
 
@@ -298,20 +300,21 @@ class PublishRequestState extends State<PublishRequest> {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
         if (userData.containsKey('points')) {
           int points = userData['points'];
-          debugPrint('$points');
           if (points < -10) {
             return false;
           }
         }
       }
+      DateTime now = DateTime.now();
+      int trustHours =
+          int.tryParse(lastTrust) ?? 720; // Use 0 as fallback if parsing fails
 
-      // Check if the medical condition is "مرض مزمن"
-      if (lastCondition == 'مرض مزمن') {
+      debugPrint('$lastTrust trust hours');
+      if (now.difference(lastDateTime).inHours > (trustHours)) {
         return true;
       }
 
       // Check if the last appointment was more than 30 days ago
-      DateTime now = DateTime.now();
       if (now.difference(lastDateTime).inDays > 30) {
         return true;
       }
@@ -747,8 +750,6 @@ class PublishRequestState extends State<PublishRequest> {
   }
 
   Future<void> _saveRequest() async {
-    debugPrint('its working I swear');
-    // Ensure all required fields are filled
     if (_selectedBloodType == null ||
         _selectedBloodBank == null ||
         _selectedMedicalCondition == null ||

@@ -43,32 +43,32 @@ class _ContactWithusState extends State<ContactWithus> {
 
       _titleController.clear();
       _msgController.clear();
-     ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(
-    content: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Text(
-            'تم إرسال الرسالة بنجاح',
-            style: TextStyle(
-              fontFamily: 'HSI',
-              fontSize: 20,
-            color: Colors.white, 
-            ),
-            textAlign: TextAlign.center,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Text(
+                  'تم إرسال الرسالة بنجاح',
+                  style: TextStyle(
+                    fontFamily: 'HSI',
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ),
+          backgroundColor: const Color(0xFFAE0E03),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          duration: const Duration(seconds: 3),
         ),
-      ],
-    ),
- backgroundColor: const Color(0xFFAE0E03),
-     behavior: SnackBarBehavior.floating,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    duration: Duration(seconds: 3),
-  ),
-);
+      );
 
       Navigator.pushNamed(context, '/nav');
     } catch (e) {

@@ -20,7 +20,6 @@ class MyRequestScreen extends StatelessWidget {
 
 class BloodDonationRequestScreen extends StatefulWidget {
   final String id; // Update this line to hold the request ID
-
   const BloodDonationRequestScreen({super.key, required this.id});
 
   @override
@@ -31,11 +30,20 @@ class BloodDonationRequestScreen extends StatefulWidget {
 class BloodDonationRequestScreenState
     extends State<BloodDonationRequestScreen> {
   late List<BloodBank> bloodBanks = [];
+  String requestUserId = '';
+  String userId = '';
 
   @override
   void initState() {
     super.initState();
     fetchBloodBanks();
+    userId = getUserId();
+  }
+
+  String getUserId() {
+    final User? user = FirebaseAuth.instance.currentUser;
+    String userId = user!.uid;
+    return userId;
   }
 
   Future<void> decreasePoints() async {
@@ -48,7 +56,7 @@ class BloodDonationRequestScreenState
         debugPrint("No user is currently logged in.");
         return;
       }
-      String userId = user.uid;
+      userId = user.uid;
       // الحصول على المستند الخاص بالمستخدم
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
@@ -79,6 +87,7 @@ class BloodDonationRequestScreenState
 
       // أضف الـ requestId إلى البيانات
       requestData['id'] = requestDoc.id;
+      requestUserId = requestDoc['userId'];
 
       return requestData;
     }
@@ -164,7 +173,7 @@ class BloodDonationRequestScreenState
                   place: ''),
             );
             bankName = bank.name;
-
+            debugPrint('$userId and $requestUserId');
             return ListView(
               padding: const EdgeInsets.all(16.0),
               children: [
@@ -177,6 +186,8 @@ class BloodDonationRequestScreenState
                   phoneNumber: requestData['phone'] ?? 'غير معروف',
                   donationDateTime: requestData['dateTime'] ?? 'غير معروف',
                   note: requestData['note'] ?? 'غير معروف',
+                  userId: userId,
+                  requestUserId: requestUserId,
                   onDelete: () {
                     deleteRequest(
                       requestData['id'], // تمرير الـ requestId
@@ -204,6 +215,8 @@ class BloodDonationRequestCard extends StatelessWidget {
   final String phoneNumber;
   final String donationDateTime;
   final String note;
+  final String userId;
+  final String requestUserId;
   final VoidCallback onDelete;
 
   const BloodDonationRequestCard({
@@ -215,6 +228,8 @@ class BloodDonationRequestCard extends StatelessWidget {
     required this.phoneNumber,
     required this.donationDateTime,
     required this.note,
+    required this.userId,
+    required this.requestUserId,
     required this.onDelete,
   });
 
@@ -277,28 +292,29 @@ class BloodDonationRequestCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16.0),
-            Center(
-              child: ButtonBar(
-                alignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: onDelete,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFAE0E03),
-                    ),
-                    child: const Text(
-                      'حذف',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'HSI',
-                        fontSize: 25,
-                        color: Colors.white,
+            if (userId == requestUserId)
+              Center(
+                child: ButtonBar(
+                  alignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(
+                      onPressed: onDelete,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFAE0E03),
+                      ),
+                      child: const Text(
+                        'حذف',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'HSI',
+                          fontSize: 25,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -358,14 +374,12 @@ class InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 24.0, color: Color(0xFFAE0E03)),
+        Icon(icon, size: 24.0, color: const Color(0xFFAE0E03)),
         const SizedBox(width: 8.0),
         Expanded(
           child: Text(
             '$label:    $value',
-            style: const TextStyle(
-    fontFamily: 'HSI',
-    fontSize: 16),
+            style: const TextStyle(fontFamily: 'HSI', fontSize: 16),
           ),
         ),
       ],
