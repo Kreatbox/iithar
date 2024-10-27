@@ -108,6 +108,8 @@ class _BankAppintmentState extends State<BankAppintment> {
                 status: data['done'],
                 userId: data['userId'],
                 appointmentId: doc.id,
+                            phoneNumber: userData['phonenumber'],
+
               ),
             );
           } else {
@@ -121,6 +123,8 @@ class _BankAppintmentState extends State<BankAppintment> {
                 status: data['done'],
                 userId: data['userId'],
                 appointmentId: doc.id,
+                            phoneNumber: userData['phonenumber'],
+
               ),
             );
           }
@@ -266,7 +270,13 @@ class _BankAppintmentState extends State<BankAppintment> {
                                     fontSize: 18,
                                     color: Colors.black,
                                   )),
-                              Text('حالة التبرع: ${request.status}',
+                              Text('رقم الجوال : ${request.phoneNumber}',
+                                  style: const TextStyle(
+                                    fontFamily: 'HSI',
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  )),
+                                       Text('حالة التبرع: ${request.status}',
                                   style: const TextStyle(
                                     fontFamily: 'HSI',
                                     fontSize: 18,
@@ -419,6 +429,8 @@ class DonationRequest {
   bool status;
   final String userId;
   final String appointmentId;
+    final String phoneNumber;
+
 
   DonationRequest({
     required this.firstName,
@@ -429,5 +441,7 @@ class DonationRequest {
     required this.status,
     required this.userId,
     required this.appointmentId,
+        required this.phoneNumber,
+
   });
 }
