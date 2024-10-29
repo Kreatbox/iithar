@@ -99,14 +99,11 @@ class _BloodAmountState extends State<BloodAmount> {
         .collection('users')
         .doc(user?.uid)
         .get();
-    final bankId = userDoc.data()!['role']; // Assuming role is the bankId
-
-    // Fetch the current blood amounts from Firestore
+    final bankId = userDoc.data()!['role'];
     final amountDoc = await FirebaseFirestore.instance
         .collection('amounts')
         .doc(bankId)
         .get();
-
     if (amountDoc.exists) {
       setState(() {
         bloodTypeQuantities['A+'] = amountDoc['A+'] ?? 0;
@@ -304,41 +301,52 @@ class _BloodAmountState extends State<BloodAmount> {
                         .collection('users')
                         .doc(user?.uid)
                         .get();
-                    final bankId =
-                        userDoc.data()!['role']; // Assuming role is the bankId
-
-                    final amountDoc = await FirebaseFirestore.instance
-                        .collection('amounts')
-                        .doc(bankId)
-                        .get();
-
-                    Map<String, dynamic> firestoreQuantities =
-                        amountDoc.data() as Map<String, dynamic>;
-
-                    // Loop through the bloodTypeQuantities and calculate the differences
-                    for (String bloodType in bloodTypeQuantities.keys) {
-                      int firestoreQuantity =
-                          firestoreQuantities[bloodType] ?? 0;
-                      int changeQuantity = counterQuantities[bloodType] ?? 0;
-
-                      // حساب الكمية النهائية
-                      int updatedQuantity = firestoreQuantity + changeQuantity;
-
-                      // التحقق من أن الكمية النهائية ليست سالبة
-                      if (updatedQuantity >= 0) {
-                        // تحديث القيمة فقط إذا تغيرت
-                        if (changeQuantity != 0) {
-                          await FirebaseFirestore.instance
-                              .collection('amounts')
-                              .doc(bankId)
-                              .update({bloodType: updatedQuantity});
+                    final bankId = userDoc.data()!['role'];
+                    Map<String, int> logEntries = {};
+                    await FirebaseFirestore.instance
+                        .runTransaction((transaction) async {
+                      final amountDocRef = FirebaseFirestore.instance
+                          .collection('amounts')
+                          .doc(bankId);
+                      final amountSnapshot =
+                          await transaction.get(amountDocRef);
+                      if (amountSnapshot.exists) {
+                        Map<String, dynamic> firestoreQuantities =
+                            amountSnapshot.data() as Map<String, dynamic>;
+                        Map<String, int> updatedQuantities = {};
+                        for (String bloodType in bloodTypeQuantities.keys) {
+                          int firestoreQuantity =
+                              firestoreQuantities[bloodType] ?? 0;
+                          int changeQuantity =
+                              counterQuantities[bloodType] ?? 0;
+                          int updatedQuantity =
+                              firestoreQuantity + changeQuantity;
+                          if (updatedQuantity >= 0) {
+                            if (changeQuantity != 0) {
+                              updatedQuantities[bloodType] = updatedQuantity;
+                              logEntries[bloodType] = changeQuantity;
+                            }
+                          }
                         }
-                      } else {
-                        // هنا يمكنك إضافة منطق للتعامل مع حالة القيمة السالبة
-                        debugPrint(
-                            "Cannot update $bloodType as the resulting quantity is negative.");
+                        if (updatedQuantities.isNotEmpty) {
+                          transaction.update(amountDocRef, updatedQuantities);
+                        }
+                        if (logEntries.isNotEmpty) {
+                          Map<String, dynamic> logEntry = {
+                            'bankId': bankId,
+                            'timestamp': FieldValue.serverTimestamp(),
+                            'userId': user?.uid,
+                          };
+                          logEntries.forEach((bloodType, changeQuantity) {
+                            logEntry[bloodType] = changeQuantity;
+                          });
+
+                          await FirebaseFirestore.instance
+                              .collection('amountLogs')
+                              .add(logEntry);
+                        }
                       }
-                    }
+                    });
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: const Text(
@@ -394,7 +402,6 @@ class _BloodAmountState extends State<BloodAmount> {
   }
 
   void showBloodDialog() {
-    // عرض نافذة منبثقة (Popup) لإدارة الطلب
     showDialog(
       context: context,
       builder: (BuildContext context) {

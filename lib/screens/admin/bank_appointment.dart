@@ -18,9 +18,10 @@ class BankAppintment extends StatefulWidget {
 
 class _BankAppintmentState extends State<BankAppintment> {
   List<BloodBank> _bloodBanks = [];
+  bool _isButtonDisabled = false;
   bool isOldDonations = false;
   bool isNewDonations = true;
-  bool _isLoading = true; // Loading state
+  bool _isLoading = true;
   List<DonationRequest> newDonations = [];
   List<DonationRequest> oldDonations = [];
   List<DonationRequest> donationRequests = [];
@@ -32,11 +33,10 @@ class _BankAppintmentState extends State<BankAppintment> {
   }
 
   Future<void> _initializeData() async {
-    // Show loading indicator
     setState(() => _isLoading = true);
-    await _loadBloodBanks(); // Load blood banks first
-    await _loadAppointments(); // Then load appointments
-    setState(() => _isLoading = false); // Hide loading indicator
+    await _loadBloodBanks();
+    await _loadAppointments();
+    setState(() => _isLoading = false);
   }
 
   Future<void> _loadBloodBanks() async {
@@ -72,15 +72,11 @@ class _BankAppintmentState extends State<BankAppintment> {
   Future<void> _loadAppointments() async {
     try {
       final User? user = FirebaseAuth.instance.currentUser;
-
-      // Fetch user role from Firestore
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user?.uid)
           .get();
       final userRole = userDoc.data()?['role'] ?? '';
-
-      // Find the bank name based on role
       String bankName = _bloodBanks
           .firstWhere((bank) => bank.bankId == userRole,
               orElse: () => BloodBank(
@@ -91,20 +87,15 @@ class _BankAppintmentState extends State<BankAppintment> {
                   location: const LatLng(0, 0),
                   place: ''))
           .name;
-
-      if (bankName.isEmpty) return; // Exit if bank not found
-
-      // Get appointments filtered by bank name and status
+      if (bankName.isEmpty) return;
       final appointmentSnapshot = await FirebaseFirestore.instance
           .collection('appointments')
           .where('center', isEqualTo: bankName)
           .where('done', isEqualTo: false)
           .get();
 
-      // Populate donations lists
       List<DonationRequest> newDonationsTemp = [];
       List<DonationRequest> oldDonationsTemp = [];
-
       for (var doc in appointmentSnapshot.docs) {
         var data = doc.data();
         String userId = data['userId'];
@@ -124,6 +115,7 @@ class _BankAppintmentState extends State<BankAppintment> {
             lastName: userData['lastName'],
             bloodType: userData['bloodType'],
             ssid: userData['ssid'],
+            phoneNumber: userData['phoneNumber'],
             date: selectedDateTime,
             status: data['done'],
             userId: data['userId'],
@@ -137,8 +129,6 @@ class _BankAppintmentState extends State<BankAppintment> {
           }
         }
       }
-
-      // Update lists and sort them
       setState(() {
         newDonations = newDonationsTemp
           ..sort((a, b) => a.date.compareTo(b.date));
@@ -171,8 +161,7 @@ class _BankAppintmentState extends State<BankAppintment> {
         elevation: 0,
       ),
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator()) // Show loading indicator
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -246,71 +235,145 @@ class _BankAppintmentState extends State<BankAppintment> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                onPressed: () {
-                  _confirmDonation(request);
-/*
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController donorNameController = TextEditingController();
-        TextEditingController familyNameController = TextEditingController();
-        TextEditingController nationalIdController = TextEditingController();
-        TextEditingController bloodTypeController = TextEditingController();
-
-        return AlertDialog(
-          title: Text("تعديل المعلومات"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller:firstNameController,
-                decoration: InputDecoration(labelText: "اسم المتبرع"),
-              ),
-              TextField(
-                controller: lastNameController,
-                decoration: InputDecoration(labelText: "اسم العائلة"),
-              ),
-              TextField(
-                controller: ssidController,
-                decoration: InputDecoration(labelText: "الرقم الوطني"),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: nationalIdController,
-                decoration: InputDecoration(labelText: "زمرة الدم "),
-              ),
-              TextField(
-                controller: phoneNumberController,
-                decoration: InputDecoration(labelText: "رقم الجوال "),
-                keyboardType: TextInputType.number,
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text("إلغاء"),
-              onPressed: () {
-                Navigator.of(context).pop(); 
-              },
-            ),
-            ElevatedButton(
-              child: Text("حفظ"),
-              onPressed: () {
-              },
-            ),
-          ],
-        );
-      },
-    );
-  },
-),
-*/
-
-
-
-
-
-                },
+                onPressed: _isButtonDisabled
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isButtonDisabled = true;
+                        });
+                        final userSnapshot = await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(request.userId)
+                            .get();
+                        bool isValidated =
+                            userSnapshot.data()?['validated'] == true;
+                        if (isValidated) {
+                          _confirmDonation(request);
+                          setState(() {
+                            _isButtonDisabled = false;
+                          });
+                        } else {
+                          TextEditingController firstNameController =
+                              TextEditingController(text: request.firstName);
+                          TextEditingController lastNameController =
+                              TextEditingController(text: request.lastName);
+                          TextEditingController ssidController =
+                              TextEditingController(text: request.ssid);
+                          TextEditingController phoneNumberController =
+                              TextEditingController(text: request.phoneNumber);
+                          String selectedBloodType = request.bloodType;
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("تعديل المعلومات"),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextField(
+                                      controller: firstNameController,
+                                      decoration: const InputDecoration(
+                                          labelText: "اسم المتبرع"),
+                                    ),
+                                    TextField(
+                                      controller: lastNameController,
+                                      decoration: const InputDecoration(
+                                          labelText: "اسم العائلة"),
+                                    ),
+                                    TextField(
+                                      controller: ssidController,
+                                      decoration: const InputDecoration(
+                                          labelText: "الرقم الوطني"),
+                                      keyboardType: TextInputType.number,
+                                    ),
+                                    DropdownButtonFormField<String>(
+                                      value: selectedBloodType,
+                                      items: [
+                                        'A+',
+                                        'A-',
+                                        'B+',
+                                        'B-',
+                                        'O+',
+                                        'O-',
+                                        'AB+',
+                                        'AB-'
+                                      ]
+                                          .map((bloodType) =>
+                                              DropdownMenuItem<String>(
+                                                value: bloodType,
+                                                child: Text(bloodType),
+                                              ))
+                                          .toList(),
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          setState(() {
+                                            selectedBloodType = value;
+                                          });
+                                        }
+                                      },
+                                      decoration: const InputDecoration(
+                                          labelText: "زمرة الدم"),
+                                    ),
+                                    TextField(
+                                      controller: phoneNumberController,
+                                      decoration: const InputDecoration(
+                                          labelText: "رقم الجوال"),
+                                      keyboardType: TextInputType.number,
+                                    ),
+                                  ],
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text("إلغاء"),
+                                    onPressed: () {
+                                      setState(() {
+                                        _isButtonDisabled = false;
+                                      });
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  ElevatedButton(
+                                    child: const Text("حفظ"),
+                                    onPressed: () async {
+                                      try {
+                                        await FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(request.userId)
+                                            .update({
+                                          'firstName': firstNameController.text,
+                                          'lastName': lastNameController.text,
+                                          'ssid': ssidController.text,
+                                          'bloodType': selectedBloodType,
+                                          'phoneNumber':
+                                              phoneNumberController.text,
+                                          'validated': true,
+                                        });
+                                        _confirmDonation(request);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text('تم توثيق الحساب')),
+                                        );
+                                        setState(() {
+                                          _isButtonDisabled = false;
+                                        });
+                                        Navigator.of(context).pop();
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                              content: Text(
+                                                  'خطأ في توثيق الحساب: $e')),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
                 child: const Text(
                   'تأكيد التبرع',
                   style: TextStyle(
@@ -328,7 +391,7 @@ class _BankAppintmentState extends State<BankAppintment> {
                   Directionality(
                     textDirection: ui.TextDirection.rtl,
                     child: Text(
-                      'اسم المتبرع: ${request.firstName + request.lastName}',
+                      'اسم المتبرع: ${request.firstName} ${request.lastName}',
                       style: const TextStyle(
                         fontFamily: 'HSI',
                         fontSize: 18,
@@ -346,6 +409,10 @@ class _BankAppintmentState extends State<BankAppintment> {
                   ),
                   Directionality(
                     textDirection: ui.TextDirection.rtl,
+                    child: Text('رقم الهاتف: ${request.phoneNumber}'),
+                  ),
+                  Directionality(
+                    textDirection: ui.TextDirection.rtl,
                     child: Text(
                         'التاريخ والوقت: ${DateFormat('d MMMM yyyy hh:mm a').format(request.date)}'),
                   ),
@@ -360,6 +427,30 @@ class _BankAppintmentState extends State<BankAppintment> {
 
   Future<void> _confirmDonation(DonationRequest request) async {
     try {
+      final requestsSnapshot = await FirebaseFirestore.instance
+          .collection('requests')
+          .where('acceptedDonation', isEqualTo: request.appointmentId)
+          .get();
+      if (requestsSnapshot.docs.isEmpty) {
+        final User? user = FirebaseAuth.instance.currentUser;
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user?.uid)
+            .get();
+        final userRole = userDoc.data()?['role'] ?? '';
+        await FirebaseFirestore.instance
+            .collection('amounts')
+            .doc(userRole)
+            .update({
+          request.bloodType: FieldValue.increment(1),
+        });
+        await FirebaseFirestore.instance.collection('amountLogs').add({
+          'bankId': userRole,
+          'timestamp': FieldValue.serverTimestamp(),
+          'userId': request.userId,
+          request.bloodType: 1,
+        });
+      }
       await FirebaseFirestore.instance
           .collection('appointments')
           .doc(request.appointmentId)
@@ -418,6 +509,7 @@ class DonationRequest {
   final String lastName;
   final String bloodType;
   final String ssid;
+  final String phoneNumber;
   final DateTime date;
   bool status;
   final String userId;
@@ -428,6 +520,7 @@ class DonationRequest {
     required this.lastName,
     required this.bloodType,
     required this.ssid,
+    required this.phoneNumber,
     required this.date,
     required this.status,
     required this.userId,

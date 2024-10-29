@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BankRecords extends StatefulWidget {
   const BankRecords({super.key});
@@ -8,18 +9,39 @@ class BankRecords extends StatefulWidget {
 }
 
 class _BankRecordsState extends State<BankRecords> {
-  final List<String> bloodTypes = [
-    'A+',
-    'A-',
-    'B+',
-    'B-',
-    'O+',
-    'O-',
-    'AB+',
-    'AB-'
-  ];
+  List<Map<String, dynamic>> amountLogs = [];
 
-  final List<int> bloodTypeCounts = [5, 9, 3, 2, 0, 9, 4, 1];
+  @override
+  void initState() {
+    super.initState();
+    fetchAmountLogs();
+  }
+
+  Future<void> fetchAmountLogs() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('amountLogs')
+        .orderBy('timestamp', descending: true) // Newest to oldest
+        .get();
+
+    for (var doc in snapshot.docs) {
+      Map<String, dynamic> log = doc.data() as Map<String, dynamic>;
+      String userId = log['userId'];
+
+      // Fetch user details
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      String firstName = userDoc['firstName'];
+      String lastName = userDoc['lastName'];
+
+      log['userName'] = '$firstName $lastName';
+      amountLogs.add(log);
+    }
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +63,14 @@ class _BankRecordsState extends State<BankRecords> {
         ),
       ),
       body: ListView.builder(
-        itemCount: 10,
+        itemCount: amountLogs.length,
         itemBuilder: (context, index) {
+          final log = amountLogs[index];
+          final timestamp = (log['timestamp'] as Timestamp).toDate();
+          final formattedTime =
+              "${timestamp.year}-${timestamp.month}-${timestamp.day} "
+              "${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}";
+
           return Padding(
             padding: const EdgeInsets.all(15.0),
             child: Container(
@@ -66,12 +94,12 @@ class _BankRecordsState extends State<BankRecords> {
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text("2024"),
-                        SizedBox(width: 10),
-                        Text(
+                        Text(formattedTime),
+                        const SizedBox(width: 10),
+                        const Text(
                           ":التاريخ",
                           style: TextStyle(
                               fontFamily: 'BAHIJ',
@@ -80,15 +108,16 @@ class _BankRecordsState extends State<BankRecords> {
                         ),
                       ],
                     ),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          "لينة",
-                          style: TextStyle(fontFamily: 'BAHIJ', fontSize: 14),
+                          log['userName'],
+                          style: const TextStyle(
+                              fontFamily: 'BAHIJ', fontSize: 14),
                         ),
-                        SizedBox(width: 10),
-                        Text(
+                        const SizedBox(width: 10),
+                        const Text(
                           ":اسم المعدل",
                           style: TextStyle(
                               fontFamily: 'BAHIJ',
@@ -110,56 +139,62 @@ class _BankRecordsState extends State<BankRecords> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    GridView.count(
-                      shrinkWrap: true,
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 5.0,
-                      mainAxisSpacing: 5.0,
-                      physics: const NeverScrollableScrollPhysics(),
-                      childAspectRatio: 3,
-                      children: [
-                        for (int i = 0; i < bloodTypes.length; i++)
-                          if (bloodTypeCounts[i] > 0)
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 5.0,
-                                    spreadRadius: 0.0,
-                                    offset: Offset(0, 3),
-                                  ),
-                                ],
+                    Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 5.0,
+                        mainAxisSpacing: 5.0,
+                        physics: const NeverScrollableScrollPhysics(),
+                        childAspectRatio: 3,
+                        children: [
+                          for (String bloodType in log.keys)
+                            if (bloodType != 'userId' &&
+                                bloodType != 'userName' &&
+                                bloodType != 'timestamp' &&
+                                bloodType != 'bankId')
+                              Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      blurRadius: 5.0,
+                                      spreadRadius: 0.0,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      '${log[bloodType]}',
+                                      style: const TextStyle(
+                                          fontFamily: 'BAHIJ', fontSize: 14),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      ':$bloodType',
+                                      style: const TextStyle(
+                                          fontFamily: 'BAHIJ',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const Icon(
+                                      Icons.bloodtype_outlined,
+                                      color: Color(0xFFAE0E03),
+                                      size: 18,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    '${bloodTypeCounts[i]}',
-                                    style: const TextStyle(
-                                        fontFamily: 'BAHIJ', fontSize: 14),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    ':${bloodTypes[i]}',
-                                    style: const TextStyle(
-                                        fontFamily: 'BAHIJ',
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const Icon(
-                                    Icons.bloodtype_outlined,
-                                    color: Color(0xFFAE0E03),
-                                    size: 18,
-                                  ),
-                                ],
-                              ),
-                            ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),

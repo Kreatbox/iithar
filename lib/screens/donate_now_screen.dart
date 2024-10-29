@@ -156,8 +156,16 @@ void _confirmDonation(BuildContext context, DonationRequest donationRequest,
   final User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
     String userId = user.uid;
+    final docSnapshot = await FirebaseFirestore.instance
+        .collection('requests')
+        .doc(donationRequest.id)
+        .get();
 
-    // Check the last appointment date
+    if (docSnapshot.exists && docSnapshot.data()?['state'] == "1") {
+      _showErrorDialog(context,
+          'عذرا لقد تم الموافقة على الطلب من قبل شخص آخر أثناء تفحصك للطلب الرجاء الخروج من الطلب.');
+      return;
+    }
     QuerySnapshot appointmentSnapshot = await FirebaseFirestore.instance
         .collection('appointments')
         .where('userId', isEqualTo: userId)
@@ -179,9 +187,6 @@ void _confirmDonation(BuildContext context, DonationRequest donationRequest,
         return;
       }
     }
-
-    // Proceed with the donation acceptance process
-
     try {
       String? acceptedDonation =
           await _createAppointment(userId, donationRequest, bankData);

@@ -228,25 +228,34 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                                           '${item["bloodType"]}   :الزمرة',
                                           style: const TextStyle(
                                               fontFamily: 'BAHIJ',
-                                              fontSize: 16),
-                                        ),
-                                        Text(
-                                          'اسم المستخدم:    $username',
-                                          style: const TextStyle(
-                                              fontFamily: 'BAHIJ',
                                               fontSize: 14),
                                         ),
-                                        Text(
-                                          'اسم المريض:    ${item["username"]}',
-                                          style: const TextStyle(
-                                              fontFamily: 'BAHIJ',
-                                              fontSize: 14),
+                                        Directionality(
+                                          textDirection: TextDirection.rtl,
+                                          child: Text(
+                                            'اسم المستخدم:    $username',
+                                            style: const TextStyle(
+                                                fontFamily: 'BAHIJ',
+                                                fontSize: 14),
+                                          ),
                                         ),
-                                        Text(
-                                          'التاريخ:   ${(item["dateTime"]).substring(0, 16)}',
-                                          style: const TextStyle(
-                                              fontFamily: 'BAHIJ',
-                                              fontSize: 14),
+                                        Directionality(
+                                          textDirection: TextDirection.rtl,
+                                          child: Text(
+                                            'اسم المريض:    ${item["username"]}',
+                                            style: const TextStyle(
+                                                fontFamily: 'BAHIJ',
+                                                fontSize: 14),
+                                          ),
+                                        ),
+                                        Directionality(
+                                          textDirection: TextDirection.rtl,
+                                          child: Text(
+                                            'التاريخ:   ${(item["dateTime"]).substring(0, 16)}',
+                                            style: const TextStyle(
+                                                fontFamily: 'BAHIJ',
+                                                fontSize: 14),
+                                          ),
                                         ),
                                         Text(
                                           'المرض:   ${(item["medicalCondition"])}',
@@ -304,7 +313,6 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                                                     _verificationCodeController
                                                         .text;
                                                 if (code.isNotEmpty) {
-                                                  // Assuming `items[index]["id"]` contains the document ID for the selected request
                                                   FirebaseFirestore.instance
                                                       .collection('requests')
                                                       .doc(items[index]["id"])
@@ -312,7 +320,7 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                                                     'trusted': code
                                                   }).then((_) {
                                                     _verificationCodeController
-                                                        .clear(); // Clear input after update
+                                                        .clear();
                                                   }).catchError((error) {
                                                     debugPrint(
                                                         "Error updating request: $error");
