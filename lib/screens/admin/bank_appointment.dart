@@ -248,6 +248,68 @@ class _BankAppintmentState extends State<BankAppintment> {
                 ),
                 onPressed: () {
                   _confirmDonation(request);
+/*
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController donorNameController = TextEditingController();
+        TextEditingController familyNameController = TextEditingController();
+        TextEditingController nationalIdController = TextEditingController();
+        TextEditingController bloodTypeController = TextEditingController();
+
+        return AlertDialog(
+          title: Text("تعديل المعلومات"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller:firstNameController,
+                decoration: InputDecoration(labelText: "اسم المتبرع"),
+              ),
+              TextField(
+                controller: lastNameController,
+                decoration: InputDecoration(labelText: "اسم العائلة"),
+              ),
+              TextField(
+                controller: ssidController,
+                decoration: InputDecoration(labelText: "الرقم الوطني"),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: nationalIdController,
+                decoration: InputDecoration(labelText: "زمرة الدم "),
+              ),
+              TextField(
+                controller: phoneNumberController,
+                decoration: InputDecoration(labelText: "رقم الجوال "),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("إلغاء"),
+              onPressed: () {
+                Navigator.of(context).pop(); 
+              },
+            ),
+            ElevatedButton(
+              child: Text("حفظ"),
+              onPressed: () {
+              },
+            ),
+          ],
+        );
+      },
+    );
+  },
+),
+*/
+
+
+
+
+
                 },
                 child: const Text(
                   'تأكيد التبرع',
