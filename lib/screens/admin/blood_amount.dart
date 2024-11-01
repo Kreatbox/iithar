@@ -63,7 +63,7 @@ class _BloodAmountState extends State<BloodAmount> {
     });
 
     setState(() {
-      requestExists[bloodType] = true; // قم بتحديث حالة الطلب
+      requestExists[bloodType] = true;
     });
   }
 
@@ -89,7 +89,7 @@ class _BloodAmountState extends State<BloodAmount> {
           .delete();
 
       setState(() {
-        requestExists[bloodType] = false; // قم بتحديث حالة الطلب
+        requestExists[bloodType] = false;
       });
     }
   }
@@ -129,7 +129,6 @@ class _BloodAmountState extends State<BloodAmount> {
 
       if (mounted) {
         setState(() {
-          // إذا كان الطلب موجودًا نضع القيمة true، وإلا false
           requestExists[bloodType] = filteredRequests.isNotEmpty;
         });
       }
@@ -201,8 +200,7 @@ class _BloodAmountState extends State<BloodAmount> {
                 itemCount: bloodTypes.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
-                  childAspectRatio:
-                      6.0, // Adjust to fit items properly in a row
+                  childAspectRatio: 6.0,
                 ),
                 itemBuilder: (context, index) {
                   String bloodType = bloodTypes[index];
@@ -429,7 +427,7 @@ class _BloodAmountState extends State<BloodAmount> {
           actions: [
             _buildBloodTypeDialog((selectedType) {
               setState(() {
-                bloodType = selectedType; // Update blood type here
+                bloodType = selectedType;
               });
             }),
             TextButton(
@@ -465,7 +463,6 @@ class _BloodAmountState extends State<BloodAmount> {
                 } else {
                   _addRequest(bloodType);
                 }
-                // إغلاق النافذة المنبثقة بعد الإجراء
                 Navigator.of(context).pop();
               },
             ),
@@ -480,7 +477,7 @@ class _BloodAmountState extends State<BloodAmount> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: GestureDetector(
         onTap: () {
-          _showBloodTypeDialog(onBloodTypeSelected); // Pass the callback
+          _showBloodTypeDialog(onBloodTypeSelected);
         },
         child: AbsorbPointer(
           child: Directionality(
@@ -543,7 +540,7 @@ class _BloodAmountState extends State<BloodAmount> {
                         ),
                       ),
                       onTap: () {
-                        onBloodTypeSelected(type); // Call the callback here
+                        onBloodTypeSelected(type);
                         Navigator.pop(context);
                         Navigator.pop(context);
                         showBloodDialog();

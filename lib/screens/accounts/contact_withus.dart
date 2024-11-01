@@ -14,31 +14,24 @@ class ContactWithus extends StatefulWidget {
 class _ContactWithusState extends State<ContactWithus> {
   final _titleController = TextEditingController();
   final _msgController = TextEditingController();
-
-  // Method to send message to Firestore
   Future<void> _sendMessage() async {
-    // Get the current user
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      // Handle case where user is not logged in
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please log in to send a message')),
       );
       return;
     }
 
-    // Prepare the message data
     final String userId = user.uid;
     final String title = _titleController.text.trim();
     final String message = _msgController.text.trim();
-
-    // Send data to Firestore
     try {
       await FirebaseFirestore.instance.collection('messages').add({
         'userId': userId,
         'title': title,
         'message': message,
-        'timestamp': FieldValue.serverTimestamp(), // for sorting messages
+        'timestamp': FieldValue.serverTimestamp(),
       });
 
       _titleController.clear();

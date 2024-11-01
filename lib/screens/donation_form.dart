@@ -255,11 +255,11 @@ class DonationFormState extends State<DonationForm> {
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end, // Add this line
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
             question,
-            textAlign: TextAlign.right, // Modify this line
+            textAlign: TextAlign.right,
             style: const TextStyle(
               fontSize: 18,
               fontFamily: 'HSI',

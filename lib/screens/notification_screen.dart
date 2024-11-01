@@ -93,9 +93,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         ],
                       ),
                       leading: const Icon(Icons.arrow_back_ios),
-                      onTap: () {
-                        // Action when notification is tapped
-                      },
+                      onTap: () {},
                     ),
                   );
                 },

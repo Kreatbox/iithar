@@ -28,7 +28,7 @@ class NavigationMenu extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(30), // Add rounded corners
+          borderRadius: BorderRadius.circular(30),
           child: Obx(
             () => NavigationBar(
               selectedIndex: controller.selectedIndex.value,

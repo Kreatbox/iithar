@@ -42,8 +42,6 @@ void main() async {
   final NotificationService notificationService = NotificationService();
   await notificationService.initNotification();
   WidgetsFlutterBinding.ensureInitialized();
-
-  // تقييد التوجه على الوضع العمودي فقط
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

@@ -12,10 +12,7 @@ class Onboarding extends StatefulWidget {
 }
 
 class _Onboardingscreenstate extends State<Onboarding> {
-  // controller to keep track of which page we are on
   final PageController _controller = PageController();
-
-  //track of it is the last page or not
   bool onlastpage = false;
   bool onpreviouspage = false;
 
@@ -39,7 +36,6 @@ class _Onboardingscreenstate extends State<Onboarding> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                //previous
                 onpreviouspage
                     ? GestureDetector(
                         onTap: () {
@@ -71,7 +67,6 @@ class _Onboardingscreenstate extends State<Onboarding> {
                               color: Color(0xFFAE0E03)),
                         ),
                       ),
-
                 SmoothPageIndicator(
                   controller: _controller,
                   count: 2,
@@ -79,7 +74,6 @@ class _Onboardingscreenstate extends State<Onboarding> {
                       dotColor: Color(0xFFE0E0E0),
                       activeDotColor: Color(0xFFAE0E03)),
                 ),
-                //next or done
                 onlastpage
                     ? GestureDetector(
                         onTap: () {

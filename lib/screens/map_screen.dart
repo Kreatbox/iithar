@@ -113,9 +113,8 @@ class MapScreenState extends State<MapScreen> {
       ),
       body: FlutterMap(
         options: MapOptions(
-          // Initialize the map center and zoom level
           initialCenter:
-              _currentLocation ?? const LatLng(33.4986997, 36.245859), // Syria
+              _currentLocation ?? const LatLng(33.4986997, 36.245859),
           initialZoom: 12.0,
         ),
         children: [
@@ -130,7 +129,6 @@ class MapScreenState extends State<MapScreen> {
                   width: 80.0,
                   height: 80.0,
                   point: _currentLocation!,
-                  // Using a custom child widget for the marker
                   child: IconButton(
                     icon: const Icon(Icons.my_location),
                     color: Colors.blue,
@@ -152,7 +150,6 @@ class MapScreenState extends State<MapScreen> {
                   width: 80.0,
                   height: 80.0,
                   point: bank.location,
-                  // Using a custom child widget for the marker
                   child: SizedBox(
                     height: 50,
                     width: 100,
@@ -309,7 +306,6 @@ class MapScreenState extends State<MapScreen> {
                   width: 80.0,
                   height: 80.0,
                   point: nearestBloodBank,
-                  // Using a custom child widget for the marker
                   child: const Icon(
                     Icons.star,
                     color: Colors.green,

@@ -20,14 +20,12 @@ class _BankRecordsState extends State<BankRecords> {
   Future<void> fetchAmountLogs() async {
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('amountLogs')
-        .orderBy('timestamp', descending: true) // Newest to oldest
+        .orderBy('timestamp', descending: true)
         .get();
 
     for (var doc in snapshot.docs) {
       Map<String, dynamic> log = doc.data() as Map<String, dynamic>;
       String userId = log['userId'];
-
-      // Fetch user details
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)

@@ -58,25 +58,19 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
 
   Future<void> decreasePoints() async {
     try {
-      // الحصول على المستخدم الحالي
       final User? user = FirebaseAuth.instance.currentUser;
-
-      // التحقق من أن المستخدم مسجل الدخول
       if (user == null) {
         debugPrint("No user is currently logged in.");
         return;
       }
       String userId = user.uid;
-      // الحصول على المستند الخاص بالمستخدم
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
           .get();
-
-      // الحصول على النقاط الحالية، إذا لم يكن الحقل موجودًا يتم اعتباره 0
       int currentPoints = userDoc.data()?['points'] ?? 0;
       await FirebaseFirestore.instance.collection('users').doc(userId).update({
-        'points': currentPoints - 1, // تقليل النقاط بمقدار واحد
+        'points': currentPoints - 1,
       });
     } catch (e) {
       debugPrint("Failed to update points: $e");
@@ -86,7 +80,6 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
   Future<String?> _deleteAppointment(String appointmentId) async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // Check if the user has accepted any request associated with this appointment
       final requestsSnapshot = await FirebaseFirestore.instance
           .collection('requests')
           .where('acceptedDonation', isEqualTo: appointmentId)
@@ -96,7 +89,6 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
         return 'لا يمكنك حذف هذا الموعد بعد قبول هذا الطلب.';
       }
       decreasePoints();
-      // Proceed with deletion if no matching acceptedUserId found
       await FirebaseFirestore.instance
           .collection('appointments')
           .doc(appointmentId)
@@ -125,7 +117,6 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
           ),
         ),
       ),
-
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _appointmentData,
         builder: (BuildContext context,
@@ -191,8 +182,6 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
                                     _appointmentData = _fetchAppointmentData();
                                   });
                                 }
-
-                                // Show the dialog regardless of delete success or failure
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {

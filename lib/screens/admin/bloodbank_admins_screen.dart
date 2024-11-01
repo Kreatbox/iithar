@@ -7,11 +7,8 @@ class BloodbankAdminScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve the role (which is the bankId) from the arguments
     final String role = ModalRoute.of(context)!.settings.arguments as String;
     final DataService dataService = DataService();
-
-    // Fetch all blood banks from the cache
     Future<List<BloodBank>> bloodBanksFuture = dataService.loadBankData();
 
     return Scaffold(
@@ -27,7 +24,6 @@ class BloodbankAdminScreen extends StatelessWidget {
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Text('No blood banks found');
             } else {
-              // Find the specific blood bank by bankId (role)
               final bloodBanks = snapshot.data!;
               final BloodBank bloodBank = bloodBanks.firstWhere(
                 (bank) => bank.bankId == role,
@@ -47,7 +43,7 @@ class BloodbankAdminScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'انت المشرف على ${bloodBank.name}', // Display the bank name
+                    'انت المشرف على ${bloodBank.name}',
                     style: const TextStyle(
                       fontFamily: 'HSI',
                       fontSize: 30,

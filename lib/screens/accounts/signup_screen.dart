@@ -271,7 +271,7 @@ class SignupScreenState extends State<SignupScreen> {
                     },
                   ),
                   const SizedBox(height: 10),
-                  _buildPasswordTextField(), // Use the new password field
+                  _buildPasswordTextField(),
                   const SizedBox(height: 10),
                 ]),
                 const SizedBox(height: 30),
@@ -479,8 +479,7 @@ class SignupScreenState extends State<SignupScreen> {
     bool isPhone = false,
     bool isNumber = false,
     bool isDate = false,
-    required String? Function(dynamic value)
-        validator, // Accept custom validator
+    required String? Function(dynamic value) validator,
   }) {
     return Directionality(
       textDirection: TextDirection.rtl,

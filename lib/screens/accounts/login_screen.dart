@@ -17,7 +17,7 @@ class LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isPasswordVisible = false; // للتحكم في رؤية كلمة المرور
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -69,28 +69,23 @@ class LoginScreenState extends State<LoginScreen> {
                               _isButtonDisabled = true;
                             });
                             try {
-                              // Sign in with email and password
                               UserCredential userCredential =
                                   await _auth.signInWithEmailAndPassword(
                                 email: _emailController.text,
                                 password: _passwordController.text,
                               );
 
-                              // Fetch user data from Firestore
                               DocumentSnapshot userDoc = await FirebaseFirestore
                                   .instance
                                   .collection('users')
                                   .doc(userCredential.user!.uid)
                                   .get();
 
-                              // Check if the 'role' field exists
                               if (userDoc.exists && userDoc.data() != null) {
                                 Map<String, dynamic> userData =
                                     userDoc.data() as Map<String, dynamic>;
                                 if (userData.containsKey('role')) {
                                   String role = userData['role'];
-                                  // Save the role and navigate to /bloodbankadmin
-                                  // You can save this in a global variable or shared preferences
                                   if (role == '0') {
                                     Navigator.pushReplacementNamed(
                                         context, '/nav');
@@ -100,7 +95,6 @@ class LoginScreenState extends State<LoginScreen> {
                                         arguments: role);
                                   }
                                 } else {
-                                  // Navigate to home page
                                   Navigator.pushReplacementNamed(
                                       context, '/nav');
                                 }
@@ -109,7 +103,6 @@ class LoginScreenState extends State<LoginScreen> {
                                 _isButtonDisabled = false;
                               });
                             } catch (e) {
-                              // Handle errors
                               String errorMessage = 'خطأ في تسجيل الدخول';
                               if (e is FirebaseAuthException) {
                                 switch (e.code) {
@@ -125,7 +118,6 @@ class LoginScreenState extends State<LoginScreen> {
                                 }
                               }
 
-                              // Show error message to the user
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text(errorMessage)),
                               );

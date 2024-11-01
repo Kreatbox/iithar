@@ -14,21 +14,18 @@ class MyRequests extends StatefulWidget {
 
 class _MyRequestsState extends State<MyRequests> {
   late List<Map<String, dynamic>> items = [];
-  late List<BloodBank> bloodBanks = []; // قائمة بنوك الدم
+  late List<BloodBank> bloodBanks = [];
   bool isLoaded = false;
 
-  // استدعاء بيانات البنوك والطلبات
   Future<void> fetchData() async {
     final DataService dataService = DataService();
 
-    // تحميل بيانات البنوك
     bloodBanks = await dataService.loadBankData();
 
-    // استدعاء الطلبات
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       setState(() {
-        isLoaded = true; // لا يوجد مستخدم، لذا نعتبر التحميل مكتملًا
+        isLoaded = true;
       });
       return;
     }
@@ -45,16 +42,14 @@ class _MyRequestsState extends State<MyRequests> {
       for (var element in querySnapshot.docs) {
         Map<String, dynamic> requestData = element.data();
 
-        // Add the document ID to the data map
         requestData['id'] = element.id;
 
         tempList.add(requestData);
       }
     }
 
-// ضبط الحالة حتى إذا لم تكن هناك بيانات
     setState(() {
-      items = tempList; // Now items contains both data and doc.id
+      items = tempList;
       isLoaded = true;
     });
   }
@@ -62,7 +57,7 @@ class _MyRequestsState extends State<MyRequests> {
   @override
   void initState() {
     super.initState();
-    fetchData(); // استدعاء البيانات
+    fetchData();
   }
 
   @override
@@ -89,10 +84,8 @@ class _MyRequestsState extends State<MyRequests> {
               ? ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    // البحث عن اسم بنك الدم باستخدام bankId
                     String bankId = items[index]["bankId"];
-                    String bankName =
-                        'Unknown Bank'; // اسم افتراضي في حال لم يُعثر على البنك
+                    String bankName = 'Unknown Bank';
                     BloodBank? bank = bloodBanks.firstWhere(
                       (b) => b.bankId == bankId,
                       orElse: () => BloodBank(
@@ -159,7 +152,7 @@ class _MyRequestsState extends State<MyRequests> {
                                           fontFamily: 'BAHIJ', fontSize: 14),
                                     ),
                                     Text(
-                                      bankName, // عرض اسم بنك الدم
+                                      bankName,
                                       style: const TextStyle(
                                           fontFamily: 'BAHIJ', fontSize: 12),
                                     ),
@@ -185,7 +178,7 @@ class _MyRequestsState extends State<MyRequests> {
                 )
           : const Center(
               child: CircularProgressIndicator(),
-            ), // Show loading indicator while data is being loaded
+            ),
     );
   }
 }

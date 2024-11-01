@@ -174,8 +174,6 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                       }).toList();
                       final filteredItems =
                           isOldDonations ? oldRequests : newRequests;
-
-                      // Fetch user names for items
                       return FutureBuilder<Map<String, String>>(
                         future: _fetchUserNames(
                             items.map((e) => e['userId'] as String).toList()),
@@ -322,6 +320,14 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                                                         .update({
                                                       'trusted': code
                                                     }).then((_) {
+                                                      FirebaseFirestore.instance
+                                                          .collection('amounts')
+                                                          .doc(bankId)
+                                                          .update({
+                                                        item['bloodType']:
+                                                            FieldValue
+                                                                .increment(-1),
+                                                      });
                                                       FirebaseFirestore.instance
                                                           .collection(
                                                               'amountLogs')

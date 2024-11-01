@@ -97,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                 crossAxisCount: 3,
                 mainAxisSpacing: 1.0,
                 crossAxisSpacing: 1.0,
-                childAspectRatio: 1, //نسبة العرض للارتفاع للعناصر
+                childAspectRatio: 1,
                 children: [
                   _buildGridItem('assets/icons/icon8.png', 'بنوك الدم', () {
                     Navigator.push(context,
@@ -188,7 +188,7 @@ class HomeScreen extends StatelessWidget {
                     width: 200,
                   ),
                   Image.asset(assetPath, height: 45),
-                  const SizedBox(height: 5.0), //  المسافة بين الصورة والنص
+                  const SizedBox(height: 5.0),
                   Text(title,
                       style:
                           const TextStyle(fontSize: 14, fontFamily: 'BAHIJ')),

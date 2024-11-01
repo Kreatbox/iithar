@@ -93,7 +93,6 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     final Map<String, String> bankHours = {};
 
     if (fetchedBanks.isEmpty) {
-      // Handle the case where there are no cached banks
       return;
     }
 

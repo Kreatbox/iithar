@@ -54,7 +54,6 @@ class RegisterScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
                 onPressed: () {
-                  // Navigate to signup page
                   Navigator.pushNamed(context, '/signup');
                 },
                 style: ElevatedButton.styleFrom(

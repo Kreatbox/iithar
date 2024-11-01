@@ -45,7 +45,7 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
               crossAxisCount: 2,
               mainAxisSpacing: 1,
               crossAxisSpacing: 5,
-              childAspectRatio: 1.5, //نسبة العرض للارتفاع للعناصر
+              childAspectRatio: 1.5,
               children: [
                 _buildGridItem('assets/icons/datetime.png', 'حجوزات التبرع',
                     () {
@@ -104,7 +104,7 @@ Widget _buildGridItem(String assetPath, String title, Function() onTap) {
                   width: 200,
                 ),
                 Image.asset(assetPath, height: 45),
-                const SizedBox(height: 5.0), //  المسافة بين الصورة والنص
+                const SizedBox(height: 5.0),
                 Text(title,
                     style: const TextStyle(fontSize: 14, fontFamily: 'BAHIJ')),
               ],

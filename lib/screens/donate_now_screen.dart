@@ -39,10 +39,10 @@ class DonateNowScreen extends StatelessWidget {
       ),
       body: Center(
         child: FutureBuilder<List<BloodBank>>(
-          future: DataService().loadBankData(), // Fetch bank data
+          future: DataService().loadBankData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show a loading indicator while fetching data
+              return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -106,12 +106,9 @@ Future<String?> _createAppointment(String userId,
   };
 
   try {
-    // إضافة البيانات إلى Firestore والحصول على مرجع المستند
     DocumentReference docRef = await FirebaseFirestore.instance
         .collection('appointments')
         .add(appointmentData);
-
-    // استرجاع وإرجاع doc.id الخاص بالمستند الذي تم إنشاؤه
     return docRef.id;
   } catch (e) {
     debugPrint("Failed to create appointment: $e");
@@ -176,10 +173,7 @@ void _confirmDonation(BuildContext context, DonationRequest donationRequest,
     if (appointmentSnapshot.docs.isNotEmpty) {
       Map<String, dynamic> lastAppointmentData =
           appointmentSnapshot.docs.first.data() as Map<String, dynamic>;
-      DateTime lastAppointmentDate = lastAppointmentData['timestamp']
-          .toDate(); // Use Firestore timestamp directly
-
-      // Check if the last appointment was within the last month
+      DateTime lastAppointmentDate = lastAppointmentData['timestamp'].toDate();
       DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 0));
       if (lastAppointmentDate.isAfter(oneMonthAgo)) {
         _showErrorDialog(
@@ -284,18 +278,17 @@ void _showConfirmationDialog(BuildContext context) {
 class UserInfoCard extends StatelessWidget {
   final DonationRequest donationRequest;
   final Duration timeLeft;
-  final List<BloodBank> bankData; // Add a reference to the bank data
+  final List<BloodBank> bankData;
 
   const UserInfoCard({
     super.key,
     required this.donationRequest,
     required this.timeLeft,
-    required this.bankData, // Accept the bank data in the constructor
+    required this.bankData,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Find the bank name using bankId
     String bankName = _getBankName(donationRequest.bankId);
     debugPrint('$timeLeft');
 
@@ -365,13 +358,11 @@ class UserInfoCard extends StatelessWidget {
   }
 
   String _getBankName(String bankId) {
-    // Find the bank name by bankId
     final bank = bankData.firstWhere((bank) => bank.bankId == bankId);
-    return bank.name; // Return 'غير متوفر' if bank is not found
+    return bank.name;
   }
 
   String _formatTimeLeft(Duration duration) {
-    // Format the duration to days, hours, and minutes
     StringBuffer buffer = StringBuffer();
     if (duration.inDays > 0) {
       buffer.write('${duration.inDays} يوم و');

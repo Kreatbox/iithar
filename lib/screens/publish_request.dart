@@ -42,14 +42,12 @@ class PublishRequestState extends State<PublishRequest> {
   Future<void> _loadUserData() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // قم بجلب بيانات المستخدم من Firestore
       final userData = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .get();
 
       if (userData.exists) {
-        // استخدام بيانات المستخدم لتعبئة الحقول
         final data = userData.data()!;
         setState(() {
           _nameController.text = "${data['firstName']} ${data['lastName']}";
@@ -73,7 +71,6 @@ class PublishRequestState extends State<PublishRequest> {
 
   void _setSelectedBloodBank() {
     if (_selectedBloodBankId != null && _bloodBanks.isNotEmpty) {
-      // البحث عن البنك الذي يتطابق مع _selectedBloodBankId
       final selectedBank = _bloodBanks.firstWhere(
         (bank) => bank.bankId == _selectedBloodBankId,
         orElse: () => BloodBank(
@@ -274,7 +271,6 @@ class PublishRequestState extends State<PublishRequest> {
       return false;
     }
 
-    // Get the user's last request
     QuerySnapshot requestSnapshot = await FirebaseFirestore.instance
         .collection('requests')
         .where('userId', isEqualTo: userId)
@@ -286,7 +282,7 @@ class PublishRequestState extends State<PublishRequest> {
       Map<String, dynamic>? data = lastRequest.data() as Map<String, dynamic>?;
       String lastTrust = data != null && data.containsKey('trusted')
           ? data['trusted'].toString()
-          : '720'; // Default value if 'trusted' doesn't exist
+          : '720';
       String? dateTimeString = lastRequest['dateTime'];
       DateTime lastDateTime = DateTime.parse(dateTimeString!);
 
@@ -295,7 +291,6 @@ class PublishRequestState extends State<PublishRequest> {
           .doc(currentUser!.uid)
           .get();
 
-      // Check if the 'role' field exists
       if (userDoc.exists && userDoc.data() != null) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
         if (userData.containsKey('points')) {
@@ -306,16 +301,8 @@ class PublishRequestState extends State<PublishRequest> {
         }
       }
       DateTime now = DateTime.now();
-      int trustHours =
-          int.tryParse(lastTrust) ?? 720; // Use 0 as fallback if parsing fails
-
-      debugPrint('$lastTrust trust hours');
+      int trustHours = int.tryParse(lastTrust) ?? 720;
       if (now.difference(lastDateTime).inHours > (trustHours)) {
-        return true;
-      }
-
-      // Check if the last appointment was more than 30 days ago
-      if (now.difference(lastDateTime).inDays > 30) {
         return true;
       }
     } else {
@@ -697,7 +684,7 @@ class PublishRequestState extends State<PublishRequest> {
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: TextField(
-          controller: controller, // Use the provided controller
+          controller: controller,
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: const Color(0xFFAE0E03)),
             labelText: label,
@@ -821,7 +808,6 @@ class PublishRequestState extends State<PublishRequest> {
       );
       return;
     }
-    // Retrieve user information
     User? currentUser = FirebaseAuth.instance.currentUser;
     String? userId = currentUser?.uid;
 
@@ -835,7 +821,7 @@ class PublishRequestState extends State<PublishRequest> {
     String dateTime = _dateTimeController.text.trim();
 
     Map<String, dynamic> requestData = {
-      'userId': userId, // Add userId to the request data
+      'userId': userId,
       'name': name,
       'phone': phone,
       'note': note,
@@ -876,8 +862,7 @@ class PublishRequestState extends State<PublishRequest> {
       // Duration difference = DateTime.parse(dateTime).difference(now);
 
       // if (difference.inHours <= 24 && difference.isNegative == false) {
-      //   // هذا الطلب في غضون الـ 24 ساعة القادمة
-      //   sendUrgentNotification(requestData); // إرسال إشعار
+      //   sendUrgentNotification(requestData);
       // }
     } catch (e) {
       showDialog(
@@ -905,14 +890,14 @@ class PublishRequestState extends State<PublishRequest> {
 
   // Future<void> sendUrgentNotification(Map<String, dynamic> requestData) async {
   //   final url = Uri.parse(
-  //       'YOUR_CLOUD_FUNCTION_URL'); // Replace with your deployed Cloud Function URL after activation
+  //       'CLOUD_FUNCTION_URL');
 
   //   final messageData = {
   //     "title": "طلب تبرع عاجل!",
   //     "body":
   //         "طلب تبرع عاجل للدم من نوع ${requestData['bloodType']} في الموقع ${requestData['location']}.",
   //     "data": {"requestId": requestData['id']},
-  //     "topic": "urgent_requests", // تحديد الموضوع
+  //     "topic": "urgent_requests",
   //   };
 
   //   try {

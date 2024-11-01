@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // To access the current user
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DonationRequest {
-  final String id; // Add this field
+  final String id;
   final String name;
   final String bloodType;
   final String bankId;
@@ -13,11 +13,10 @@ class DonationRequest {
   final String? otherCondition;
   final String state;
   final String userId;
-  final String?
-      acceptedDonation; // Optional because it will only exist if accepted
+  final String? acceptedDonation;
 
   DonationRequest({
-    required this.id, // Include id in constructor
+    required this.id,
     required this.name,
     required this.bloodType,
     required this.bankId,
@@ -33,33 +32,30 @@ class DonationRequest {
 }
 
 Future<List<DonationRequest?>> getDonationRequests() async {
-  final User? user = FirebaseAuth.instance.currentUser; // Get the current user
+  final User? user = FirebaseAuth.instance.currentUser;
   if (user == null) {
-    return []; // If no user is logged in, return an empty list
+    return [];
   }
 
   String currentUserId = user.uid;
-
-  // Retrieve the user's blood type from Firestore (assuming it's stored in a collection)
   DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
       .collection('users')
       .doc(currentUserId)
       .get();
 
   if (!userSnapshot.exists) {
-    return []; // If user data doesn't exist, return an empty list
+    return [];
   }
 
   Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
-  String userBloodType = userData['bloodType']; // Get the user's blood type
+  String userBloodType = userData['bloodType'];
 
-  // Update the query to order by 'dateTime'
   QuerySnapshot snapshot = await FirebaseFirestore.instance
       .collection('requests')
-      .orderBy('dateTime') // Order the requests by dateTime
+      .orderBy('dateTime')
       .get();
 
-  DateTime now = DateTime.now(); // Get the current time
+  DateTime now = DateTime.now();
 
   List<DonationRequest?> requests = snapshot.docs
       .map((doc) {

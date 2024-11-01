@@ -19,7 +19,7 @@ class MyRequestScreen extends StatelessWidget {
 }
 
 class BloodDonationRequestScreen extends StatefulWidget {
-  final String id; // Update this line to hold the request ID
+  final String id;
   const BloodDonationRequestScreen({super.key, required this.id});
 
   @override
@@ -48,25 +48,19 @@ class BloodDonationRequestScreenState
 
   Future<void> decreasePoints() async {
     try {
-      // الحصول على المستخدم الحالي
       final User? user = FirebaseAuth.instance.currentUser;
-
-      // التحقق من أن المستخدم مسجل الدخول
       if (user == null) {
         debugPrint("No user is currently logged in.");
         return;
       }
       userId = user.uid;
-      // الحصول على المستند الخاص بالمستخدم
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
           .get();
-
-      // الحصول على النقاط الحالية، إذا لم يكن الحقل موجودًا يتم اعتباره 0
       int currentPoints = userDoc.data()?['points'] ?? 0;
       await FirebaseFirestore.instance.collection('users').doc(userId).update({
-        'points': currentPoints - 1, // تقليل النقاط بمقدار واحد
+        'points': currentPoints - 1,
       });
     } catch (e) {
       debugPrint("Failed to update points: $e");
@@ -84,8 +78,6 @@ class BloodDonationRequestScreenState
 
     if (requestDoc.exists) {
       final requestData = requestDoc.data()!;
-
-      // أضف الـ requestId إلى البيانات
       requestData['id'] = requestDoc.id;
       requestUserId = requestDoc['userId'];
 
@@ -97,7 +89,6 @@ class BloodDonationRequestScreenState
   Future<void> deleteRequest(
       String id, String requestDateTime, String requestState) async {
     try {
-      // التحقق إذا كان الطلب مقبول (state == "1") أو أن التاريخ في الماضي
       DateTime requestDate = DateTime.parse(requestDateTime);
       DateTime now = DateTime.now();
 
@@ -114,11 +105,9 @@ class BloodDonationRequestScreenState
         );
         return;
       }
-      // إذا كانت الشروط مستوفاة، يتم حذف الطلب
       await FirebaseFirestore.instance.collection('requests').doc(id).delete();
       decreasePoints();
-      Navigator.pushReplacementNamed(
-          context, '/myrequests'); // Navigate back after deletion
+      Navigator.pushReplacementNamed(context, '/myrequests');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم حذف الطلب بنجاح')),
       );
@@ -149,7 +138,6 @@ class BloodDonationRequestScreenState
         ),
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
-        // Fetch last request data
         future: fetchRequestById(widget.id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -160,8 +148,6 @@ class BloodDonationRequestScreenState
             final requestData = snapshot.data!;
             String bankId = requestData['bankId'];
             String bankName = 'Unknown Bank';
-
-            // البحث عن اسم بنك الدم باستخدام bankId
             BloodBank? bank = bloodBanks.firstWhere(
               (b) => b.bankId == bankId,
               orElse: () => BloodBank(
@@ -190,9 +176,9 @@ class BloodDonationRequestScreenState
                   requestUserId: requestUserId,
                   onDelete: () {
                     deleteRequest(
-                      requestData['id'], // تمرير الـ requestId
-                      requestData['dateTime'], // تمرير تاريخ الطلب
-                      requestData['state'], // تمرير حالة الطلب
+                      requestData['id'],
+                      requestData['dateTime'],
+                      requestData['state'],
                     );
                   },
                 ),
