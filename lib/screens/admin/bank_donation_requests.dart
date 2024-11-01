@@ -313,18 +313,36 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                                                     _verificationCodeController
                                                         .text;
                                                 if (code.isNotEmpty) {
-                                                  FirebaseFirestore.instance
-                                                      .collection('requests')
-                                                      .doc(items[index]["id"])
-                                                      .update({
-                                                    'trusted': code
-                                                  }).then((_) {
-                                                    _verificationCodeController
-                                                        .clear();
-                                                  }).catchError((error) {
+                                                  final int? numberCode =
+                                                      int.tryParse(code);
+                                                  if (numberCode != null) {
+                                                    FirebaseFirestore.instance
+                                                        .collection('requests')
+                                                        .doc(items[index]["id"])
+                                                        .update({
+                                                      'trusted': code
+                                                    }).then((_) {
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'amountLogs')
+                                                          .add({
+                                                        'bankId': bankId,
+                                                        'timestamp': FieldValue
+                                                            .serverTimestamp(),
+                                                        'userId':
+                                                            item['userId'],
+                                                        item['bloodType']: -1,
+                                                      });
+                                                      _verificationCodeController
+                                                          .clear();
+                                                    }).catchError((error) {
+                                                      debugPrint(
+                                                          "Error updating request: $error");
+                                                    });
+                                                  } else {
                                                     debugPrint(
-                                                        "Error updating request: $error");
-                                                  });
+                                                        "Entered code is not a valid number");
+                                                  }
                                                 }
                                               },
                                               style: ElevatedButton.styleFrom(

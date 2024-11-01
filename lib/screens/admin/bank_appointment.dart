@@ -427,30 +427,24 @@ class _BankAppintmentState extends State<BankAppintment> {
 
   Future<void> _confirmDonation(DonationRequest request) async {
     try {
-      final requestsSnapshot = await FirebaseFirestore.instance
-          .collection('requests')
-          .where('acceptedDonation', isEqualTo: request.appointmentId)
+      final User? user = FirebaseAuth.instance.currentUser;
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
           .get();
-      if (requestsSnapshot.docs.isEmpty) {
-        final User? user = FirebaseAuth.instance.currentUser;
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user?.uid)
-            .get();
-        final userRole = userDoc.data()?['role'] ?? '';
-        await FirebaseFirestore.instance
-            .collection('amounts')
-            .doc(userRole)
-            .update({
-          request.bloodType: FieldValue.increment(1),
-        });
-        await FirebaseFirestore.instance.collection('amountLogs').add({
-          'bankId': userRole,
-          'timestamp': FieldValue.serverTimestamp(),
-          'userId': request.userId,
-          request.bloodType: 1,
-        });
-      }
+      final userRole = userDoc.data()?['role'] ?? '';
+      await FirebaseFirestore.instance
+          .collection('amounts')
+          .doc(userRole)
+          .update({
+        request.bloodType: FieldValue.increment(1),
+      });
+      await FirebaseFirestore.instance.collection('amountLogs').add({
+        'bankId': userRole,
+        'timestamp': FieldValue.serverTimestamp(),
+        'userId': request.userId,
+        request.bloodType: 1,
+      });
       await FirebaseFirestore.instance
           .collection('appointments')
           .doc(request.appointmentId)

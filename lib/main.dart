@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:iithar/services/notification_service.dart';
 import 'package:iithar/screens/accounts/contact_withus.dart';
 import 'package:iithar/screens/accounts/my_requests.dart';
 import 'package:iithar/screens/admin/admin_homescreen.dart';
-import 'package:iithar/services/notification_service.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:iithar/navigation_menu.dart';
 import 'package:iithar/screens/accounts/personal_info.dart';
@@ -17,7 +19,6 @@ import 'package:iithar/screens/first_run/splash_screen.dart';
 import 'package:iithar/screens/notification_screen.dart';
 import 'package:iithar/screens/publish_request.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:iithar/screens/home_screen.dart';
 import 'package:iithar/screens/map_screen.dart';
 import 'package:iithar/screens/first_run/onboarding_screen.dart';
 import 'package:iithar/screens/accounts/register_screen.dart';
@@ -33,9 +34,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseApi().initNotifications();
+  //await FirebaseApi().initNotifications();
   WidgetsFlutterBinding.ensureInitialized();
   final DataService dataService = DataService();
+  await requestExactAlarmPermission();
   await dataService.fetchAndCacheBankData();
   final NotificationService notificationService = NotificationService();
   await notificationService.initNotification();
@@ -47,6 +49,14 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   runApp(const MyApp());
+}
+
+Future<void> requestExactAlarmPermission() async {
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    if (await Permission.scheduleExactAlarm.isDenied) {
+      await Permission.scheduleExactAlarm.request();
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -97,12 +107,11 @@ class MyApp extends StatelessWidget {
         '/admin': (context) => const BloodbankAdminScreen(),
         '/adminscreen': (context) => const AdminHomescreen(),
         '/register': (context) => const RegisterScreen(),
-        '/home': (context) => const HomeScreen(),
+        '/home': (context) => const NavigationMenu(),
         '/notifications': (context) => NotificationsScreen(),
         '/form': (context) => const DonationForm(),
         '/publishrequest': (context) => const PublishRequest(),
         '/appointment': (context) => const AppointmentBookingScreen(),
-        '/nav': (context) => const NavigationMenu(),
         '/userdata': (context) =>
             UserDataScreen(user: FirebaseAuth.instance.currentUser!),
         '/map': (context) => const MapScreen(),
@@ -115,7 +124,6 @@ class MyApp extends StatelessWidget {
         '/mydonations': (context) => const MyDonationsScreen(),
         '/bloodbankadmin': (context) => const BloodbankAdminScreen(),
         '/contactus': (context) => const ContactWithus(),
-
       },
     );
   }

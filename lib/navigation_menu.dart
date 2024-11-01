@@ -23,7 +23,6 @@ class NavigationMenu extends StatelessWidget {
             BoxShadow(
               color: const Color.fromRGBO(112, 112, 112, 100).withOpacity(0.2),
               blurRadius: 15,
-              //offset: Offset(0,20),
             )
           ],
           borderRadius: BorderRadius.circular(30),
@@ -33,8 +32,9 @@ class NavigationMenu extends StatelessWidget {
           child: Obx(
             () => NavigationBar(
               selectedIndex: controller.selectedIndex.value,
-              onDestinationSelected: (index) =>
-                  controller.selectedIndex.value = index,
+              onDestinationSelected: (index) {
+                controller.selectedIndex.value = index;
+              },
               destinations: [
                 NavigationDestination(
                   icon: Image.asset(
@@ -44,10 +44,8 @@ class NavigationMenu extends StatelessWidget {
                   label: '',
                 ),
                 const NavigationDestination(
-                  icon: Icon(Icons.bloodtype_outlined,
-                      color: Color(
-                        0xFFAE0E03,
-                      )),
+                  icon:
+                      Icon(Icons.bloodtype_outlined, color: Color(0xFFAE0E03)),
                   label: '',
                 ),
                 NavigationDestination(
@@ -58,11 +56,11 @@ class NavigationMenu extends StatelessWidget {
                   label: '',
                 ),
               ],
-              indicatorColor: Colors.black12, // لون المؤشر المحدد
+              indicatorColor: Colors.black12,
               backgroundColor: Colors.white,
-              height: 10, surfaceTintColor: Colors.white,
+              height: 10,
+              surfaceTintColor: Colors.white,
               shadowColor: Colors.cyan,
-              // ارتفاع شريط التنقل
             ),
           ),
         ),
@@ -75,11 +73,14 @@ class NavigationMenu extends StatelessWidget {
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
-  final screens = [
-    const HomeScreen(),
-    const PublishRequest(),
-    UserDataScreen(user: FirebaseAuth.instance.currentUser!)
-  ];
+  final List<Widget> screens;
+
+  NavigationController()
+      : screens = [
+          const HomeScreen(),
+          const PublishRequest(),
+          UserDataScreen(user: FirebaseAuth.instance.currentUser!)
+        ];
 }
 
 void main() {

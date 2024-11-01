@@ -18,7 +18,7 @@ class DonationRequestsListView extends StatefulWidget {
 class _DonationRequestsListViewState extends State<DonationRequestsListView> {
   final DataService dataService = DataService();
   late Future<List<BloodBank>> _banksFuture;
-  late List<Map<String?, dynamic>> bankRequest;
+  late List<Map<String?, dynamic>> bankRequest = [];
   int counter = 0;
 
   @override
@@ -38,7 +38,6 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
     final favourite = userDoc.data()!['favouriteBank'];
     var requestQuery = await FirebaseFirestore.instance
         .collection('requests')
-        .where('userId', isEqualTo: null)
         .where('bankId', isEqualTo: favourite)
         .where('bloodType', isEqualTo: bloodType)
         .get();
@@ -66,11 +65,9 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
             child: Text('لا توجد بنوك دم متاحة حالياً'),
           );
         } else {
-          // Banks data loaded successfully
           final List<BloodBank> banks = bankSnapshot.data!;
           return FutureBuilder<List<DonationRequest?>>(
-            future:
-                getDonationRequests(), // Fetch donation requests from Firestore
+            future: getDonationRequests(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -98,20 +95,14 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                       counter += 1;
                     }
                     final donationRequest = donationRequests[counter];
-
-                    // Check if donationRequest is null
                     if (donationRequest == null) {
-                      return const SizedBox(); // Skip rendering if null
+                      return const SizedBox();
                     }
-
-                    // Map the bankId to the bank name (with null safety)
-                    final BloodBank bloodBank = banks.firstWhere(
-                      (bank) => bank.bankId == donationRequest.bankId,
-                    );
-                    final String bankName =
-                        bloodBank.name; // Fallback for safety
-
                     if (bankRequest.isNotEmpty && index < bankRequest.length) {
+                      final BloodBank bloodBank = banks.firstWhere(
+                        (bank) => bank.bankId == bankRequest[index]['bankId'],
+                      );
+                      final String bankName = bloodBank.name;
                       return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
@@ -159,7 +150,7 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        bankName, // Display the blood bank name instead of location
+                                        bankName,
                                         style: const TextStyle(
                                             fontFamily: 'BAHIJ', fontSize: 12),
                                       ),
@@ -177,6 +168,10 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                         ),
                       );
                     } else {
+                      final BloodBank bloodBank = banks.firstWhere(
+                        (bank) => bank.bankId == donationRequest.bankId,
+                      );
+                      final String bankName = bloodBank.name;
                       return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
@@ -231,7 +226,7 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                                             fontFamily: 'BAHIJ', fontSize: 14),
                                       ),
                                       Text(
-                                        bankName, // Display the blood bank name instead of location
+                                        bankName,
                                         style: const TextStyle(
                                             fontFamily: 'BAHIJ', fontSize: 12),
                                       ),
@@ -241,7 +236,7 @@ class _DonationRequestsListViewState extends State<DonationRequestsListView> {
                                             fontFamily: 'BAHIJ', fontSize: 14),
                                       ),
                                       Text(
-                                        'التاريخ: ${(donationRequest.dateTime).substring(0, 16)}', // Display remaining time
+                                        'التاريخ: ${(donationRequest.dateTime).substring(0, 16)}',
                                         style: const TextStyle(
                                             fontFamily: 'BAHIJ', fontSize: 14),
                                       ),

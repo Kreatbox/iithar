@@ -23,19 +23,18 @@ class HomeScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/notifications');
-                  // Handle the notification icon press
                   debugPrint('Notification icon pressed');
                 },
               ),
-              const Expanded(
+              const Flexible(
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text('مرحبا ',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                          fontFamily: 'HSI',
-                          fontSize: 40,
-                          color: Colors.black)),
+                  child: Text(
+                    'مرحبا ',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                        fontFamily: 'HSI', fontSize: 40, color: Colors.black),
+                  ),
                 ),
               ),
             ],

@@ -196,7 +196,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       final fullDateTimeString = '$englishDate $_selectedTimeSlot';
       final DateTime selectedDateTime =
           DateFormat('d MMMM yyyy hh:mm a').parse(fullDateTimeString);
-      final oneMonthAgo = selectedDateTime.subtract(const Duration(days: 1));
+      final oneMonthAgo = selectedDateTime.subtract(const Duration(days: 30));
       final querySnapshot = await FirebaseFirestore.instance
           .collection('appointments')
           .where('userId', isEqualTo: user.uid)
@@ -228,8 +228,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
           .where('timeSlot', isEqualTo: _selectedTimeSlot)
           .get();
 
-      // Check if any document exists in the snapshot
-      if (querySnapshot.docs.isNotEmpty) {
+      if (querySnapshot.docs.length >= 2) {
         return true;
       }
     }
@@ -255,18 +254,18 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
           DateFormat('d MMMM yyyy hh:mm a').parse(fullDateTimeString);
       final DateTime reminderTime =
           selectedDateTime.subtract(const Duration(hours: 1));
-      final int notificationId = DateTime.now().month +
-          DateTime.now().day +
-          DateTime.now().hour +
-          DateTime.now().minute;
-      debugPrint(notificationId.toString());
+      final int notificationId = DateTime.now().millisecondsSinceEpoch ~/ 60000;
       final NotificationService notificationService = NotificationService();
-      await notificationService.scheduleNotification(
-        notificationId,
-        'موعد تبرع بالدم',
-        'تذكير بموعدك للتبرع بالدم في $_selectedCenter في الساعة $_selectedTimeSlot في التاريخ  $_selectedDate',
-        reminderTime,
-      );
+      try {
+        await notificationService.scheduleNotification(
+          notificationId,
+          'موعد تبرع بالدم',
+          'تذكير بموعدك للتبرع بالدم في $_selectedCenter في الساعة $_selectedTimeSlot في التاريخ $_selectedDate',
+          reminderTime,
+        );
+      } catch (e) {
+        debugPrint('Error scheduling notification: $e');
+      }
     }
   }
 
