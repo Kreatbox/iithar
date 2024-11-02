@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyAppointmentScreen extends StatelessWidget {
   const MyAppointmentScreen({super.key});
@@ -178,6 +179,7 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
                                   });
                                   message =
                                       await _deleteAppointment(appointmentId);
+                                  await deleteLastNotification();
                                   setState(() {
                                     _appointmentData = _fetchAppointmentData();
                                   });
@@ -247,6 +249,20 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
         },
       ),
     );
+  }
+
+  Future<void> deleteLastNotification() async {
+    final prefs = await SharedPreferences.getInstance();
+    final notifications = prefs.getStringList('notifications') ?? [];
+
+    if (notifications.isNotEmpty) {
+      notifications.removeLast(); // Remove the last notification
+      await prefs.setStringList('notifications', notifications);
+      debugPrint(
+          'Last notification deleted. Remaining notifications: $notifications');
+    } else {
+      debugPrint('No notifications to delete.');
+    }
   }
 
   Widget _buildInfoSection(String title, List<Widget> children) {

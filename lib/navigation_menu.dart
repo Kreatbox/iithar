@@ -82,9 +82,3 @@ class NavigationController extends GetxController {
           UserDataScreen(user: FirebaseAuth.instance.currentUser!)
         ];
 }
-
-void main() {
-  runApp(const MaterialApp(
-    home: NavigationMenu(),
-  ));
-}

@@ -137,8 +137,7 @@ String _getMonthName(int month) {
 Future<void> _scheduleDonationReminder(DonationRequest donationRequest) async {
   DateTime selectedDateTime = DateTime.parse(donationRequest.dateTime);
   DateTime reminderTime = selectedDateTime.subtract(const Duration(hours: 1));
-  int notificationId =
-      DateTime.now().month + DateTime.now().day + DateTime.now().hour;
+  final int notificationId = DateTime.now().millisecondsSinceEpoch ~/ 60000;
   final NotificationService notificationService = NotificationService();
   await notificationService.scheduleNotification(
     notificationId,

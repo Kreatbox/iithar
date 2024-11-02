@@ -254,6 +254,7 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       final DateTime reminderTime =
           selectedDateTime.subtract(const Duration(hours: 1));
       final int notificationId = DateTime.now().millisecondsSinceEpoch ~/ 60000;
+
       final NotificationService notificationService = NotificationService();
       try {
         await notificationService.scheduleNotification(

@@ -28,20 +28,20 @@ import 'screens/accounts/login_screen.dart';
 import 'screens/accounts/userdata_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'services/data_service.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  //await FirebaseApi().initNotifications();
-  WidgetsFlutterBinding.ensureInitialized();
-  final DataService dataService = DataService();
   await requestExactAlarmPermission();
-  await dataService.fetchAndCacheBankData();
+  tz.initializeTimeZones();
+  debugPrint("Time zones initialized");
   final NotificationService notificationService = NotificationService();
   await notificationService.initNotification();
-  WidgetsFlutterBinding.ensureInitialized();
+  final DataService dataService = DataService();
+  await dataService.fetchAndCacheBankData();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -106,7 +106,8 @@ class MyApp extends StatelessWidget {
         '/adminscreen': (context) => const AdminHomescreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const NavigationMenu(),
-        '/notifications': (context) => NotificationsScreen(),
+        '/nav': (context) => const NavigationMenu(),
+        '/notifications': (context) => const NotificationsScreen(),
         '/form': (context) => const DonationForm(),
         '/publishrequest': (context) => const PublishRequest(),
         '/appointment': (context) => const AppointmentBookingScreen(),
