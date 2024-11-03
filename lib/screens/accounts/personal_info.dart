@@ -58,7 +58,7 @@ class UserinfoDataScreen extends StatelessWidget {
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(height: 20),
                   _buildInfoSection('المعلومات الشخصية', [

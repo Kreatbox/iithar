@@ -266,27 +266,39 @@ class _BankAppintmentState extends State<BankAppintment> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: const Text("تعديل المعلومات"),
+
+                                backgroundColor: Colors.white,
+
+                                title: const Text("تعديل المعلومات",textAlign: TextAlign.right,),
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    TextField(
+                                    TextField( textAlign: TextAlign.right,
                                       controller: firstNameController,
                                       decoration: const InputDecoration(
-                                          labelText: "اسم المتبرع"),
+                                        alignLabelWithHint: true,
+                                          labelText: "اسم المتبرع",),
                                     ),
                                     TextField(
+                                      textAlign: TextAlign.right, // محاذاة النص لليمين
                                       controller: lastNameController,
-                                      decoration: const InputDecoration(
-                                          labelText: "اسم العائلة"),
+                                      decoration:  InputDecoration(alignLabelWithHint: true,
+                                        labelText: "اسم العائلة",
+                                        hintText: "أدخل اسم العائلة", // إضافة تلميح نصي
+                                      ),
+                                      // ضبط اتجاه النص ليكون من اليمين إلى اليسار
                                     ),
+
+
                                     TextField(
+                                      textAlign: TextAlign.right,
                                       controller: ssidController,
                                       decoration: const InputDecoration(
                                           labelText: "الرقم الوطني"),
                                       keyboardType: TextInputType.number,
                                     ),
                                     DropdownButtonFormField<String>(
+
                                       value: selectedBloodType,
                                       items: [
                                         'A+',
@@ -300,6 +312,7 @@ class _BankAppintmentState extends State<BankAppintment> {
                                       ]
                                           .map((bloodType) =>
                                               DropdownMenuItem<String>(
+                                                alignment: Alignment.topRight,
                                                 value: bloodType,
                                                 child: Text(bloodType),
                                               ))
@@ -311,10 +324,10 @@ class _BankAppintmentState extends State<BankAppintment> {
                                           });
                                         }
                                       },
-                                      decoration: const InputDecoration(
+                                      decoration: const InputDecoration(hintTextDirection: ui.TextDirection.rtl,
                                           labelText: "زمرة الدم"),
                                     ),
-                                    TextField(
+                                    TextField( textDirection: ui.TextDirection.rtl,
                                       controller: phoneNumberController,
                                       decoration: const InputDecoration(
                                           labelText: "رقم الجوال"),
@@ -390,7 +403,7 @@ class _BankAppintmentState extends State<BankAppintment> {
                 children: [
                   Directionality(
                     textDirection: ui.TextDirection.rtl,
-                    child: Text(
+                    child: Text( textAlign: TextAlign.right,
                       'اسم المتبرع: ${request.firstName} ${request.lastName}',
                       style: const TextStyle(
                         fontFamily: 'HSI',
@@ -427,24 +440,30 @@ class _BankAppintmentState extends State<BankAppintment> {
 
   Future<void> _confirmDonation(DonationRequest request) async {
     try {
-      final User? user = FirebaseAuth.instance.currentUser;
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user?.uid)
+      final requestsSnapshot = await FirebaseFirestore.instance
+          .collection('requests')
+          .where('acceptedDonation', isEqualTo: request.appointmentId)
           .get();
-      final userRole = userDoc.data()?['role'] ?? '';
-      await FirebaseFirestore.instance
-          .collection('amounts')
-          .doc(userRole)
-          .update({
-        request.bloodType: FieldValue.increment(1),
-      });
-      await FirebaseFirestore.instance.collection('amountLogs').add({
-        'bankId': userRole,
-        'timestamp': FieldValue.serverTimestamp(),
-        'userId': request.userId,
-        request.bloodType: 1,
-      });
+      if (requestsSnapshot.docs.isEmpty) {
+        final User? user = FirebaseAuth.instance.currentUser;
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user?.uid)
+            .get();
+        final userRole = userDoc.data()?['role'] ?? '';
+        await FirebaseFirestore.instance
+            .collection('amounts')
+            .doc(userRole)
+            .update({
+          request.bloodType: FieldValue.increment(1),
+        });
+        await FirebaseFirestore.instance.collection('amountLogs').add({
+          'bankId': userRole,
+          'timestamp': FieldValue.serverTimestamp(),
+          'userId': request.userId,
+          request.bloodType: 1,
+        });
+      }
       await FirebaseFirestore.instance
           .collection('appointments')
           .doc(request.appointmentId)

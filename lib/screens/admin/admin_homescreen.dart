@@ -72,6 +72,22 @@ class _AdminHomescreenState extends State<AdminHomescreen> {
                 }),
               ],
             ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFAE0E03),
+                  padding: const EdgeInsets.only(
+                      right: 25.0, left: 25.0, top: 5.0, bottom: 1.0),
+                  alignment: Alignment.center),
+              onPressed: () {
+                Navigator.pushNamed(context, '/nav');
+              },
+              child: const Text(
+                'عودة للصفحة الرئيسية',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: 'HSI', fontSize: 25, color: Colors.white),
+              ),
+            ),
           ],
         ),
       ),
