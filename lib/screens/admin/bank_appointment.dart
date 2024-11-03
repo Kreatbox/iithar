@@ -266,72 +266,90 @@ class _BankAppintmentState extends State<BankAppintment> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-
                                 backgroundColor: Colors.white,
-
-                                title: const Text("تعديل المعلومات",textAlign: TextAlign.right,),
+                                title: const Text(
+                                  "تعديل المعلومات",
+                                  textAlign: TextAlign.right,
+                                ),
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    TextField( textAlign: TextAlign.right,
-                                      controller: firstNameController,
-                                      decoration: const InputDecoration(
-                                        alignLabelWithHint: true,
-                                          labelText: "اسم المتبرع",),
-                                    ),
-                                    TextField(
-                                      textAlign: TextAlign.right, // محاذاة النص لليمين
-                                      controller: lastNameController,
-                                      decoration:  InputDecoration(alignLabelWithHint: true,
-                                        labelText: "اسم العائلة",
-                                        hintText: "أدخل اسم العائلة", // إضافة تلميح نصي
+                                    Directionality(
+                                      textDirection: ui.TextDirection.rtl,
+                                      child: TextField(
+                                        textAlign: TextAlign.right,
+                                        controller: firstNameController,
+                                        decoration: const InputDecoration(
+                                          alignLabelWithHint: true,
+                                          labelText: "اسم المتبرع",
+                                        ),
                                       ),
-                                      // ضبط اتجاه النص ليكون من اليمين إلى اليسار
                                     ),
-
-
-                                    TextField(
-                                      textAlign: TextAlign.right,
-                                      controller: ssidController,
-                                      decoration: const InputDecoration(
-                                          labelText: "الرقم الوطني"),
-                                      keyboardType: TextInputType.number,
+                                    Directionality(
+                                      textDirection: ui.TextDirection.rtl,
+                                      child: TextField(
+                                        textAlign: TextAlign.right,
+                                        controller: lastNameController,
+                                        decoration: const InputDecoration(
+                                          alignLabelWithHint: true,
+                                          labelText: "اسم العائلة",
+                                          hintText: "أدخل اسم العائلة",
+                                        ),
+                                      ),
                                     ),
-                                    DropdownButtonFormField<String>(
-
-                                      value: selectedBloodType,
-                                      items: [
-                                        'A+',
-                                        'A-',
-                                        'B+',
-                                        'B-',
-                                        'O+',
-                                        'O-',
-                                        'AB+',
-                                        'AB-'
-                                      ]
-                                          .map((bloodType) =>
-                                              DropdownMenuItem<String>(
-                                                alignment: Alignment.topRight,
-                                                value: bloodType,
-                                                child: Text(bloodType),
-                                              ))
-                                          .toList(),
-                                      onChanged: (value) {
-                                        if (value != null) {
-                                          setState(() {
-                                            selectedBloodType = value;
-                                          });
-                                        }
-                                      },
-                                      decoration: const InputDecoration(hintTextDirection: ui.TextDirection.rtl,
-                                          labelText: "زمرة الدم"),
+                                    Directionality(
+                                      textDirection: ui.TextDirection.rtl,
+                                      child: TextField(
+                                        textAlign: TextAlign.right,
+                                        controller: ssidController,
+                                        decoration: const InputDecoration(
+                                            labelText: "الرقم الوطني"),
+                                        keyboardType: TextInputType.number,
+                                      ),
                                     ),
-                                    TextField( textDirection: ui.TextDirection.rtl,
-                                      controller: phoneNumberController,
-                                      decoration: const InputDecoration(
-                                          labelText: "رقم الجوال"),
-                                      keyboardType: TextInputType.number,
+                                    Directionality(
+                                      textDirection: ui.TextDirection.rtl,
+                                      child: DropdownButtonFormField<String>(
+                                        value: selectedBloodType,
+                                        items: [
+                                          'A+',
+                                          'A-',
+                                          'B+',
+                                          'B-',
+                                          'O+',
+                                          'O-',
+                                          'AB+',
+                                          'AB-'
+                                        ]
+                                            .map((bloodType) =>
+                                                DropdownMenuItem<String>(
+                                                  alignment: Alignment.topRight,
+                                                  value: bloodType,
+                                                  child: Text(bloodType),
+                                                ))
+                                            .toList(),
+                                        onChanged: (value) {
+                                          if (value != null) {
+                                            setState(() {
+                                              selectedBloodType = value;
+                                            });
+                                          }
+                                        },
+                                        decoration: const InputDecoration(
+                                            hintTextDirection:
+                                                ui.TextDirection.rtl,
+                                            labelText: "زمرة الدم"),
+                                      ),
+                                    ),
+                                    Directionality(
+                                      textDirection: ui.TextDirection.rtl,
+                                      child: TextField(
+                                        textDirection: ui.TextDirection.rtl,
+                                        controller: phoneNumberController,
+                                        decoration: const InputDecoration(
+                                            labelText: "رقم الجوال"),
+                                        keyboardType: TextInputType.number,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -403,7 +421,8 @@ class _BankAppintmentState extends State<BankAppintment> {
                 children: [
                   Directionality(
                     textDirection: ui.TextDirection.rtl,
-                    child: Text( textAlign: TextAlign.right,
+                    child: Text(
+                      textAlign: TextAlign.right,
                       'اسم المتبرع: ${request.firstName} ${request.lastName}',
                       style: const TextStyle(
                         fontFamily: 'HSI',
