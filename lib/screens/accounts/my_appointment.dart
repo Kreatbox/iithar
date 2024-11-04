@@ -256,7 +256,7 @@ class BookingSummaryScreenState extends State<BookingSummaryScreen> {
     final notifications = prefs.getStringList('notifications') ?? [];
 
     if (notifications.isNotEmpty) {
-      notifications.removeLast(); // Remove the last notification
+      notifications.removeLast();
       await prefs.setStringList('notifications', notifications);
       debugPrint(
           'Last notification deleted. Remaining notifications: $notifications');

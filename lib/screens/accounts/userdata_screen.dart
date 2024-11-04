@@ -14,14 +14,15 @@ class UserDataScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: const Expanded(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                ' الحساب ',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                    fontFamily: 'HSI', fontSize: 30, color: Colors.black),
+          title: const Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              ' الحساب ',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontFamily: 'HSI',
+                fontSize: 30,
+                color: Colors.black,
               ),
             ),
           ),

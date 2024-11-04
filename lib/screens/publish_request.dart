@@ -93,14 +93,12 @@ class PublishRequestState extends State<PublishRequest> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text('نشر طلب بحاجة إلى دم ',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                    fontFamily: 'HSI', fontSize: 40, color: Colors.black)),
-          ),
+        title: const Align(
+          alignment: Alignment.centerRight,
+          child: Text('نشر طلب بحاجة إلى دم ',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  fontFamily: 'HSI', fontSize: 40, color: Colors.black)),
         ),
       ),
       body: Padding(

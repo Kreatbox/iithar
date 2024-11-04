@@ -34,17 +34,15 @@ class DonationFormState extends State<DonationForm> {
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              'استبيان التبرع بالدم',
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                fontFamily: 'HSI',
-                fontSize: 30,
-                color: Colors.black,
-              ),
+        title: const Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            'استبيان التبرع بالدم',
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontFamily: 'HSI',
+              fontSize: 30,
+              color: Colors.black,
             ),
           ),
         ),
