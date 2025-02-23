@@ -255,17 +255,17 @@ class AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
           selectedDateTime.subtract(const Duration(hours: 1));
       final int notificationId = DateTime.now().millisecondsSinceEpoch ~/ 60000;
 
-      final NotificationService notificationService = NotificationService();
-      try {
-        await notificationService.scheduleNotification(
-          notificationId,
-          'موعد تبرع بالدم',
-          'تذكير بموعدك للتبرع بالدم في $_selectedCenter في الساعة $_selectedTimeSlot في التاريخ $_selectedDate',
-          reminderTime,
-        );
-      } catch (e) {
-        debugPrint('Error scheduling notification: $e');
-      }
+      // final NotificationService notificationService = NotificationService();
+      // try {
+      // await notificationService.scheduleNotification(
+      //   notificationId,
+      //   'موعد تبرع بالدم',
+      //   'تذكير بموعدك للتبرع بالدم في $_selectedCenter في الساعة $_selectedTimeSlot في التاريخ $_selectedDate',
+      //   reminderTime,
+      //   );
+      // } catch (e) {
+      //   debugPrint('Error scheduling notification: $e');
+      // }
     }
   }
 

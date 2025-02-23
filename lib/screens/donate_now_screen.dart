@@ -138,13 +138,13 @@ Future<void> _scheduleDonationReminder(DonationRequest donationRequest) async {
   DateTime selectedDateTime = DateTime.parse(donationRequest.dateTime);
   DateTime reminderTime = selectedDateTime.subtract(const Duration(hours: 1));
   final int notificationId = DateTime.now().millisecondsSinceEpoch ~/ 60000;
-  final NotificationService notificationService = NotificationService();
-  await notificationService.scheduleNotification(
-    notificationId,
-    'موعد تبرع بالدم',
-    'تذكير بموعدك للتبرع بالدم في ${donationRequest.bankId} في الساعة ${DateFormat('hh:mm a').format(selectedDateTime)} في التاريخ ${DateFormat('d MMMM yyyy').format(selectedDateTime)}',
-    reminderTime,
-  );
+// //  final NotificationService notificationService = NotificationService();
+// //  await notificationService.scheduleNotification(
+//     notificationId,
+//     'موعد تبرع بالدم',
+//     'تذكير بموعدك للتبرع بالدم في ${donationRequest.bankId} في الساعة ${DateFormat('hh:mm a').format(selectedDateTime)} في التاريخ ${DateFormat('d MMMM yyyy').format(selectedDateTime)}',
+//     reminderTime,
+//   );
 }
 
 void _confirmDonation(BuildContext context, DonationRequest donationRequest,
