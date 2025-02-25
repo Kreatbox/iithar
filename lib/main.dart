@@ -38,8 +38,8 @@ void main() async {
   await requestExactAlarmPermission();
   tz.initializeTimeZones();
   debugPrint("Time zones initialized");
-  // final NotificationService notificationService = NotificationService();
-  // await notificationService.initNotification();
+  final NotificationService notificationService = NotificationService();
+  await notificationService.initNotification();
   final DataService dataService = DataService();
   await dataService.fetchAndCacheBankData();
   SystemChrome.setPreferredOrientations([
