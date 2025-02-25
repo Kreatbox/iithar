@@ -932,7 +932,8 @@ class PublishRequestState extends State<PublishRequest> {
                   onPrimary: Colors.black,
                   onSurface: Colors.black,
                 ),
-                dialogBackgroundColor: Colors.white,
+                dialogTheme:
+                    const DialogThemeData(backgroundColor: Colors.white),
               ),
               child: child!);
         });
@@ -949,7 +950,6 @@ class PublishRequestState extends State<PublishRequest> {
                     onPrimary: Colors.black,
                     onSurface: Colors.black,
                   ),
-                  dialogBackgroundColor: Colors.white,
                   timePickerTheme: TimePickerThemeData(
                     dayPeriodTextColor: Colors.black,
                     dayPeriodColor:
@@ -960,6 +960,8 @@ class PublishRequestState extends State<PublishRequest> {
                       return Colors.white;
                     }),
                   ),
+                  dialogTheme:
+                      const DialogThemeData(backgroundColor: Colors.white),
                 ),
                 child: child!);
           });

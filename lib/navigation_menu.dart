@@ -19,9 +19,9 @@ class NavigationMenu extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: const Color.fromRGBO(112, 112, 112, 100).withOpacity(0.2),
+              color: Color.fromRGBO(112, 112, 112, 100),
               blurRadius: 15,
             )
           ],

@@ -204,12 +204,12 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
+                                    boxShadow: const [
                                       BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
+                                        color: Colors.grey,
                                         spreadRadius: 3,
                                         blurRadius: 5,
-                                        offset: const Offset(0, 3),
+                                        offset: Offset(0, 3),
                                       ),
                                     ],
                                   ),
@@ -387,8 +387,7 @@ class _BankDonationRequestsState extends State<BankDonationRequests> {
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                   filled: true,
-                                                  fillColor: Colors.white
-                                                      .withOpacity(0.5),
+                                                  fillColor: Colors.white,
                                                   border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(

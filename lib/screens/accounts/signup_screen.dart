@@ -359,12 +359,13 @@ class SignupScreenState extends State<SignupScreen> {
                   surface: Colors.white,
                   onSurface: Colors.black,
                 ),
-                dialogBackgroundColor: Colors.white,
                 textButtonTheme: TextButtonThemeData(
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFFAE0E03),
                   ),
                 ),
+                dialogTheme:
+                    const DialogThemeData(backgroundColor: Colors.white),
               ),
               child: child!,
             );

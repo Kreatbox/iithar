@@ -278,7 +278,7 @@ class BloodDonationRequestCard extends StatelessWidget {
             const SizedBox(height: 16.0),
             if (userId == requestUserId)
               Center(
-                child: ButtonBar(
+                child: OverflowBar(
                   alignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ElevatedButton(
